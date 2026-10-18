@@ -17,7 +17,7 @@ Named, never numbered (`D2`). **No source read here marks a milestone as the cur
 
 | Milestone | Decisions landing here | Units |
 |---|---|---|
-| MVP | 14 | C1, F1, F2, F3, F4, F5, F6 |
+| MVP | 15 | C1, F1, F2, F3, F4, F5, F6 |
 | v1.5 | 3 | — |
 
 ## Features and chores
@@ -40,12 +40,12 @@ Counted from the register itself. A register with no rows still gets a line.
 
 | Register | Rows | Open | Unknown | Closed |
 |---|---|---|---|---|
-| Decisions (`D`) | 17 | 11 | 0 | 6 |
+| Decisions (`D`) | 18 | 12 | 0 | 6 |
 | Risks (`RR`) | 14 | 13 | 0 | 1 |
 | Owner items (`O`) | 12 | 4 | 0 | 8 |
 | Agent items (`A`) | 0 | 0 | 0 | 0 |
 | Hooks (`H`) | 6 | 2 | 0 | 4 |
-| Mutations (`M`) | 7 | 5 | 0 | 2 |
+| Mutations (`M`) | 8 | 5 | 0 | 3 |
 | Chores (`C`) | 2 | 2 | 0 | 0 |
 | Gates (`G`) | 7 | 4 | 0 | 3 |
 
@@ -53,7 +53,7 @@ Counted from the register itself. A register with no rows still gets a line.
 
 | Register | Status | Count |
 |---|---|---|
-| `D` | proposed | 11 |
+| `D` | proposed | 12 |
 | `D` | ratified | 5 |
 | `D` | superseded | 1 |
 | `RR` | open | 11 |
@@ -64,7 +64,7 @@ Counted from the register itself. A register with no rows still gets a line.
 | `H` | built | 4 |
 | `H` | not built | 1 |
 | `H` | open | 1 |
-| `M` | killed | 2 |
+| `M` | killed | 3 |
 | `M` | proposed | 5 |
 | `C` | open | 2 |
 | `G` | done | 3 |
@@ -115,10 +115,11 @@ Every open row in the register. Owner is the row's Owner column where the table 
 | owner | D14 | — | proposed | License MPL-2.0: file-level copyleft whose terms the Mac App Store permits; GPL's do not, and the owner asked for both (… |
 | owner | D15 | — | proposed | Mac App Store distribution is a v1.5 goal (Q6). MVP therefore adopts App Sandbox and hardened runtime from F5, ad-hoc si… |
 | owner | D16 | — | proposed | The menu bar icon changes from the SF Symbol connector set to a symbol the owner picks. Owner 2026-10-18: "I do want to … |
+| owner | D18 | — | proposed | Dark wakes are not observable from a user-space app. xnu sends the legacy-app power messages only when graphics come up,… |
 | owner | O7 | P1 | open | Ratify D1–D10. |
 | owner | O10 | P1 | open | Gate F6 (eject dock volumes), proposed after F5 and before F4 in today's order. |
 | owner | O11 | P2 | open | Which menu bar icon (D16)? An SF Symbol name, or an image file in Resources/. Until answered the connector symbols stay.… |
-| owner | O12 | P1 | open | F2 live checks only the owner can do: close the lid for a minute (expect system.sleep then system.wake lines) and unplug… |
+| owner | O12 | P1 | open | F2 live checks only the owner can do, with the app running: close the lid for a minute (expect system.sleep then system.… |
 | unassigned | G4 | — | open | F3 keep the dock awake |
 | unassigned | G5 | — | open | F5 installable app and launch at login |
 | unassigned | G6 | — | open | F4 timeline, counters, notifications |
@@ -133,4 +134,4 @@ Every open row in the register. Owner is the row's Owner column where the table 
 
 ---
 
-41 open register rows.
+42 open register rows.
