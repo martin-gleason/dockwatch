@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!-- Created: 2026-10-18 14:29 -05:00 · Edited: 2026-10-18 14:29 -05:00 -->
+<!-- D15: App Sandbox from the first bundle, so nothing built for the MVP has to be unbuilt for
+     the App Store. The app reads IOKit, DiskArbitration and power management, writes its own
+     log inside its container, and asks for nothing else. -->
+<plist version="1.0">
+<dict>
+	<key>com.apple.security.app-sandbox</key>
+	<true/>
+</dict>
+</plist>

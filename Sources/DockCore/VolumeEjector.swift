@@ -1,4 +1,4 @@
-// Created: 2026-10-18 13:04 -05:00 · Edited: 2026-10-18 13:55 -05:00
+// Created: 2026-10-18 13:04 -05:00 · Edited: 2026-10-18 14:52 -05:00
 // F6-T1 — unmount a volume through DiskArbitration and say what blocked it (FR9, NFR1).
 import Foundation
 import DiskArbitration
@@ -8,6 +8,9 @@ public enum EjectResult: Equatable {
     case done
     /// Names of processes with files open on the volume, when they could be found.
     case blocked(by: [String])
+    /// Busy, and the lookup itself was refused: App Sandbox denies `proc_listpidspath`
+    /// (F5 review; D25), so the installed app cannot say which process.
+    case blockedUnknown
     case failed(status: Int32, message: String)
 
     /// One short line for the menu (FR9: "the result is reported").
@@ -17,6 +20,7 @@ public enum EjectResult: Equatable {
         // libproc shows an unprivileged process only its own user's processes, so Time
         // Machine, Spotlight and other root daemons cannot be named (F6 review, finding 3).
         case .blocked(let names) where names.isEmpty: return "In use by a system process"
+        case .blockedUnknown: return "In use by another process; the sandbox cannot say which"
         case .blocked(let names): return "In use by \(names.joined(separator: ", "))"
         case .failed(_, let message): return "Could not eject: \(message)"
         }
@@ -80,7 +84,8 @@ public final class VolumeEjector {
         guard let dissenter else { return .done }
         let status = DADissenterGetStatus(dissenter)
         if isBusy(status), let path {
-            return .blocked(by: processesUsing(path: path))
+            guard let names = processesUsing(path: path) else { return .blockedUnknown }
+            return .blocked(by: names)
         }
         let text = (DADissenterGetStatusString(dissenter) as String?) ?? describe(status)
         return .failed(status: status, message: text)
@@ -122,10 +127,13 @@ public final class VolumeEjector {
     /// and is what `lsof` uses, but its header calls its interfaces private and subject to
     /// change (RR15), and it lists only this user's processes: root daemons come back as an
     /// empty list, which the menu words as "a system process".
-    public static func processesUsing(path: String) -> [String] {
+    /// Nil when the lookup is refused (EPERM under App Sandbox); an empty list when it ran
+    /// and found no process this user can see.
+    public static func processesUsing(path: String) -> [String]? {
         let flags = UInt32(PROC_LISTPIDSPATH_PATH_IS_VOLUME | PROC_LISTPIDSPATH_EXCLUDE_EVTONLY)
+        errno = 0
         let needed = proc_listpidspath(UInt32(PROC_ALL_PIDS), 0, path, flags, nil, 0)
-        guard needed > 0 else { return [] }
+        if needed <= 0 { return errno == EPERM ? nil : [] }
         var pids = [pid_t](repeating: 0, count: Int(needed) / MemoryLayout<pid_t>.size + 8)
         let got = pids.withUnsafeMutableBytes { proc_listpidspath(UInt32(PROC_ALL_PIDS), 0, path, flags, $0.baseAddress, Int32($0.count)) }
         guard got > 0 else { return [] }

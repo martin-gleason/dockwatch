@@ -1,4 +1,4 @@
-// Created: 2026-10-18 11:20 -05:00 · Edited: 2026-10-18 13:55 -05:00
+// Created: 2026-10-18 11:20 -05:00 · Edited: 2026-10-18 14:29 -05:00
 // F1-T4 / F2-T4 / F3-T3 / F6-T3 — wires the monitors to the tracker, the store, the hold, the ejector and the status item.
 import AppKit
 import DockCore
@@ -27,6 +27,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         statusItem.ejectEntries = { [weak self] in self?.ejectEntries() ?? [] }
         statusItem.onEject = { [weak self] bsd in self?.eject(bsdName: bsd) }
         statusItem.onEjectAll = { [weak self] in self?.ejectAll() }
+        statusItem.onToggleLaunchAtLogin = { [weak self] in self?.toggleLaunchAtLogin() }
+        statusItem.setLaunchAtLogin(on: LaunchAtLogin.isEnabled, available: LaunchAtLogin.isAvailable)
 
         // D10: off until the owner turns it on; the choice then survives relaunch (FR5).
         let toggle = UserDefaults.standard.bool(forKey: Self.keepAwakeKey)
@@ -80,6 +82,15 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     private func render() {
         statusItem.render(state: tracker.state, held: assertion.isHeld)
+    }
+
+    // MARK: launch at login (FR7)
+
+    private func toggleLaunchAtLogin() {
+        if let problem = LaunchAtLogin.set(enabled: !LaunchAtLogin.isEnabled) {
+            statusItem.showProblem(problem)
+        }
+        statusItem.setLaunchAtLogin(on: LaunchAtLogin.isEnabled, available: LaunchAtLogin.isAvailable)
     }
 
     // MARK: eject (FR9)

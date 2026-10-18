@@ -1,5 +1,5 @@
-// Created: 2026-10-18 11:20 -05:00 · Edited: 2026-10-18 13:55 -05:00
-// F1-T4 / F2-T4 / F3-T3 / F6-T3 — the menu bar icon and its menu (FR1, FR5, FR8, FR9).
+// Created: 2026-10-18 11:20 -05:00 · Edited: 2026-10-18 14:52 -05:00
+// F1-T4 / F2-T4 / F3-T3 / F5-T2 / F6-T3 — the menu bar icon and its menu (FR1, FR5, FR7, FR8, FR9).
 import AppKit
 import DockCore
 
@@ -19,6 +19,7 @@ final class StatusItemController: NSObject, NSMenuDelegate {
     private let stateLine = NSMenuItem(title: "Dock: unknown", action: nil, keyEquivalent: "")
     private let problemLine = NSMenuItem(title: "", action: nil, keyEquivalent: "")
     private let keepAwakeItem = NSMenuItem(title: "Keep Dock Awake", action: #selector(toggleKeepAwake), keyEquivalent: "k")
+    private let loginItem = NSMenuItem(title: "Launch at Login", action: #selector(toggleLaunchAtLogin), keyEquivalent: "")
     private let ejectHeader = NSMenuItem(title: "Dock Volumes", action: nil, keyEquivalent: "")
     private static let ejectTag = 900
 
@@ -26,6 +27,8 @@ final class StatusItemController: NSObject, NSMenuDelegate {
     var onOpenLog: (() -> Void)?
     /// FR5 — set by the app delegate; flips the hold toggle.
     var onToggleKeepAwake: (() -> Void)?
+    /// FR7 — set by the app delegate; flips launch at login.
+    var onToggleLaunchAtLogin: (() -> Void)?
     /// FR9 — the volumes on the dock right now, asked for each time the menu opens.
     var ejectEntries: (() -> [EjectEntry])?
     /// FR9 — eject one volume by BSD name, or all of them.
@@ -34,6 +37,9 @@ final class StatusItemController: NSObject, NSMenuDelegate {
 
     override init() {
         super.init()
+        // Every isEnabled in this file is authoritative; AppKit would otherwise re-enable any
+        // item whose target answers its action each time the menu opens (F5 review, finding 3).
+        menu.autoenablesItems = false
         stateLine.isEnabled = false
         problemLine.isEnabled = false
         problemLine.isHidden = true
@@ -51,6 +57,8 @@ final class StatusItemController: NSObject, NSMenuDelegate {
         let open = NSMenuItem(title: "Open Log", action: #selector(openLog), keyEquivalent: "l")
         open.target = self
         menu.addItem(open)
+        loginItem.target = self
+        menu.addItem(loginItem)
         menu.addItem(.separator())
         menu.addItem(NSMenuItem(title: "Quit DockWatch", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q"))
         menu.delegate = self
@@ -101,6 +109,13 @@ final class StatusItemController: NSObject, NSMenuDelegate {
 
     @objc private func ejectAll() { onEjectAll?() }
     @objc private func openLog() { onOpenLog?() }
+    @objc private func toggleLaunchAtLogin() { onToggleLaunchAtLogin?() }
+
+    /// FR7: checkmark follows the system's answer; greyed when there is no bundle to register.
+    func setLaunchAtLogin(on: Bool, available: Bool) {
+        loginItem.state = on ? .on : .off
+        loginItem.isEnabled = available
+    }
     @objc private func toggleKeepAwake() { onToggleKeepAwake?() }
 
     func setKeepAwake(on: Bool) {

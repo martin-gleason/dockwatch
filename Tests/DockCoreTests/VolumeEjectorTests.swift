@@ -1,4 +1,4 @@
-// Created: 2026-10-18 13:04 -05:00 · Edited: 2026-10-18 13:56 -05:00
+// Created: 2026-10-18 13:04 -05:00 · Edited: 2026-10-18 14:52 -05:00
 import XCTest
 import DiskArbitration
 @testable import DockCore
@@ -12,6 +12,8 @@ final class EjectResultTests: XCTestCase {
         XCTAssertEqual(EjectResult.blocked(by: ["backupd"]).menuText, "In use by backupd")
         XCTAssertEqual(EjectResult.blocked(by: ["Finder", "backupd"]).menuText, "In use by Finder, backupd")
         XCTAssertEqual(EjectResult.blocked(by: []).menuText, "In use by a system process")
+        XCTAssertEqual(EjectResult.blockedUnknown.menuText, "In use by another process; the sandbox cannot say which")
+        XCTAssertFalse(EjectResult.blockedUnknown.isDone)
         XCTAssertEqual(EjectResult.failed(status: 7, message: "Not mounted").menuText, "Could not eject: Not mounted")
     }
 

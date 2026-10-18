@@ -20,7 +20,7 @@ M4|Sources/DockCore/DockIdentity.swift|s/ && device.productID == productID//|Doc
 M5|Sources/DockCore/EventQuery.swift|s/\$0.timestamp >= cutoff/true/|EventQueryTests/testWindowExcludesOldEvents
 M6|Sources/DockCore/HoldPolicy.swift|s/reapply: true\)/reapply: false)/|HoldPolicyTests/testWakeWhileDockedReasserts
 M7|Sources/DockCore/DockMembership.swift|s/controllerShift: UInt32 = 24/controllerShift: UInt32 = 0/|DockMembershipTests/testSiblingHubIsOnTheDock
-M9|Sources/DockCore/VolumeEjector.swift|s/if isBusy\(status\), let path/if false, let path/|VolumeEjectorTests/testBusyVolumeIsRefusedAndNamed_thenEjectsWhenFree
+M9|Sources/DockCore/VolumeEjector.swift|s/if isBusy\(status\), let path/if false, let path/|VolumeEjectorLiveTests/testBusyVolumeIsRefusedAndNamed_thenEjectsWhenFree
 M10|Sources/DockCore/EjectMenuModel.swift|s/showUnmounted = true/showUnmounted = false/|EjectMenuModelTests/testSuccessfulEjectStaysVisibleAfterUnmount
 M11|Sources/DockCore/EjectMenuModel.swift|s/results.removeValue\(forKey: bsdName\)/_ = bsdName/|EjectMenuModelTests/testRemountClearsResult
 M8|Sources/DockCore/EventStore.swift|s/try FileManager.default.moveItem\(at: url, to: rotatedURL\)/try FileManager.default.removeItem(at: url)/|EventStoreTests/testRotationKeepsExactlyOnePreviousFile
@@ -48,6 +48,10 @@ fi
 echo "mutate: applied $id to $file; running $filter"
 out=$(swift test --filter "$filter" 2>&1); rc=$?
 summary=$(printf '%s\n' "$out" | grep -E "Executed [0-9]+ tests?" | tail -1)
+if [[ -z "$summary" ]]; then
+  echo "mutate: $id ran no test — the filter '$filter' matched nothing (renamed test?)"
+  exit 2
+fi
 if [[ $rc -ne 0 ]]; then
   echo "mutate: $id CAUGHT — ${summary:-test run failed}"
   exit 0
