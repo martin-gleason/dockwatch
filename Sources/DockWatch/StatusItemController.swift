@@ -1,4 +1,4 @@
-// Created: 2026-10-18 11:20 -05:00 · Edited: 2026-10-18 14:29 -05:00
+// Created: 2026-10-18 11:20 -05:00 · Edited: 2026-10-18 14:52 -05:00
 // F1-T4 / F2-T4 / F3-T3 / F5-T2 / F6-T3 — the menu bar icon and its menu (FR1, FR5, FR7, FR8, FR9).
 import AppKit
 import DockCore
@@ -37,6 +37,9 @@ final class StatusItemController: NSObject, NSMenuDelegate {
 
     override init() {
         super.init()
+        // Every isEnabled in this file is authoritative; AppKit would otherwise re-enable any
+        // item whose target answers its action each time the menu opens (F5 review, finding 3).
+        menu.autoenablesItems = false
         stateLine.isEnabled = false
         problemLine.isEnabled = false
         problemLine.isHidden = true
