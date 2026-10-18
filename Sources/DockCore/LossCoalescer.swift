@@ -1,4 +1,4 @@
-// Created: 2026-10-18 16:54 -05:00 · Edited: 2026-10-18 16:54 -05:00
+// Created: 2026-10-18 16:54 -05:00 · Edited: 2026-10-18 17:10 -05:00
 // F4-T3 — one notification for a dock pull, one per lone drop (FR6, D22, D27). Pure.
 import Foundation
 
@@ -36,10 +36,16 @@ public struct LossCoalescer: Equatable {
         return false
     }
 
-    /// The dock device itself detached (the tracker went undocked).
-    public mutating func dockDetached(at now: Date = Date()) {
+    /// The dock device itself detached (the tracker went undocked). Returns true when this
+    /// opened the window, the caller's cue to arrange the one flush (same contract as `add`).
+    @discardableResult
+    public mutating func dockDetached(at now: Date = Date()) -> Bool {
         dockWentAway = true
-        if openedAt == nil { openedAt = now }
+        if openedAt == nil {
+            openedAt = now
+            return true
+        }
+        return false
     }
 
     /// Nil when nothing was collected.

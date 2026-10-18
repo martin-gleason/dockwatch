@@ -1,4 +1,4 @@
-// Created: 2026-10-18 16:54 -05:00 · Edited: 2026-10-18 16:54 -05:00
+// Created: 2026-10-18 16:54 -05:00 · Edited: 2026-10-18 17:10 -05:00
 import XCTest
 @testable import DockCore
 
@@ -45,9 +45,11 @@ final class EventQueryTests: XCTestCase {
         XCTAssertEqual(q.counters(now: now), Counters(devicesLost: 1, volumesLost: 1, chargerDrops: 1, wakes: 1))
     }
 
-    /// FR4: one readable line per event.
+    /// FR4: one readable line per event; a launch baseline says so, so the list agrees with the counters.
     func testMenuLine() {
         let e = Event(ts: now, kind: .powerDisconnected, subject: "Battery Power", detail: ["lastWatts": "90"])
         XCTAssertTrue(e.menuLine.hasSuffix("power.disconnected  Battery Power  was 90 W"), e.menuLine)
+        let b = Event(ts: now, kind: .powerDisconnected, subject: "Battery Power", detail: ["initial": "true"])
+        XCTAssertTrue(b.menuLine.hasSuffix("power.disconnected  Battery Power  at launch"), b.menuLine)
     }
 }

@@ -31,6 +31,7 @@ Status is what the unit's own plan header declares. What has landed in git is de
 | F2 | feature | in progress (gate crossed 2026-10-18, "start f2") | MVP | — | agent | `docs/plans/F2.md` | 5 planned |
 | F3 | feature | in progress (gate crossed 2026-10-18, "begin work on f3") | MVP | — | agent | `docs/plans/F3.md` | 3 planned |
 | F4 | feature | built 2026-10-18; review pending | MVP | — | agent | `docs/plans/F4.md` | 3 planned |
+| F4b | feature | built 2026-10-18 | MVP | — | agent | `docs/plans/F4b.md` | 0 planned |
 | F5 | feature | built 2026-10-18; reviewed (`docs/reviews/F5.md`); the login launch itself (log out and in) and the dock half of the sandbox proof (A1) remain | MVP | — | agent | `docs/plans/F5.md` | 3 planned |
 | F6 | feature | in progress (gate crossed 2026-10-18, "you can begin f6") | MVP | — | agent | `docs/plans/F6.md` | 3 planned |
 | F7 | feature | built 2026-10-18; reviewed (`docs/reviews/F7.md`), fixes landed; the owner's eyes remain (O16) | MVP | — | agent | `docs/plans/F7.md` | 4 planned |
