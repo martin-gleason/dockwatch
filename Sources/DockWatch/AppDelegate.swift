@@ -1,4 +1,4 @@
-// Created: 2026-10-18 11:20 -05:00 · Edited: 2026-10-18 14:29 -05:00
+// Created: 2026-10-18 11:20 -05:00 · Edited: 2026-10-18 16:54 -05:00
 // F1-T4 / F2-T4 / F3-T3 / F6-T3 — wires the monitors to the tracker, the store, the hold, the ejector and the status item.
 import AppKit
 import DockCore
@@ -19,6 +19,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private let ejector = VolumeEjector()
     private let store = EventStore(directory: EventStore.defaultDirectory())
     private var ejectMenu = EjectMenuModel(lifetime: AppDelegate.ejectResultLifetime)
+    private var query = EventQuery()
+    private var losses = LossCoalescer()
+    private let notifier = LossNotifier()
+    private var asleep = false
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         statusItem = StatusItemController()
@@ -28,6 +32,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         statusItem.onEject = { [weak self] bsd in self?.eject(bsdName: bsd) }
         statusItem.onEjectAll = { [weak self] in self?.ejectAll() }
         statusItem.onToggleLaunchAtLogin = { [weak self] in self?.toggleLaunchAtLogin() }
+        statusItem.countersText = { [weak self] in self?.countersText() ?? "" }
+        statusItem.timelineLines = { [weak self] in self?.query.recent(20).map(\.menuLine) ?? [] }
+        query = EventQuery(seed: store.tail(500))   // FR4: the menu knows the recent past at launch
+        notifier.requestPermissionOnce()
         statusItem.setLaunchAtLogin(on: LaunchAtLogin.isEnabled, available: LaunchAtLogin.isAvailable)
 
         // D10: off until the owner turns it on; the choice then survives relaunch (FR5).
@@ -93,6 +101,31 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         statusItem.setLaunchAtLogin(on: LaunchAtLogin.isEnabled, available: LaunchAtLogin.isAvailable)
     }
 
+    // MARK: counters and losses (FR4, FR6)
+
+    private func countersText() -> String {
+        let c = query.counters()
+        return "Last 24 h: \(c.devicesLost) device\(c.devicesLost == 1 ? "" : "s") lost · \(c.volumesLost) volume\(c.volumesLost == 1 ? "" : "s") lost · \(c.chargerDrops) charger drop\(c.chargerDrops == 1 ? "" : "s") · \(c.wakes) wake\(c.wakes == 1 ? "" : "s")"
+    }
+
+    /// A dock loss while awake: collect for two seconds, then notify once (D27).
+    private func noteLoss(_ loss: LossCoalescer.Loss) {
+        guard !asleep else { return }
+        if losses.add(loss) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + losses.window) { [weak self] in self?.flushLosses() }
+        }
+    }
+
+    private func flushLosses() {
+        guard let flush = losses.flush() else { return }
+        notifier.post(flush)
+    }
+
+    private func isOnDock(_ location: UInt32?) -> Bool {
+        guard let location, let dock = tracker.dockLocationID else { return false }
+        return DockMembership.isOnDock(usbLocationID: location, dockLocationID: dock)
+    }
+
     // MARK: eject (FR9)
 
     /// Mounted external volumes whose disk hangs off the dock's USB controller.
@@ -136,6 +169,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     // MARK: events → store
 
     private func record(_ event: Event) {
+        query.append(event)
         if store.append(event) {
             statusItem.clearProblem()
         } else {
@@ -149,11 +183,20 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                       "product": String(format: "0x%04x", e.device.productID),
                       "location": String(format: "0x%08x", e.device.locationID)]
         if e.initial { detail["initial"] = "true" }
-        record(Event(kind: e.kind == .attached ? .usbAttached : .usbDetached,
-                     subject: e.device.productName ?? String(format: "%04x:%04x", e.device.vendorID, e.device.productID),
-                     detail: detail))
+        // Membership is judged before the tracker moves, so the dock's own detach still counts as on the dock.
+        let isDockItself = tracker.identity.matches(e.device)
+        let onDock = isDockItself || isOnDock(e.device.locationID)
+        if onDock { detail["dock"] = "true" }
+        let name = e.device.productName ?? String(format: "%04x:%04x", e.device.vendorID, e.device.productID)
+        record(Event(kind: e.kind == .attached ? .usbAttached : .usbDetached, subject: name, detail: detail))
         if tracker.apply(e) {
             apply(policy.apply(.dockChanged(tracker.state == .docked)))
+            if tracker.state == .undocked, !asleep {
+                losses.dockDetached()
+                if losses.pending.isEmpty { DispatchQueue.main.asyncAfter(deadline: .now() + losses.window) { [weak self] in self?.flushLosses() } }
+            }
+        } else if e.kind == .detached, onDock, !isDockItself {
+            noteLoss(.device(name))
         }
     }
 
@@ -172,14 +215,19 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         if let m = e.volume.model { detail["model"] = m }
         if let l = e.volume.usbLocationID { detail["usbLocation"] = String(format: "0x%08x", l) }
         if e.initial { detail["initial"] = "true" }
+        let onDock = isOnDock(e.volume.usbLocationID)
+        if onDock { detail["dock"] = "true" }
         record(Event(kind: kind, subject: e.volume.name, detail: detail))
+        if e.kind == .disappeared, onDock { noteLoss(.volume(e.volume.name)) }
     }
 
     private func handle(_ e: SleepEvent) {
         switch e.kind {
         case .willSleep:
+            asleep = true
             record(Event(kind: .systemSleep, subject: "system"))
         case .wake:
+            asleep = false
             record(Event(kind: .systemWake, subject: "system"))
             apply(policy.apply(.didWake))   // NFR8: re-assert after a wake
         }
