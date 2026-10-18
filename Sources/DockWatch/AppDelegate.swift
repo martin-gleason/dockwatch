@@ -1,10 +1,12 @@
-// Created: 2026-10-18 11:20 -05:00 · Edited: 2026-10-18 12:41 -05:00
-// F1-T4 / F2-T4 / F3-T3 — wires the monitors to the tracker, the store, the hold and the status item.
+// Created: 2026-10-18 11:20 -05:00 · Edited: 2026-10-18 13:06 -05:00
+// F1-T4 / F2-T4 / F3-T3 / F6-T3 — wires the monitors to the tracker, the store, the hold, the ejector and the status item.
 import AppKit
 import DockCore
 
 final class AppDelegate: NSObject, NSApplicationDelegate {
     static let keepAwakeKey = "keepDockAwake"
+    /// How long an eject result stays beside the volume in the menu.
+    static let ejectResultLifetime: TimeInterval = 60
 
     private var statusItem: StatusItemController!
     private var usb: USBMonitor!
@@ -14,12 +16,17 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var tracker = DockTracker()
     private var policy = HoldPolicy()
     private let assertion = AssertionController()
+    private let ejector = VolumeEjector()
     private let store = EventStore(directory: EventStore.defaultDirectory())
+    private var ejectResults: [String: (text: String, at: Date)] = [:]
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         statusItem = StatusItemController()
         statusItem.onOpenLog = { [store] in NSWorkspace.shared.activateFileViewerSelecting([store.url]) }
         statusItem.onToggleKeepAwake = { [weak self] in self?.toggleKeepAwake() }
+        statusItem.ejectEntries = { [weak self] in self?.ejectEntries() ?? [] }
+        statusItem.onEject = { [weak self] bsd in self?.eject(bsdName: bsd) }
+        statusItem.onEjectAll = { [weak self] in self?.ejectAll() }
 
         // D10: off until the owner turns it on; the choice then survives relaunch (FR5).
         let toggle = UserDefaults.standard.bool(forKey: Self.keepAwakeKey)
@@ -35,6 +42,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         start("volume monitor") { try volumes.start() }
         start("sleep monitor") { try sleep.start() }
         start("power monitor") { try power.start() }
+        start("ejector") { try ejector.start() }
     }
 
     func applicationWillTerminate(_ notification: Notification) {
@@ -72,6 +80,42 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     private func render() {
         statusItem.render(state: tracker.state, held: assertion.isHeld)
+    }
+
+    // MARK: eject (FR9)
+
+    /// Mounted external volumes whose disk hangs off the dock's USB controller.
+    private func dockVolumes() -> [VolumeInfo] {
+        guard let dock = tracker.dockLocationID else { return [] }
+        return volumes.mountedVolumes.filter { v in
+            guard let loc = v.usbLocationID else { return false }
+            return DockMembership.isOnDock(usbLocationID: loc, dockLocationID: dock)
+        }
+    }
+
+    private func ejectEntries() -> [EjectEntry] {
+        let now = Date()
+        ejectResults = ejectResults.filter { now.timeIntervalSince($0.value.at) < Self.ejectResultLifetime }
+        return dockVolumes().map { EjectEntry(bsdName: $0.bsdName, title: $0.name, status: ejectResults[$0.bsdName]?.text) }
+    }
+
+    private func eject(bsdName: String) {
+        guard let volume = dockVolumes().first(where: { $0.bsdName == bsdName }) else { return }
+        do {
+            try ejector.eject(bsdName: bsdName, mountPath: volume.path) { [weak self] result in
+                guard let self else { return }
+                self.ejectResults[bsdName] = (result.menuText, Date())
+                self.record(Event(kind: .volumeEject, subject: volume.name,
+                                  detail: ["bsd": bsdName, "result": result.menuText, "done": result.isDone ? "true" : "false"]))
+            }
+        } catch {
+            ejectResults[bsdName] = ("Could not eject: \(error)", Date())
+            record(Event(kind: .volumeEject, subject: volume.name, detail: ["bsd": bsdName, "result": "\(error)", "done": "false"]))
+        }
+    }
+
+    private func ejectAll() {
+        for volume in dockVolumes() { eject(bsdName: volume.bsdName) }
     }
 
     // MARK: events → store

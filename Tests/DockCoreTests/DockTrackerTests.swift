@@ -1,4 +1,4 @@
-// Created: 2026-10-18 11:40 -05:00 · Edited: 2026-10-18 11:40 -05:00
+// Created: 2026-10-18 11:40 -05:00 · Edited: 2026-10-18 13:04 -05:00
 import XCTest
 @testable import DockCore
 
@@ -48,6 +48,16 @@ final class DockTrackerTests: XCTestCase {
         XCTAssertEqual(t.state, .docked)
         XCTAssertTrue(t.apply(USBEvent(kind: .detached, device: dock2)))
         XCTAssertEqual(t.state, .undocked)
+    }
+
+    /// FR9: the dock's USB location is known while docked and not otherwise.
+    func testDockLocationFollowsPresence() {
+        var t = DockTracker()
+        XCTAssertNil(t.dockLocationID)
+        t.apply(USBEvent(kind: .attached, device: dock))
+        XCTAssertEqual(t.dockLocationID, 0x0214_8000)
+        t.apply(USBEvent(kind: .detached, device: dock))
+        XCTAssertNil(t.dockLocationID)
     }
 
     /// FR1: a duplicate attach or a detach of something never seen is not a transition,

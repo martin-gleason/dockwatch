@@ -1,39 +1,101 @@
-// Created: 2026-10-18 11:20 -05:00 · Edited: 2026-10-18 12:41 -05:00
-// F1-T4 / F2-T4 / F3-T3 — the menu bar icon and its menu (FR1, FR5, FR8). Three icon states.
+// Created: 2026-10-18 11:20 -05:00 · Edited: 2026-10-18 13:06 -05:00
+// F1-T4 / F2-T4 / F3-T3 / F6-T3 — the menu bar icon and its menu (FR1, FR5, FR8, FR9).
 import AppKit
 import DockCore
 
-final class StatusItemController: NSObject {
+/// One row of the eject section, as the app delegate describes it.
+struct EjectEntry {
+    let bsdName: String
+    let title: String
+    /// A recent result to show beside the name, if any.
+    let status: String?
+}
+
+final class StatusItemController: NSObject, NSMenuDelegate {
     private let item = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
+    private let menu = NSMenu()
     private let stateLine = NSMenuItem(title: "Dock: unknown", action: nil, keyEquivalent: "")
     private let problemLine = NSMenuItem(title: "", action: nil, keyEquivalent: "")
     private let keepAwakeItem = NSMenuItem(title: "Keep Dock Awake", action: #selector(toggleKeepAwake), keyEquivalent: "k")
+    private let ejectHeader = NSMenuItem(title: "Dock Volumes", action: nil, keyEquivalent: "")
+    private static let ejectTag = 900
 
     /// FR8 — set by the app delegate; reveals the log file.
     var onOpenLog: (() -> Void)?
     /// FR5 — set by the app delegate; flips the hold toggle.
     var onToggleKeepAwake: (() -> Void)?
+    /// FR9 — the volumes on the dock right now, asked for each time the menu opens.
+    var ejectEntries: (() -> [EjectEntry])?
+    /// FR9 — eject one volume by BSD name, or all of them.
+    var onEject: ((String) -> Void)?
+    var onEjectAll: (() -> Void)?
 
     override init() {
         super.init()
-        let menu = NSMenu()
         stateLine.isEnabled = false
         problemLine.isEnabled = false
         problemLine.isHidden = true
+        ejectHeader.isEnabled = false
         menu.addItem(stateLine)
         menu.addItem(problemLine)
         menu.addItem(.separator())
         keepAwakeItem.target = self
         keepAwakeItem.toolTip = "While on and the dock is attached, the Mac does not idle-sleep. The display still sleeps."
         menu.addItem(keepAwakeItem)
+        menu.addItem(.separator())
+        menu.addItem(ejectHeader)
+        // The eject rows are inserted after the header on each open (menuNeedsUpdate).
+        menu.addItem(.separator())
         let open = NSMenuItem(title: "Open Log", action: #selector(openLog), keyEquivalent: "l")
         open.target = self
         menu.addItem(open)
         menu.addItem(.separator())
         menu.addItem(NSMenuItem(title: "Quit DockWatch", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q"))
+        menu.delegate = self
         item.menu = menu
     }
 
+    // MARK: FR9 — rebuilt when the menu opens, never on a timer (NFR2)
+
+    func menuNeedsUpdate(_ menu: NSMenu) {
+        for existing in menu.items where existing.tag == Self.ejectTag { menu.removeItem(existing) }
+        let entries = ejectEntries?() ?? []
+        var index = menu.index(of: ejectHeader) + 1
+        func insert(_ row: NSMenuItem) {
+            row.tag = Self.ejectTag
+            menu.insertItem(row, at: index)
+            index += 1
+        }
+        if entries.isEmpty {
+            let none = NSMenuItem(title: "No volumes on the dock", action: nil, keyEquivalent: "")
+            none.isEnabled = false
+            none.indentationLevel = 1
+            insert(none)
+            return
+        }
+        if entries.count > 1 {
+            let all = NSMenuItem(title: "Eject All Dock Volumes", action: #selector(ejectAll), keyEquivalent: "e")
+            all.target = self
+            all.indentationLevel = 1
+            insert(all)
+        }
+        for entry in entries {
+            let row = NSMenuItem(title: "Eject “\(entry.title)”", action: #selector(ejectOne(_:)), keyEquivalent: "")
+            row.target = self
+            row.representedObject = entry.bsdName
+            row.indentationLevel = 1
+            if let status = entry.status {
+                if #available(macOS 14.4, *) { row.subtitle = status } else { row.title += " — \(status)" }
+            }
+            insert(row)
+        }
+    }
+
+    @objc private func ejectOne(_ sender: NSMenuItem) {
+        if let bsd = sender.representedObject as? String { onEject?(bsd) }
+    }
+
+    @objc private func ejectAll() { onEjectAll?() }
     @objc private func openLog() { onOpenLog?() }
     @objc private func toggleKeepAwake() { onToggleKeepAwake?() }
 

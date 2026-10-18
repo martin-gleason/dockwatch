@@ -19,6 +19,8 @@ M3|Sources/DockCore/EventStore.swift|s/O_APPEND/O_TRUNC/|EventStoreTests/testApp
 M4|Sources/DockCore/DockIdentity.swift|s/ && device.productID == productID//|DockIdentityTests/testRazerMouseIsNotTheDock
 M5|Sources/DockCore/EventQuery.swift|s/\$0.timestamp >= cutoff/true/|EventQueryTests/testWindowExcludesOldEvents
 M6|Sources/DockCore/HoldPolicy.swift|s/reapply: true\)/reapply: false)/|HoldPolicyTests/testWakeWhileDockedReasserts
+M7|Sources/DockCore/DockMembership.swift|s/controllerShift: UInt32 = 24/controllerShift: UInt32 = 0/|DockMembershipTests/testSiblingHubIsOnTheDock
+M9|Sources/DockCore/VolumeEjector.swift|s/if isBusy\(status\), let path/if false, let path/|VolumeEjectorTests/testBusyVolumeIsRefusedAndNamed_thenEjectsWhenFree
 M8|Sources/DockCore/EventStore.swift|s/try FileManager.default.moveItem\(at: url, to: rotatedURL\)/try FileManager.default.removeItem(at: url)/|EventStoreTests/testRotationKeepsExactlyOnePreviousFile
 '
 
