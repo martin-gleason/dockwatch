@@ -18,7 +18,7 @@ Named, never numbered (`D2`). **No source read here marks a milestone as the cur
 | Milestone | Decisions landing here | Units |
 |---|---|---|
 | MVP | 18 | C1, F1, F2, F3, F4, F5, F6 |
-| v1.5 | 3 | — |
+| v1.5 | 4 | — |
 
 ## Features and chores
 
@@ -40,7 +40,7 @@ Counted from the register itself. A register with no rows still gets a line.
 
 | Register | Rows | Open | Unknown | Closed |
 |---|---|---|---|---|
-| Decisions (`D`) | 21 | 12 | 0 | 9 |
+| Decisions (`D`) | 22 | 12 | 0 | 10 |
 | Risks (`RR`) | 14 | 13 | 0 | 1 |
 | Owner items (`O`) | 13 | 4 | 0 | 9 |
 | Agent items (`A`) | 0 | 0 | 0 | 0 |
@@ -54,7 +54,7 @@ Counted from the register itself. A register with no rows still gets a line.
 | Register | Status | Count |
 |---|---|---|
 | `D` | proposed | 12 |
-| `D` | ratified | 8 |
+| `D` | ratified | 9 |
 | `D` | superseded | 1 |
 | `RR` | open | 11 |
 | `RR` | proposed | 2 |

@@ -44,6 +44,7 @@ number has not been decided, however clearly it was said aloud.
 | D19 | ratified 2026-10-18 | MVP | Build order after F2 is F3, then F6, then F5, then F4. Owner: "begin work on f3" after "then begin f6"; supersedes the order in D9 from F3 onward. |
 | D20 | proposed | MVP | Icon motion policy for F7: the hue ring is still by default, turns slowly while the hold is in force, and makes one turn on dock connect or disconnect. Rationale: an always-animating menu bar icon spends CPU around the clock, against the app's purpose. The owner may choose always-moving instead (`O11`). |
 | D21 | proposed | MVP | The log gains `hold.on` and `hold.off` lines when the sleep assertion is taken and released, so the overnight charger-drop comparison (F3 evidence, RR4) can be read against exactly when the hold was in force. Two kinds beyond FR3's list; the owner ratifies or they go. |
+| D22 | ratified 2026-10-18 | v1.5 | **Alert when something drops alone.** A device or volume on the dock detaching while the dock itself stays attached raises an alert; a whole-dock disconnect does not raise one per device. Owner: "v1.5: if something drops alone, we need an alert." Implication for F4 (MVP, FR6): its loss notifier must already tell a lone drop from a dock pull, so that this alert has a definition to build on. |
 
 ## Risks (RR)
 
