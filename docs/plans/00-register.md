@@ -25,7 +25,7 @@ number has not been decided, however clearly it was said aloud.
 |---|---|---|---|
 | D1 | proposed | MVP | The project is **DockWatch**, at `~/Local_Dev_Projects/dockwatch`. It is distinct from the shell monitor at `~/dockwatch`, which keeps its name and job (see D8). |
 | D2 | proposed | MVP | Layout mirrors HueBar: `DockCore` library (no AppKit, fully testable) + `DockWatch` AppKit executable + `DockCoreTests`. SwiftPM, no Xcode project. |
-| D3 | proposed | MVP | "Keep dock awake" is an IOPMLib `PreventUserIdleSystemSleep` assertion owned by the app process. Not `pmset`, not root, not `PreventSystemSleep`. It targets the observed mechanism (every charger drop happened in idle sleep), leaves display sleep alone, and dies with the app. |
+| D3 | proposed | MVP | "Keep dock awake" is an IOPMLib `PreventUserIdleSystemSleep` assertion owned by the app process. Not `pmset`, not root, not `PreventSystemSleep`. It targets the observed mechanism (every charger drop happened in idle sleep), leaves display sleep alone, and dies with the app. Note for ratification (F3 review): the SDK header marks `PreventSystemSleep` deprecated and unsupported, so it was never an alternative; and no assertion type stops a lid-close sleep (RR1). |
 | D4 | proposed | MVP | The dock is identified by USB vendor:product `0x1532:0x122E` (macOS name "Thunderbolt 4 Dock"). The Chroma controller `0x1532:0x0F21` on the same dock shares the vendor ID and is not the dock (ID corrected 2026-10-18 from IOKit; an earlier listing misread it). No picker UI in MVP. |
 | D5 | proposed | MVP | The log is JSON Lines at `~/Library/Logs/DockWatch/events.jsonl`, opened for append, rotated at 20 MB keeping one previous file. |
 | D6 | ratified 2026-10-18 | MVP | Learning level **5%**: the agent authors, the owner reviews. Reason: due 2026-10-18. Owner (handoff Q2): "5% is good. Review PRs and add 'what I learned' to each as a comment." |
@@ -38,9 +38,13 @@ number has not been decided, however clearly it was said aloud.
 | D13 | ratified 2026-10-18 | MVP | **Supersedes D8.** Once F2's log is shown to agree with the shell monitor, the monitor's LaunchAgent is removed; replacing it is the test. Owner (Q5): "Replace. it's a real test." F2 gains a task for the removal. |
 | D14 | proposed | MVP | License **MPL-2.0**: file-level copyleft whose terms the Mac App Store permits; GPL's do not, and the owner asked for both (Q6). `LICENSE` added. |
 | D15 | proposed | v1.5 | Mac App Store distribution is a v1.5 goal (Q6). MVP therefore adopts App Sandbox and hardened runtime from F5, ad-hoc signed until a Developer ID exists, so nothing built now has to be unbuilt. |
-| D16 | proposed | MVP | The menu bar icon changes from the SF Symbol connector set to a symbol the owner picks. Owner 2026-10-18: "I do want to change the icon"; which one is `O11`. |
+| D16 | ratified 2026-10-18 | MVP | The menu bar icon is the owner's hue ring, regenerated as a continuous sweep and drawn in code so it can turn (F7). Owner: "menubar icon is ratified. excellent!" |
 | D17 | ratified 2026-10-18 | v1.5 | Users can choose the menu bar icon. Owner: "in v1.5 allow for users to select the icon." |
 | D18 | ratified | MVP | **Dark wakes are not observable from a user-space app.** xnu sends the legacy-app power messages only when graphics come up, so the sleep/dark-wake loop the spec describes leaves no trace in the app's log. The `system.darkwake` kind is dropped; `system.wake` means a full wake; `pmset -g log` stays the record for dark wakes (RR3), and F4's "wakes" counter counts full wakes. Found by the F2 review from `IOPMrootDomain.cpp`. |
+| D19 | ratified 2026-10-18 | MVP | Build order after F2 is F3, then F6, then F5, then F4. Owner: "begin work on f3" after "then begin f6"; supersedes the order in D9 from F3 onward. |
+| D20 | proposed | MVP | Icon motion policy for F7: the hue ring is still by default, turns slowly while the hold is in force, and makes one turn on dock connect or disconnect. Rationale: an always-animating menu bar icon spends CPU around the clock, against the app's purpose. The owner may choose always-moving instead (`O11`). |
+| D21 | proposed | MVP | The log gains `hold.on` and `hold.off` lines when the sleep assertion is taken and released, so the overnight charger-drop comparison (F3 evidence, RR4) can be read against exactly when the hold was in force. Two kinds beyond FR3's list; the owner ratifies or they go. |
+| D22 | ratified 2026-10-18 | v1.5 | **Alert when something drops alone.** A device or volume on the dock detaching while the dock itself stays attached raises an alert; a whole-dock disconnect does not raise one per device. Owner: "v1.5: if something drops alone, we need an alert." Implication for F4 (MVP, FR6): its loss notifier must already tell a lone drop from a dock pull, so that this alert has a definition to build on. |
 
 ## Risks (RR)
 
@@ -60,7 +64,7 @@ number has not been decided, however clearly it was said aloud.
 | RR11 | ~~[tests-collect-zero] pytest collects no tests.~~ Rejected 2026-10-18: this is a Swift project; the runner is `swift test` (SPEC § Stack), and pytest is not part of the stack. Kept so the detector does not re-propose it. | rejected | — | — | — | agent |
 | RR12 | App Sandbox may refuse DiskArbitration unmount (FR9) or IOKit matching notifications; unverified on this stack. | open | Medium | F6 or F1 silently broken inside the sandboxed bundle. | F5-T1 runs both under the entitlements and records the result before F6 is built. | agent |
 | RR13 | Time Machine holds `Backups` open during a backup, so "Eject all" will report it blocked by `backupd`. | open | Certain during a backup | One volume stays mounted. | The message names the process; the app never forces an unmount. | agent |
-| RR14 | The identifying USB device `0x1532:0x122E` sits on the dock's USB 2 chain, the chain the spec says drops unevenly. If it terminates while the dock stays attached, the app shows "not connected" and F3 would release the hold. No evidence either way yet (control log has zero LOST lines). Found by the F1 review. | open | Unknown | The hold drops during exactly the fault it exists to prevent. | F2's log will show whether `0x122E` ever terminates alone; F3's plan must decide the policy before building. | agent |
+| RR14 | The identifying USB device `0x1532:0x122E` sits on the dock's USB 2 chain, the chain the spec says drops unevenly. If it terminates while the dock stays attached, the app shows "not connected" and F3 would release the hold. Found by the F1 review. | open | Unknown | A gap in the hold during the fault it exists to prevent. | Policy set in F3's plan: the hold follows the tracker exactly. A flicker costs a gap of seconds, and idle sleep needs the Mac idle for at least its one-minute setting, so a gap of seconds cannot start the loop; `hold.off`/`hold.on` lines (D21) will show it if it happens. | agent |
 ## Owner items (O)
 
 Outstanding items only the owner can close.
@@ -77,8 +81,9 @@ Outstanding items only the owner can close.
 | O8 | With the app running, pull the dock's Thunderbolt cable and plug it back; paste the stderr lines. Closes F1's live FR1/FR2 check. | P1 | closed 2026-10-18 — owner: "I did the test. it works beautifully." |
 | O9 | The vision sentence is now D11's and it adds FR9; the agent does not edit `SPEC.md`. Paste the sentence and FR9 into the spec, or tell the agent to. | P1 | closed 2026-10-18 — "paste the rewritten vision"; pasted by the agent on that instruction |
 | O10 | Gate F6 (eject dock volumes), proposed after F5 and before F4 in today's order. | P1 | open |
-| O11 | Which menu bar icon (D16)? An SF Symbol name, or an image file in `Resources/`. Until answered the connector symbols stay. | P2 | open |
-| O12 | F2 live checks only the owner can do, with the app running: close the lid for a minute (expect `system.sleep` then `system.wake`); unplug the dock's cable from the Mac for ten seconds (expect `power.disconnected` with `lastWatts`, four `volume.disappeared`, seventeen `usb.detached`, then the reverse as `power.connected`, `usb.attached`, `volume.mounted`); click Open Log (Finder shows the file). | P1 | open |
+| O11 | Which menu bar icon (D16)? An SF Symbol name, or an image file in `Resources/`. Until answered the connector symbols stay. | P2 | closed 2026-10-18 — the owner's hue ring, regenerated as a continuous sweep; motion policy is D20, built as F7 |
+| O12 | F2 and F3 live checks only the owner can do, with the app running and Keep Dock Awake on: close the lid for a minute (expect `system.sleep` then `system.wake`); unplug the dock's cable from the Mac for ten seconds (expect `power.disconnected` with `lastWatts`, four `volume.disappeared`, seventeen `usb.detached`, and `hold.off` within five seconds of the pull; then the reverse as `power.connected`, `usb.attached`, `volume.mounted`, and `hold.on`); click Open Log (Finder shows the file). | P1 | open |
+| O13 | **The experiment.** With the app running and the dock attached, turn on **Keep Dock Awake** in the menu (its ⌘K works only while the menu is open). Leave the lid **open** overnight: an idle-sleep assertion does not stop a lid-close sleep (RR1), and a `system.sleep` line after `hold.on` in `events.jsonl` invalidates the night. Next morning count charger drops **from the `hold.on` timestamp**, and compare with the same clock window on earlier nights, not with their day totals (the loop runs all day, so a morning-only count against a day total would flatter a partial result): `H=$(grep '"hold.on"' ~/Library/Logs/DockWatch/events.jsonl \| tail -1 \| sed -E 's/.*"ts":"([^"]+)".*/\\1/')` then `pmset -g log \| grep acdetach \| awk -v h="$H" '$1" "$2 >= substr(h,1,19)' \| wc -l`, beside `pmset -g log \| grep acdetach \| awk '{print $1}' \| sort \| uniq -c` for the earlier nights. Zero is unambiguous; anything else is read against the matching window. Lid check separately (NFR8): with the toggle on, close the lid for a minute, reopen, and look for `hold.on … reapplied=true` in the log and a fresh age on the assertion in `pmset -g assertions`. | P0 | open |
 
 Questions for O1–O6 are laid out in `docs/handoffs/2026-10-18-planning-questions.md`.
 
@@ -107,7 +112,7 @@ already built.
 | G1 | C1 harness | done (crossed) | 2026-10-18 | 2026-10-18 | "begin c1 and f1" |
 | G2 | F1 menu bar presence and dock detection | done (crossed) | 2026-10-18 | 2026-10-18 | "begin c1 and f1" |
 | G3 | F2 event log | done (crossed) | 2026-10-18 | 2026-10-18 | "start f2" |
-| G4 | F3 keep the dock awake | open (awaiting the gate) | 2026-10-18 | — | — |
+| G4 | F3 keep the dock awake | done (crossed) | 2026-10-18 | 2026-10-18 | "begin work on f3" |
 | G5 | F5 installable app and launch at login | open (awaiting the gate) | 2026-10-18 | — | — |
 | G6 | F4 timeline, counters, notifications | open (awaiting the gate) | 2026-10-18 | — | — |
 | G7 | F6 eject dock volumes | open (awaiting the gate) | 2026-10-18 | — | — |
@@ -133,12 +138,12 @@ A test is not evidence until a mutation proves it can fail.
 
 | ID | File | Mutation | Caught by | Status |
 |---|---|---|---|---|
-| M1 | `Sources/DockCore/HoldPolicy.swift` | Keep holding after the dock is removed | `HoldPolicyTests.testUndockReleasesHold` | proposed |
-| M2 | `Sources/DockCore/HoldPolicy.swift` | Hold while the toggle is off | `HoldPolicyTests.testToggleOffNeverHolds` | proposed |
+| M1 | `Sources/DockCore/HoldPolicy.swift` | Keep holding after the dock is removed | `HoldPolicyTests.testUndockReleasesHold` | killed 2026-10-18: 2 failures / 1 test (`scripts/mutate.sh M1`) |
+| M2 | `Sources/DockCore/HoldPolicy.swift` | Hold while the toggle is off | `HoldPolicyTests.testToggleOffNeverHolds` | killed 2026-10-18: 3 failures / 1 test (`scripts/mutate.sh M2`) |
 | M3 | `Sources/DockCore/EventStore.swift` | Open the log with truncate instead of append | `EventStoreTests.testAppendPreservesPriorLines` | killed 2026-10-18: 4 failures / 1 test (`scripts/mutate.sh M3`) |
 | M4 | `Sources/DockCore/DockIdentity.swift` | Match on vendor ID alone | `DockIdentityTests.testRazerMouseIsNotTheDock` and `testChromaControllerIsNotTheDock` (both share the dock's vendor ID) | killed 2026-10-18: 1 failure / 1 test (`scripts/mutate.sh M4`) |
 | M5 | `Sources/DockCore/EventQuery.swift` | Compute the 24-hour window by insertion order, not timestamp | `EventQueryTests.testWindowExcludesOldEvents` | proposed |
-| M6 | `Sources/DockCore/HoldPolicy.swift` | Ignore the wake input | `HoldPolicyTests.testWakeWhileDockedReasserts` | proposed |
+| M6 | `Sources/DockCore/HoldPolicy.swift` | Ignore the wake input | `HoldPolicyTests.testWakeWhileDockedReasserts` | killed 2026-10-18: 1 failure / 1 test (`scripts/mutate.sh M6`) |
 | M7 | `Sources/DockCore/DockMembership.swift` | Compare the whole location ID instead of the controller byte | `DockMembershipTests.testSiblingHubIsOnTheDock` | proposed |
 | M8 | `Sources/DockCore/EventStore.swift` | Delete the log at rotation instead of moving it aside | `EventStoreTests.testRotationKeepsExactlyOnePreviousFile` | killed 2026-10-18: 3 failures / 1 test (`scripts/mutate.sh M8`) |
 

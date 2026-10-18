@@ -1,4 +1,4 @@
-// Created: 2026-10-18 11:55 -05:00 · Edited: 2026-10-18 12:15 -05:00
+// Created: 2026-10-18 11:55 -05:00 · Edited: 2026-10-18 12:40 -05:00
 // F2-T1 — one dock event, and its one-line JSON form (FR3, NFR6).
 import Foundation
 
@@ -13,6 +13,8 @@ public struct Event: Codable, Equatable {
         case systemWake = "system.wake"   // full wakes only: dark wakes never reach a user-space app (D18)
         case powerConnected = "power.connected"
         case powerDisconnected = "power.disconnected"
+        case holdOn = "hold.on"      // D21: the sleep assertion was taken
+        case holdOff = "hold.off"    // D21: and released
     }
 
     public let ts: Date

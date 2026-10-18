@@ -1,21 +1,31 @@
-// Created: 2026-10-18 11:20 -05:00 · Edited: 2026-10-18 12:15 -05:00
-// F1-T4 / F2-T4 — wires the monitors to the tracker, the store and the status item (FR1–FR3, FR8).
+// Created: 2026-10-18 11:20 -05:00 · Edited: 2026-10-18 12:41 -05:00
+// F1-T4 / F2-T4 / F3-T3 — wires the monitors to the tracker, the store, the hold and the status item.
 import AppKit
 import DockCore
 
 final class AppDelegate: NSObject, NSApplicationDelegate {
+    static let keepAwakeKey = "keepDockAwake"
+
     private var statusItem: StatusItemController!
     private var usb: USBMonitor!
     private var volumes: VolumeMonitor!
     private var sleep: SleepMonitor!
     private var power: PowerMonitor!
     private var tracker = DockTracker()
+    private var policy = HoldPolicy()
+    private let assertion = AssertionController()
     private let store = EventStore(directory: EventStore.defaultDirectory())
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         statusItem = StatusItemController()
         statusItem.onOpenLog = { [store] in NSWorkspace.shared.activateFileViewerSelecting([store.url]) }
-        statusItem.render(state: tracker.state, held: false)
+        statusItem.onToggleKeepAwake = { [weak self] in self?.toggleKeepAwake() }
+
+        // D10: off until the owner turns it on; the choice then survives relaunch (FR5).
+        let toggle = UserDefaults.standard.bool(forKey: Self.keepAwakeKey)
+        policy = HoldPolicy(toggle: toggle, docked: false)
+        statusItem.setKeepAwake(on: toggle)
+        render()
 
         usb = USBMonitor { [weak self] in self?.handle($0) }
         volumes = VolumeMonitor { [weak self] in self?.handle($0) }
@@ -27,12 +37,41 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         start("power monitor") { try power.start() }
     }
 
+    func applicationWillTerminate(_ notification: Notification) {
+        apply(HoldPolicy.Decision(hold: false, reapply: false))
+    }
+
     private func start(_ name: String, _ body: () throws -> Void) {
         do { try body() } catch {
             // No fourth icon state (FR1 names three); the failure is said in the menu.
             statusItem.showProblem("\(name) failed to start: \(error)")
             log("\(name) failed to start: \(error)")
         }
+    }
+
+    // MARK: the hold (FR5)
+
+    private func toggleKeepAwake() {
+        let on = !policy.toggle
+        UserDefaults.standard.set(on, forKey: Self.keepAwakeKey)
+        statusItem.setKeepAwake(on: on)
+        apply(policy.apply(.toggleChanged(on)))
+    }
+
+    /// Puts the policy's answer into force and logs a change of hold state (D21).
+    private func apply(_ decision: HoldPolicy.Decision) {
+        let before = assertion.isHeld
+        let ok = assertion.set(held: decision.hold, reapply: decision.reapply)
+        if !ok { statusItem.showProblem("Sleep assertion: \(assertion.lastError ?? "unknown failure")") }
+        if assertion.isHeld != before || (decision.reapply && assertion.isHeld) {
+            record(Event(kind: assertion.isHeld ? .holdOn : .holdOff, subject: AssertionController.name,
+                         detail: decision.reapply ? ["reapplied": "true"] : [:]))
+        }
+        render()
+    }
+
+    private func render() {
+        statusItem.render(state: tracker.state, held: assertion.isHeld)
     }
 
     // MARK: events → store
@@ -55,7 +94,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                      subject: e.device.productName ?? String(format: "%04x:%04x", e.device.vendorID, e.device.productID),
                      detail: detail))
         if tracker.apply(e) {
-            statusItem.render(state: tracker.state, held: false)
+            apply(policy.apply(.dockChanged(tracker.state == .docked)))
         }
     }
 
@@ -76,12 +115,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     private func handle(_ e: SleepEvent) {
-        let kind: Event.Kind
         switch e.kind {
-        case .willSleep: kind = .systemSleep
-        case .wake: kind = .systemWake
+        case .willSleep:
+            record(Event(kind: .systemSleep, subject: "system"))
+        case .wake:
+            record(Event(kind: .systemWake, subject: "system"))
+            apply(policy.apply(.didWake))   // NFR8: re-assert after a wake
         }
-        record(Event(kind: kind, subject: "system"))
     }
 
     private func handle(_ e: PowerEvent) {
