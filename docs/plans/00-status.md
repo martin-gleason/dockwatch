@@ -42,10 +42,10 @@ Counted from the register itself. A register with no rows still gets a line.
 |---|---|---|---|---|
 | Decisions (`D`) | 17 | 11 | 0 | 6 |
 | Risks (`RR`) | 14 | 13 | 0 | 1 |
-| Owner items (`O`) | 11 | 4 | 0 | 7 |
+| Owner items (`O`) | 12 | 4 | 0 | 8 |
 | Agent items (`A`) | 0 | 0 | 0 | 0 |
 | Hooks (`H`) | 6 | 2 | 0 | 4 |
-| Mutations (`M`) | 7 | 6 | 0 | 1 |
+| Mutations (`M`) | 7 | 5 | 0 | 2 |
 | Chores (`C`) | 2 | 2 | 0 | 0 |
 | Gates (`G`) | 7 | 4 | 0 | 3 |
 
@@ -59,13 +59,13 @@ Counted from the register itself. A register with no rows still gets a line.
 | `RR` | open | 11 |
 | `RR` | proposed | 2 |
 | `RR` | rejected | 1 |
-| `O` | closed | 7 |
+| `O` | closed | 8 |
 | `O` | open | 4 |
 | `H` | built | 4 |
 | `H` | not built | 1 |
 | `H` | open | 1 |
-| `M` | killed | 1 |
-| `M` | proposed | 6 |
+| `M` | killed | 2 |
+| `M` | proposed | 5 |
 | `C` | open | 2 |
 | `G` | done | 3 |
 | `G` | open | 4 |
@@ -116,9 +116,9 @@ Every open row in the register. Owner is the row's Owner column where the table 
 | owner | D15 | — | proposed | Mac App Store distribution is a v1.5 goal (Q6). MVP therefore adopts App Sandbox and hardened runtime from F5, ad-hoc si… |
 | owner | D16 | — | proposed | The menu bar icon changes from the SF Symbol connector set to a symbol the owner picks. Owner 2026-10-18: "I do want to … |
 | owner | O7 | P1 | open | Ratify D1–D10. |
-| owner | O8 | P1 | open | With the app running, pull the dock's Thunderbolt cable and plug it back; paste the stderr lines. Closes F1's live FR1/F… |
 | owner | O10 | P1 | open | Gate F6 (eject dock volumes), proposed after F5 and before F4 in today's order. |
 | owner | O11 | P2 | open | Which menu bar icon (D16)? An SF Symbol name, or an image file in Resources/. Until answered the connector symbols stay.… |
+| owner | O12 | P1 | open | F2 live checks only the owner can do: close the lid for a minute (expect system.sleep then system.wake lines) and unplug… |
 | unassigned | G4 | — | open | F3 keep the dock awake |
 | unassigned | G5 | — | open | F5 installable app and launch at login |
 | unassigned | G6 | — | open | F4 timeline, counters, notifications |
@@ -127,11 +127,10 @@ Every open row in the register. Owner is the row's Owner column where the table 
 | unassigned | H6 | — | not built | Status page regenerates clean |
 | unassigned | M1 | — | proposed | Keep holding after the dock is removed |
 | unassigned | M2 | — | proposed | Hold while the toggle is off |
-| unassigned | M3 | — | proposed | Open the log with truncate instead of append |
 | unassigned | M5 | — | proposed | Compute the 24-hour window by insertion order, not timestamp |
 | unassigned | M6 | — | proposed | Ignore the wake input |
 | unassigned | M7 | — | proposed | Compare the whole location ID instead of the controller byte |
 
 ---
 
-42 open register rows.
+41 open register rows.
