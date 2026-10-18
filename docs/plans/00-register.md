@@ -116,7 +116,7 @@ already built.
 | G2 | F1 menu bar presence and dock detection | done (crossed) | 2026-10-18 | 2026-10-18 | "begin c1 and f1" |
 | G3 | F2 event log | done (crossed) | 2026-10-18 | 2026-10-18 | "start f2" |
 | G4 | F3 keep the dock awake | done (crossed) | 2026-10-18 | 2026-10-18 | "begin work on f3" |
-| G5 | F5 installable app and launch at login | open (awaiting the gate) | 2026-10-18 | — | — |
+| G5 | F5 installable app and launch at login | done (crossed) | 2026-10-18 | 2026-10-18 | "#5 is merged. begin f5" |
 | G6 | F4 timeline, counters, notifications | open (awaiting the gate) | 2026-10-18 | — | — |
 | G7 | F6 eject dock volumes | done (crossed) | 2026-10-18 | 2026-10-18 | "#4 is merged. you can begin f6" |
 
