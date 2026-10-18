@@ -1,5 +1,5 @@
-# Created: 2026-10-18 11:14 -05:00 · Edited: 2026-10-18 12:15 -05:00
-# Created: 2026-10-18 11:25 -05:00 · Edited: 2026-10-18 11:25 -05:00
+#!/bin/zsh
+# Created: 2026-10-18 11:14 -05:00 · Edited: 2026-10-18 12:56 -05:00
 # Harness `mutate` (C1-T4): apply a named break from the register, run the test that must
 # catch it, restore the file. Exit 0 = caught (the test went red), 1 = ESCAPED (stayed
 # green), 2 = the mutation could not be applied.
