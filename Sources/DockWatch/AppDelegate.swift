@@ -1,4 +1,4 @@
-// Created: 2026-10-18 11:20 -05:00 · Edited: 2026-10-18 13:06 -05:00
+// Created: 2026-10-18 11:20 -05:00 · Edited: 2026-10-18 13:55 -05:00
 // F1-T4 / F2-T4 / F3-T3 / F6-T3 — wires the monitors to the tracker, the store, the hold, the ejector and the status item.
 import AppKit
 import DockCore
@@ -18,7 +18,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private let assertion = AssertionController()
     private let ejector = VolumeEjector()
     private let store = EventStore(directory: EventStore.defaultDirectory())
-    private var ejectResults: [String: (text: String, at: Date)] = [:]
+    private var ejectMenu = EjectMenuModel(lifetime: AppDelegate.ejectResultLifetime)
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         statusItem = StatusItemController()
@@ -94,24 +94,28 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     private func ejectEntries() -> [EjectEntry] {
-        let now = Date()
-        ejectResults = ejectResults.filter { now.timeIntervalSince($0.value.at) < Self.ejectResultLifetime }
-        return dockVolumes().map { EjectEntry(bsdName: $0.bsdName, title: $0.name, status: ejectResults[$0.bsdName]?.text) }
+        ejectMenu.rows(mounted: dockVolumes().map { (bsdName: $0.bsdName, title: $0.name) })
+            .map { EjectEntry(bsdName: $0.bsdName, title: $0.title, status: $0.status, isEjectable: $0.isEjectable) }
     }
 
     private func eject(bsdName: String) {
-        guard let volume = dockVolumes().first(where: { $0.bsdName == bsdName }) else { return }
+        guard let volume = dockVolumes().first(where: { $0.bsdName == bsdName }) else {
+            // The row was built when the menu opened; the volume went away since (F6 review, 5).
+            reportEject(bsdName: bsdName, title: bsdName, text: "No longer mounted", done: false)
+            return
+        }
         do {
             try ejector.eject(bsdName: bsdName, mountPath: volume.path) { [weak self] result in
-                guard let self else { return }
-                self.ejectResults[bsdName] = (result.menuText, Date())
-                self.record(Event(kind: .volumeEject, subject: volume.name,
-                                  detail: ["bsd": bsdName, "result": result.menuText, "done": result.isDone ? "true" : "false"]))
+                self?.reportEject(bsdName: bsdName, title: volume.name, text: result.menuText, done: result.isDone)
             }
         } catch {
-            ejectResults[bsdName] = ("Could not eject: \(error)", Date())
-            record(Event(kind: .volumeEject, subject: volume.name, detail: ["bsd": bsdName, "result": "\(error)", "done": "false"]))
+            reportEject(bsdName: bsdName, title: volume.name, text: "Could not eject: \(error)", done: false)
         }
+    }
+
+    private func reportEject(bsdName: String, title: String, text: String, done: Bool) {
+        ejectMenu.record(bsdName: bsdName, title: title, text: text)
+        record(Event(kind: .volumeEject, subject: title, detail: ["bsd": bsdName, "result": text, "done": done ? "true" : "false"]))
     }
 
     private func ejectAll() {
@@ -145,7 +149,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private func handle(_ e: VolumeEvent) {
         let kind: Event.Kind
         switch e.kind {
-        case .mounted: kind = .volumeMounted
+        case .mounted:
+            kind = .volumeMounted
+            ejectMenu.volumeMounted(bsdName: e.volume.bsdName)   // a remounted drive never reads "Ejected"
         case .unmounted: kind = .volumeUnmounted
         case .disappeared: kind = .volumeDisappeared
         }

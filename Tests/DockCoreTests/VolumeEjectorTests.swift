@@ -1,30 +1,35 @@
-// Created: 2026-10-18 13:04 -05:00 · Edited: 2026-10-18 13:04 -05:00
+// Created: 2026-10-18 13:04 -05:00 · Edited: 2026-10-18 13:56 -05:00
 import XCTest
-@testable import DockCore
 import DiskArbitration
+@testable import DockCore
 
-/// FR9 — results read as the menu will show them, and a real unmount against a throwaway
-/// disk image: refused while a file is open on it, naming this process; done once closed.
-final class VolumeEjectorTests: XCTestCase {
-    /// FR9: the result text the menu shows.
+/// FR9 — results read as the menu will show them, and refusals are words, not hex.
+final class EjectResultTests: XCTestCase {
+    /// FR9: the result text the menu shows. An empty blocker list means a process this user
+    /// cannot see (root: Time Machine, Spotlight), and the text says so.
     func testMenuTextNamesWhatHappened() {
         XCTAssertEqual(EjectResult.done.menuText, "Ejected")
         XCTAssertEqual(EjectResult.blocked(by: ["backupd"]).menuText, "In use by backupd")
         XCTAssertEqual(EjectResult.blocked(by: ["Finder", "backupd"]).menuText, "In use by Finder, backupd")
-        XCTAssertEqual(EjectResult.blocked(by: []).menuText, "In use by another process")
+        XCTAssertEqual(EjectResult.blocked(by: []).menuText, "In use by a system process")
         XCTAssertEqual(EjectResult.failed(status: 7, message: "Not mounted").menuText, "Could not eject: Not mounted")
     }
 
-    /// FR9: both spellings of "busy" are busy; other kernel errors read as words.
-    func testBusyIsRecognisedInBothEncodings() {
+    /// FR9: both spellings of "busy" are busy; kernel and DiskArbitration codes read as words.
+    func testStatusesReadAsWords() {
         XCTAssertTrue(VolumeEjector.isBusy(DAReturn(kDAReturnBusy)))
         XCTAssertTrue(VolumeEjector.isBusy(0xC010))
         XCTAssertFalse(VolumeEjector.isBusy(DAReturn(kDAReturnNotMounted)))
         XCTAssertEqual(VolumeEjector.describe(VolumeEjector.unixError(EACCES)), "Permission denied")
+        XCTAssertEqual(VolumeEjector.describe(DAReturn(kDAReturnNotMounted)), "Not mounted")
+        XCTAssertEqual(VolumeEjector.describe(DAReturn(kDAReturnNotPermitted)), "Not permitted")
+        XCTAssertEqual(VolumeEjector.describe(0x1234_5678), "0x12345678")
     }
+}
 
-    // MARK: live, on a disk image
-
+/// FR9 — a real unmount against a throwaway disk image: refused while a file is open on it,
+/// naming this process; done once closed. Only this class pays for the image (F6 review, 8).
+final class VolumeEjectorLiveTests: XCTestCase {
     private var image: URL!
     private var devEntry: String?
     private var mountPoint: String?
@@ -68,7 +73,8 @@ final class VolumeEjectorTests: XCTestCase {
         return try XCTUnwrap(result)
     }
 
-    /// FR9: an open file blocks the eject and the blocker is named; closing it lets the eject through.
+    /// FR9, M9: an open file blocks the eject and the blocker is named; closing it lets the
+    /// eject through; a second eject of the now-unmounted volume is a worded refusal.
     func testBusyVolumeIsRefusedAndNamed_thenEjectsWhenFree() throws {
         let ejector = VolumeEjector()
         let file = URL(fileURLWithPath: mountPoint!).appendingPathComponent("held.txt")
@@ -83,5 +89,7 @@ final class VolumeEjectorTests: XCTestCase {
         try handle.close()
         XCTAssertEqual(try eject(ejector), .done)
         XCTAssertFalse(FileManager.default.fileExists(atPath: file.path), "the volume is gone from the path")
+
+        XCTAssertEqual(try eject(ejector).menuText, "Could not eject: Not mounted")
     }
 }

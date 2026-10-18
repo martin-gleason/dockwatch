@@ -1,4 +1,4 @@
-// Created: 2026-10-18 13:04 -05:00 · Edited: 2026-10-18 13:07 -05:00
+// Created: 2026-10-18 13:04 -05:00 · Edited: 2026-10-18 13:55 -05:00
 // F6-T1 — unmount a volume through DiskArbitration and say what blocked it (FR9, NFR1).
 import Foundation
 import DiskArbitration
@@ -14,7 +14,9 @@ public enum EjectResult: Equatable {
     public var menuText: String {
         switch self {
         case .done: return "Ejected"
-        case .blocked(let names) where names.isEmpty: return "In use by another process"
+        // libproc shows an unprivileged process only its own user's processes, so Time
+        // Machine, Spotlight and other root daemons cannot be named (F6 review, finding 3).
+        case .blocked(let names) where names.isEmpty: return "In use by a system process"
         case .blocked(let names): return "In use by \(names.joined(separator: ", "))"
         case .failed(_, let message): return "Could not eject: \(message)"
         }
@@ -25,7 +27,9 @@ public enum EjectResult: Equatable {
 
 public enum VolumeEjectorError: Error { case session, noSuchDisk(String) }
 
-/// Never forces: a busy volume stays mounted and the caller is told who holds it.
+/// Unmounts a volume; never forces. A busy volume stays mounted and the caller is told who
+/// holds it when that can be known. This is an unmount, not Finder's eject: the disk stays
+/// attached so a remount needs no replug (D23).
 public final class VolumeEjector {
     public typealias Completion = (EjectResult) -> Void
 
@@ -94,12 +98,30 @@ public final class VolumeEjector {
         DAReturn((3 << 14) | (errno & 0x3fff))
     }
 
+    /// Words for the codes DiskArbitration hands back without a string (observed: always).
     static func describe(_ status: DAReturn) -> String {
         if (status >> 14) == 3 { return String(cString: strerror(Int32(status & 0x3fff))) }
-        return String(format: "0x%08x", status)
+        let da: [DAReturn: String] = [
+            DAReturn(kDAReturnError): "DiskArbitration error",
+            DAReturn(kDAReturnBusy): "Busy",
+            DAReturn(kDAReturnBadArgument): "Bad argument",
+            DAReturn(kDAReturnExclusiveAccess): "Opened for exclusive access",
+            DAReturn(kDAReturnNoResources): "No resources",
+            DAReturn(kDAReturnNotFound): "Not found",
+            DAReturn(kDAReturnNotMounted): "Not mounted",
+            DAReturn(kDAReturnNotPermitted): "Not permitted",
+            DAReturn(kDAReturnNotPrivileged): "Not privileged",
+            DAReturn(kDAReturnNotReady): "Not ready",
+            DAReturn(kDAReturnNotWritable): "Not writable",
+            DAReturn(kDAReturnUnsupported): "Unsupported",
+        ]
+        return da[status] ?? String(format: "0x%08x", status)
     }
 
-    /// Processes with files open on the volume at `path`, by name. libproc is public API.
+    /// Processes with files open on the volume at `path`, by name. libproc ships in the SDK
+    /// and is what `lsof` uses, but its header calls its interfaces private and subject to
+    /// change (RR15), and it lists only this user's processes: root daemons come back as an
+    /// empty list, which the menu words as "a system process".
     public static func processesUsing(path: String) -> [String] {
         let flags = UInt32(PROC_LISTPIDSPATH_PATH_IS_VOLUME | PROC_LISTPIDSPATH_EXCLUDE_EVTONLY)
         let needed = proc_listpidspath(UInt32(PROC_ALL_PIDS), 0, path, flags, nil, 0)

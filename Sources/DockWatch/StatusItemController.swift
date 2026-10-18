@@ -1,4 +1,4 @@
-// Created: 2026-10-18 11:20 -05:00 · Edited: 2026-10-18 13:06 -05:00
+// Created: 2026-10-18 11:20 -05:00 · Edited: 2026-10-18 13:55 -05:00
 // F1-T4 / F2-T4 / F3-T3 / F6-T3 — the menu bar icon and its menu (FR1, FR5, FR8, FR9).
 import AppKit
 import DockCore
@@ -9,6 +9,8 @@ struct EjectEntry {
     let title: String
     /// A recent result to show beside the name, if any.
     let status: String?
+    /// False for a just-ejected volume that is listed only so its result can be read.
+    let isEjectable: Bool
 }
 
 final class StatusItemController: NSObject, NSMenuDelegate {
@@ -73,15 +75,17 @@ final class StatusItemController: NSObject, NSMenuDelegate {
             insert(none)
             return
         }
-        if entries.count > 1 {
+        if entries.filter(\.isEjectable).count > 1 {
             let all = NSMenuItem(title: "Eject All Dock Volumes", action: #selector(ejectAll), keyEquivalent: "e")
             all.target = self
             all.indentationLevel = 1
             insert(all)
         }
         for entry in entries {
-            let row = NSMenuItem(title: "Eject “\(entry.title)”", action: #selector(ejectOne(_:)), keyEquivalent: "")
-            row.target = self
+            let row = NSMenuItem(title: entry.isEjectable ? "Eject “\(entry.title)”" : "“\(entry.title)”",
+                                 action: entry.isEjectable ? #selector(ejectOne(_:)) : nil, keyEquivalent: "")
+            row.target = entry.isEjectable ? self : nil
+            row.isEnabled = entry.isEjectable
             row.representedObject = entry.bsdName
             row.indentationLevel = 1
             if let status = entry.status {
