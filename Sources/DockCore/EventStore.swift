@@ -1,11 +1,22 @@
-// Created: 2026-10-18 11:55 -05:00 · Edited: 2026-10-18 11:55 -05:00
+// Created: 2026-10-18 11:55 -05:00 · Edited: 2026-10-18 12:15 -05:00
 // F2-T1 — append-only JSON Lines log with one rotation (FR3, NFR6). Main thread only.
 import Foundation
 
 public final class EventStore {
-    public enum StoreError: Error, Equatable {
+    public enum StoreError: Error, Equatable, CustomStringConvertible {
         case open(errno: Int32)
-        case shortWrite
+        case write(errno: Int32)
+        case shortWrite(wrote: Int, of: Int)
+        case rotate(String)
+
+        public var description: String {
+            switch self {
+            case .open(let e): return "cannot open log: \(String(cString: strerror(e)))"
+            case .write(let e): return "cannot write log: \(String(cString: strerror(e)))"
+            case .shortWrite(let w, let n): return "short write: \(w) of \(n) bytes"
+            case .rotate(let why): return "cannot rotate log: \(why)"
+            }
+        }
     }
 
     public let url: URL
@@ -35,11 +46,11 @@ public final class EventStore {
     public func append(_ event: Event) -> Bool {
         do {
             let line = try EventLine.encode(event) + "\n"
-            rotateIfNeeded(adding: line.utf8.count)
+            let rotation = rotateIfNeeded(adding: line.utf8.count)
             try write(line)
             count += 1
-            lastError = nil
-            return true
+            lastError = rotation   // nil unless the rotation failed; the line still landed
+            return rotation == nil
         } catch {
             lastError = "\(error)"
             return false
@@ -54,14 +65,24 @@ public final class EventStore {
         defer { close(fd) }
         let bytes = Array(line.utf8)
         let written = bytes.withUnsafeBytes { Darwin.write(fd, $0.baseAddress, $0.count) }
-        guard written == bytes.count else { throw StoreError.shortWrite }
+        guard written >= 0 else { throw StoreError.write(errno: errno) }
+        guard written == bytes.count else { throw StoreError.shortWrite(wrote: written, of: bytes.count) }
     }
 
     /// At most one previous file is kept: `events.1.jsonl` is replaced, never appended to.
-    private func rotateIfNeeded(adding: Int) {
+    /// Returns a message when the rotation could not happen, so the cap is never silently
+    /// exceeded (F2 review).
+    private func rotateIfNeeded(adding: Int) -> String? {
         guard let size = (try? FileManager.default.attributesOfItem(atPath: url.path))?[.size] as? Int,
-              size + adding > maxBytes else { return }
-        try? FileManager.default.removeItem(at: rotatedURL)
-        try? FileManager.default.moveItem(at: url, to: rotatedURL)
+              size + adding > maxBytes else { return nil }
+        do {
+            if FileManager.default.fileExists(atPath: rotatedURL.path) {
+                try FileManager.default.removeItem(at: rotatedURL)
+            }
+            try FileManager.default.moveItem(at: url, to: rotatedURL)
+            return nil
+        } catch {
+            return StoreError.rotate(error.localizedDescription).description
+        }
     }
 }

@@ -1,4 +1,4 @@
-// Created: 2026-10-18 11:55 -05:00 · Edited: 2026-10-18 11:55 -05:00
+// Created: 2026-10-18 11:55 -05:00 · Edited: 2026-10-18 12:15 -05:00
 import XCTest
 @testable import DockCore
 
@@ -82,7 +82,7 @@ final class EventStoreTests: XCTestCase {
         XCTAssertEqual(Event.Kind.allCases.map(\.rawValue), [
             "usb.attached", "usb.detached",
             "volume.mounted", "volume.unmounted", "volume.disappeared",
-            "system.sleep", "system.darkwake", "system.wake",
+            "system.sleep", "system.wake",   // no darkwake: not observable through public API (D18)
             "power.connected", "power.disconnected",
         ])
     }

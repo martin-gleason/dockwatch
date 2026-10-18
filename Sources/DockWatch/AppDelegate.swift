@@ -1,4 +1,4 @@
-// Created: 2026-10-18 11:20 -05:00 · Edited: 2026-10-18 11:55 -05:00
+// Created: 2026-10-18 11:20 -05:00 · Edited: 2026-10-18 12:15 -05:00
 // F1-T4 / F2-T4 — wires the monitors to the tracker, the store and the status item (FR1–FR3, FR8).
 import AppKit
 import DockCore
@@ -38,18 +38,22 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     // MARK: events → store
 
     private func record(_ event: Event) {
-        if !store.append(event) {
-            statusItem.showProblem("Log write failed: \(store.lastError ?? "unknown")")
+        if store.append(event) {
+            statusItem.clearProblem()
+        } else {
+            statusItem.showProblem("Log: \(store.lastError ?? "unknown failure")")
         }
         log("\(event.kind.rawValue) \(event.subject) \(event.detail.sorted { $0.key < $1.key }.map { "\($0.key)=\($0.value)" }.joined(separator: " "))")
     }
 
     private func handle(_ e: USBEvent) {
+        var detail = ["vendor": String(format: "0x%04x", e.device.vendorID),
+                      "product": String(format: "0x%04x", e.device.productID),
+                      "location": String(format: "0x%08x", e.device.locationID)]
+        if e.initial { detail["initial"] = "true" }
         record(Event(kind: e.kind == .attached ? .usbAttached : .usbDetached,
                      subject: e.device.productName ?? String(format: "%04x:%04x", e.device.vendorID, e.device.productID),
-                     detail: ["vendor": String(format: "0x%04x", e.device.vendorID),
-                              "product": String(format: "0x%04x", e.device.productID),
-                              "location": String(format: "0x%08x", e.device.locationID)]))
+                     detail: detail))
         if tracker.apply(e) {
             statusItem.render(state: tracker.state, held: false)
         }
@@ -75,7 +79,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let kind: Event.Kind
         switch e.kind {
         case .willSleep: kind = .systemSleep
-        case .darkWake: kind = .systemDarkWake
         case .wake: kind = .systemWake
         }
         record(Event(kind: kind, subject: "system"))
@@ -90,8 +93,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 }
 
-/// stderr mirror of the log, for development runs. One formatter for the process.
-private let stderrTimestamp = ISO8601DateFormatter()
+/// stderr mirror of the log, for development runs. Uses the store's formatter.
 func log(_ line: String) {
-    FileHandle.standardError.write(Data("\(stderrTimestamp.string(from: Date())) \(line)\n".utf8))
+    FileHandle.standardError.write(Data("\(EventLine.timestamp.string(from: Date())) \(line)\n".utf8))
 }

@@ -1,4 +1,4 @@
-#!/bin/zsh
+# Created: 2026-10-18 11:14 -05:00 · Edited: 2026-10-18 12:15 -05:00
 # Created: 2026-10-18 11:25 -05:00 · Edited: 2026-10-18 11:25 -05:00
 # Harness `mutate` (C1-T4): apply a named break from the register, run the test that must
 # catch it, restore the file. Exit 0 = caught (the test went red), 1 = ESCAPED (stayed
@@ -19,6 +19,7 @@ M3|Sources/DockCore/EventStore.swift|s/O_APPEND/O_TRUNC/|EventStoreTests/testApp
 M4|Sources/DockCore/DockIdentity.swift|s/ && device.productID == productID//|DockIdentityTests/testRazerMouseIsNotTheDock
 M5|Sources/DockCore/EventQuery.swift|s/\$0.timestamp >= cutoff/true/|EventQueryTests/testWindowExcludesOldEvents
 M6|Sources/DockCore/HoldPolicy.swift|s/case .didWake: return apply()/case .didWake: return false/|HoldPolicyTests/testWakeWhileDockedReasserts
+M8|Sources/DockCore/EventStore.swift|s/try FileManager.default.moveItem\(at: url, to: rotatedURL\)/try FileManager.default.removeItem(at: url)/|EventStoreTests/testRotationKeepsExactlyOnePreviousFile
 '
 
 row=$(printf '%s\n' "$table" | grep -E "^${id}\|")

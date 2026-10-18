@@ -1,20 +1,20 @@
-// Created: 2026-10-18 11:55 -05:00 · Edited: 2026-10-18 11:55 -05:00
-// F2-T3 — sleep, dark wake and wake from the power management root domain (FR3, NFR8).
+// Created: 2026-10-18 11:55 -05:00 · Edited: 2026-10-18 12:15 -05:00
+// F2-T3 — sleep and wake from the power management root domain (FR3, NFR8).
 import Foundation
 import IOKit
 import IOKit.pwr_mgt
-import CoreGraphics
 
 public struct SleepEvent: Equatable {
-    public enum Kind: Equatable { case willSleep, darkWake, wake }
+    public enum Kind: Equatable { case willSleep, wake }
     public let kind: Kind
 }
 
 public enum SleepMonitorError: Error { case register }
 
 /// Registers for system power messages. Always acknowledges a sleep request immediately,
-/// so this app can never delay sleep. Dark wake is told from full wake by whether the main
-/// display is asleep at power-on: the public API does not say which kind of wake this is.
+/// so this app can never delay sleep. Only full wakes are reported: IOPMrootDomain sends the
+/// legacy-app messages only when graphics come up, so a dark wake delivers nothing here, and
+/// the sleep that follows a dark wake delivers nothing either (D18; the pmset log has those).
 public final class SleepMonitor {
     public typealias Handler = (SleepEvent) -> Void
 
@@ -70,8 +70,7 @@ public final class SleepMonitor {
             handler(SleepEvent(kind: .willSleep))
             IOAllowPowerChange(rootPort, Int(bitPattern: argument))
         case Self.systemHasPoweredOn:
-            let displayAsleep = CGDisplayIsAsleep(CGMainDisplayID()) != 0
-            handler(SleepEvent(kind: displayAsleep ? .darkWake : .wake))
+            handler(SleepEvent(kind: .wake))
         default:
             break
         }

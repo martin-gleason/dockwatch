@@ -1,4 +1,4 @@
-// Created: 2026-10-18 11:20 -05:00 · Edited: 2026-10-18 11:32 -05:00
+// Created: 2026-10-18 11:20 -05:00 · Edited: 2026-10-18 12:15 -05:00
 // F1-T3 — USB attach/detach straight from IOKit, no polling (FR2, NFR1, NFR2).
 
 import Foundation
@@ -53,7 +53,7 @@ public final class USBMonitor {
                 Unmanaged<USBMonitor>.fromOpaque(refcon).takeUnretainedValue().drain(iterator, kind: .attached)
             }, refcon, &addedIterator)
         guard kr == KERN_SUCCESS else { stop(); throw USBMonitorError.matching(kr) }
-        drain(addedIterator, kind: .attached)   // primes with what is present, and arms
+        drain(addedIterator, kind: .attached, initial: true)   // primes with what is present, and arms
 
         kr = IOServiceAddMatchingNotification(
             port, kIOTerminatedNotification, IOServiceMatching("IOUSBHostDevice"),
@@ -76,7 +76,7 @@ public final class USBMonitor {
         }
     }
 
-    private func drain(_ iterator: io_iterator_t, kind: USBEvent.Kind) {
+    private func drain(_ iterator: io_iterator_t, kind: USBEvent.Kind, initial: Bool = false) {
         var service = IOIteratorNext(iterator)
         while service != 0 {
             defer { IOObjectRelease(service); service = IOIteratorNext(iterator) }
@@ -86,7 +86,7 @@ public final class USBMonitor {
             case .attached:
                 let device = Self.describe(service, registryID: entryID)
                 known[entryID] = device
-                handler(USBEvent(kind: .attached, device: device))
+                handler(USBEvent(kind: .attached, device: device, initial: initial))
             case .detached:
                 let device = known.removeValue(forKey: entryID) ?? Self.describe(service, registryID: entryID)
                 handler(USBEvent(kind: .detached, device: device))

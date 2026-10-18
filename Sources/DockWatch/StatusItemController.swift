@@ -1,4 +1,4 @@
-// Created: 2026-10-18 11:20 -05:00 · Edited: 2026-10-18 11:55 -05:00
+// Created: 2026-10-18 11:20 -05:00 · Edited: 2026-10-18 12:15 -05:00
 // F1-T4 / F2-T4 — the menu bar icon and its menu (FR1, FR8). Three states; "held" is wired in F3.
 import AppKit
 import DockCore
@@ -53,5 +53,10 @@ final class StatusItemController: NSObject {
     func showProblem(_ text: String) {
         problemLine.title = text
         problemLine.isHidden = false
+    }
+
+    /// A transient failure must not read as current forever (F2 review).
+    func clearProblem() {
+        problemLine.isHidden = true
     }
 }

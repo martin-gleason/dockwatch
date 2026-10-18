@@ -1,4 +1,4 @@
-// Created: 2026-10-18 11:55 -05:00 · Edited: 2026-10-18 11:55 -05:00
+// Created: 2026-10-18 11:55 -05:00 · Edited: 2026-10-18 12:15 -05:00
 // F2-T2 — external volume mount, unmount and unclean disappearance from DiskArbitration (FR3, NFR2).
 import Foundation
 import DiskArbitration
@@ -8,7 +8,8 @@ public struct VolumeInfo: Equatable {
     public let name: String
     public let bsdName: String
     public let path: String?
-    public let isInternal: Bool
+    /// Nil when DiskArbitration gives no answer, which is what disk images look like.
+    public let isInternal: Bool?
     public let protocolName: String?
     public let model: String?
     /// IOUSB location ID of the USB device the disk hangs off, when it is a USB disk.
@@ -102,10 +103,11 @@ public final class VolumeMonitor {
 
     // MARK: description
 
+    /// An external device with a mount path. A disk image has no `DADeviceInternal` key and
+    /// a "Virtual Interface" protocol, and is not a device (F2 review).
     static func isRelevant(_ v: VolumeInfo) -> Bool {
-        guard !v.isInternal, let path = v.path else { return false }
+        guard v.isInternal == false, let path = v.path, v.protocolName != "Virtual Interface" else { return false }
         if path.contains("/.timemachine/") || path.contains("com.apple.TimeMachine") { return false }
-        if path.hasPrefix("/System/") || path.hasPrefix("/Library/Developer/CoreSimulator") { return false }
         return true
     }
 
@@ -117,7 +119,7 @@ public final class VolumeMonitor {
             name: d[kDADiskDescriptionVolumeNameKey as String] as? String ?? bsd,
             bsdName: bsd,
             path: path,
-            isInternal: d[kDADiskDescriptionDeviceInternalKey as String] as? Bool ?? false,
+            isInternal: d[kDADiskDescriptionDeviceInternalKey as String] as? Bool,
             protocolName: d[kDADiskDescriptionDeviceProtocolKey as String] as? String,
             model: d[kDADiskDescriptionDeviceModelKey as String] as? String,
             usbLocationID: usbLocation(of: disk))
