@@ -13,12 +13,12 @@ cd "$(dirname "$0")/.."
 id=${1:?usage: scripts/mutate.sh <M-id>}
 
 table='
-M1|Sources/DockCore/HoldPolicy.swift|s/dockChanged(false)/dockChanged(true)/|HoldPolicyTests/testUndockReleasesHold
+M1|Sources/DockCore/HoldPolicy.swift|s/docked = present/docked = true/|HoldPolicyTests/testUndockReleasesHold
 M2|Sources/DockCore/HoldPolicy.swift|s/toggle && docked/docked/|HoldPolicyTests/testToggleOffNeverHolds
 M3|Sources/DockCore/EventStore.swift|s/O_APPEND/O_TRUNC/|EventStoreTests/testAppendPreservesPriorLines
 M4|Sources/DockCore/DockIdentity.swift|s/ && device.productID == productID//|DockIdentityTests/testRazerMouseIsNotTheDock
 M5|Sources/DockCore/EventQuery.swift|s/\$0.timestamp >= cutoff/true/|EventQueryTests/testWindowExcludesOldEvents
-M6|Sources/DockCore/HoldPolicy.swift|s/case .didWake: return apply()/case .didWake: return false/|HoldPolicyTests/testWakeWhileDockedReasserts
+M6|Sources/DockCore/HoldPolicy.swift|s/reapply: true\)/reapply: false)/|HoldPolicyTests/testWakeWhileDockedReasserts
 M8|Sources/DockCore/EventStore.swift|s/try FileManager.default.moveItem\(at: url, to: rotatedURL\)/try FileManager.default.removeItem(at: url)/|EventStoreTests/testRotationKeepsExactlyOnePreviousFile
 '
 

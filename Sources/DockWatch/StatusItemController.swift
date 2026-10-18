@@ -1,5 +1,5 @@
-// Created: 2026-10-18 11:20 -05:00 · Edited: 2026-10-18 12:15 -05:00
-// F1-T4 / F2-T4 — the menu bar icon and its menu (FR1, FR8). Three states; "held" is wired in F3.
+// Created: 2026-10-18 11:20 -05:00 · Edited: 2026-10-18 12:41 -05:00
+// F1-T4 / F2-T4 / F3-T3 — the menu bar icon and its menu (FR1, FR5, FR8). Three icon states.
 import AppKit
 import DockCore
 
@@ -7,9 +7,12 @@ final class StatusItemController: NSObject {
     private let item = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
     private let stateLine = NSMenuItem(title: "Dock: unknown", action: nil, keyEquivalent: "")
     private let problemLine = NSMenuItem(title: "", action: nil, keyEquivalent: "")
+    private let keepAwakeItem = NSMenuItem(title: "Keep Dock Awake", action: #selector(toggleKeepAwake), keyEquivalent: "k")
 
     /// FR8 — set by the app delegate; reveals the log file.
     var onOpenLog: (() -> Void)?
+    /// FR5 — set by the app delegate; flips the hold toggle.
+    var onToggleKeepAwake: (() -> Void)?
 
     override init() {
         super.init()
@@ -20,6 +23,9 @@ final class StatusItemController: NSObject {
         menu.addItem(stateLine)
         menu.addItem(problemLine)
         menu.addItem(.separator())
+        keepAwakeItem.target = self
+        keepAwakeItem.toolTip = "While on and the dock is attached, the Mac does not idle-sleep. The display still sleeps."
+        menu.addItem(keepAwakeItem)
         let open = NSMenuItem(title: "Open Log", action: #selector(openLog), keyEquivalent: "l")
         open.target = self
         menu.addItem(open)
@@ -29,6 +35,11 @@ final class StatusItemController: NSObject {
     }
 
     @objc private func openLog() { onOpenLog?() }
+    @objc private func toggleKeepAwake() { onToggleKeepAwake?() }
+
+    func setKeepAwake(on: Bool) {
+        keepAwakeItem.state = on ? .on : .off
+    }
 
     /// FR1: docked and held awake · docked, not held · not docked.
     func render(state: DockState, held: Bool) {
