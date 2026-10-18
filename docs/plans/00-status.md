@@ -17,7 +17,7 @@ Named, never numbered (`D2`). **No source read here marks a milestone as the cur
 
 | Milestone | Decisions landing here | Units |
 |---|---|---|
-| MVP | 20 | C1, F1, F2, F3, F4, F5, F6 |
+| MVP | 22 | C1, F1, F2, F3, F4, F5, F6 |
 | v1.5 | 4 | — |
 
 ## Features and chores
@@ -40,7 +40,7 @@ Counted from the register itself. A register with no rows still gets a line.
 
 | Register | Rows | Open | Unknown | Closed |
 |---|---|---|---|---|
-| Decisions (`D`) | 24 | 14 | 0 | 10 |
+| Decisions (`D`) | 26 | 16 | 0 | 10 |
 | Risks (`RR`) | 15 | 14 | 0 | 1 |
 | Owner items (`O`) | 14 | 4 | 0 | 10 |
 | Agent items (`A`) | 1 | 1 | 0 | 0 |
@@ -53,7 +53,7 @@ Counted from the register itself. A register with no rows still gets a line.
 
 | Register | Status | Count |
 |---|---|---|
-| `D` | proposed | 14 |
+| `D` | proposed | 16 |
 | `D` | ratified | 9 |
 | `D` | superseded | 1 |
 | `RR` | open | 12 |
@@ -100,7 +100,7 @@ Every open row in the register. Owner is the row's Owner column where the table 
 | agent | RR8 | — | open | IOKit and DiskArbitration callbacks run on the main run loop; a slow menu rebuild delays them. |
 | agent | RR9 | — | proposed | No CI yet: every check runs only where somebody remembers to run it. Found by detectrisks.py (ls .github/workflows → non… |
 | agent | RR10 | — | proposed | docs/plans/00-status.md is generated and nothing yet regenerates it, so it will go stale and be believed. Found by detec… |
-| agent | RR12 | — | open | App Sandbox may refuse DiskArbitration unmount (FR9), the libproc blocker lookup, or IOKit matching notifications; unver… |
+| agent | RR12 | — | open | App Sandbox and the app's calls. Answered by sandboxed probes (F5 review): IOKit USB notifications and registry reads, t… |
 | agent | RR13 | — | open | Time Machine holds Backups open during a backup, so "Eject All" is refused for it. A non-root app cannot name root proce… |
 | agent | RR14 | — | open | The identifying USB device 0x1532:0x122E sits on the dock's USB 2 chain, the chain the spec says drops unevenly. If it t… |
 | agent | RR15 | — | open | libproc's header calls its interfaces "private … subject to change" although it ships in the SDK and lsof uses it; NFR1 … |
@@ -120,11 +120,13 @@ Every open row in the register. Owner is the row's Owner column where the table 
 | owner | D21 | — | proposed | The log gains hold.on and hold.off lines when the sleep assertion is taken and released, so the overnight charger-drop c… |
 | owner | D23 | — | proposed | The menu's "Eject" is a DiskArbitration unmount of the volume, never a whole-disk DADiskEject: the disk stays attached, … |
 | owner | D24 | — | proposed | Under App Sandbox the log lives in the app's container: /Library/Containers/com.martingleason.dockwatch/Data/Library/Log… |
+| owner | D25 | — | proposed | Under App Sandbox a busy eject cannot name its blocker: the sandbox denies proclistpidspath (RR12). Proposed: MVP accept… |
+| owner | D26 | — | proposed | The Finder and Dock icon is a flat .icns for now, which macOS 26 shows inside a grey tile with the ring inset. The edge-… |
 | owner | O7 | P1 | open | Ratify D1–D10. |
 | owner | O12 | P1 | open | F2 and F3 live checks only the owner can do, with the app running and Keep Dock Awake on: close the lid for a minute (ex… |
 | owner | O13 | P0 | open | The experiment. With the app running and the dock attached, turn on Keep Dock Awake in the menu (its ⌘K works only while… |
 | owner | O14 | P1 | open | F6 live checks only the owner can do, with the dock plugged back in: eject one volume from the menu and reopen the menu … |
-| unassigned | A1 | P0 | open | Finish the RR12 sandbox proof once the dock is plugged back in: from the installed bundle, confirm the dock's USB device… |
+| unassigned | A1 | P0 | open | Finish the dock half of RR12 once the dock is plugged back in: from the installed bundle, confirm the dock's USB devices… |
 | unassigned | G6 | — | open | F4 timeline, counters, notifications |
 | unassigned | H5 | — | open | Every FR has a test or a named manual check with evidence |
 | unassigned | H6 | — | not built | Status page regenerates clean |
@@ -132,4 +134,4 @@ Every open row in the register. Owner is the row's Owner column where the table 
 
 ---
 
-39 open register rows.
+41 open register rows.
