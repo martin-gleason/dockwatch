@@ -1,4 +1,4 @@
-// Created: 2026-10-18 16:54 -05:00 · Edited: 2026-10-18 16:54 -05:00
+// Created: 2026-10-18 16:54 -05:00 · Edited: 2026-10-18 17:10 -05:00
 // F4-T1 — the recent events and the 24-hour counters the menu shows (FR4, D28). Pure.
 import Foundation
 
@@ -53,12 +53,19 @@ public struct EventQuery: Equatable {
 }
 
 public extension Event {
-    /// One menu line: `14:02:17  usb.detached  Das Keyboard`.
-    var menuLine: String {
+    /// One formatter for the process (the reviews keep measuring the per-call one at 50 µs).
+    static let menuTime: DateFormatter = {
         let f = DateFormatter()
         f.dateFormat = "HH:mm:ss"
+        return f
+    }()
+
+    /// One menu line: `14:02:17  usb.detached  Das Keyboard`.
+    var menuLine: String {
+        let f = Self.menuTime
         var extra = ""
-        if let r = detail["result"] { extra = "  (\(r))" }
+        if detail["initial"] == "true" { extra = "  at launch" }
+        else if let r = detail["result"] { extra = "  (\(r))" }
         else if kind == .powerConnected, let w = detail["watts"] { extra = "  \(w) W" }
         else if kind == .powerDisconnected, let w = detail["lastWatts"] { extra = "  was \(w) W" }
         return "\(f.string(from: ts))  \(kind.rawValue)  \(subject)\(extra)"

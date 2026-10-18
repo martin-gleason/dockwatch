@@ -1,4 +1,4 @@
-// Created: 2026-10-18 11:20 -05:00 · Edited: 2026-10-18 16:54 -05:00
+// Created: 2026-10-18 11:20 -05:00 · Edited: 2026-10-18 17:10 -05:00
 // F1-T4 / F2-T4 / F3-T3 / F6-T3 — wires the monitors to the tracker, the store, the hold, the ejector and the status item.
 import AppKit
 import DockCore
@@ -111,9 +111,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     /// A dock loss while awake: collect for two seconds, then notify once (D27).
     private func noteLoss(_ loss: LossCoalescer.Loss) {
         guard !asleep else { return }
-        if losses.add(loss) {
-            DispatchQueue.main.asyncAfter(deadline: .now() + losses.window) { [weak self] in self?.flushLosses() }
-        }
+        if losses.add(loss) { scheduleLossFlush() }
     }
 
     private func flushLosses() {
@@ -121,9 +119,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         notifier.post(flush)
     }
 
+    /// Volumes: by the disk's USB location against the dock's controller, current or last known (F4b).
     private func isOnDock(_ location: UInt32?) -> Bool {
-        guard let location, let dock = tracker.dockLocationID else { return false }
+        guard let location, let dock = tracker.dockLocationID ?? tracker.lastKnownDockLocationID else { return false }
         return DockMembership.isOnDock(usbLocationID: location, dockLocationID: dock)
+    }
+
+    private func scheduleLossFlush() {
+        DispatchQueue.main.asyncAfter(deadline: .now() + losses.window) { [weak self] in self?.flushLosses() }
     }
 
     // MARK: eject (FR9)
@@ -183,18 +186,16 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                       "product": String(format: "0x%04x", e.device.productID),
                       "location": String(format: "0x%08x", e.device.locationID)]
         if e.initial { detail["initial"] = "true" }
-        // Membership is judged before the tracker moves, so the dock's own detach still counts as on the dock.
+        // Judged by DockCore, before the tracker moves, against the dock's controller current or
+        // last known, so the children that terminate after the dock device still count (F4b).
         let isDockItself = tracker.identity.matches(e.device)
-        let onDock = isDockItself || isOnDock(e.device.locationID)
+        let onDock = tracker.isOnDock(e.device)
         if onDock { detail["dock"] = "true" }
         let name = e.device.productName ?? String(format: "%04x:%04x", e.device.vendorID, e.device.productID)
         record(Event(kind: e.kind == .attached ? .usbAttached : .usbDetached, subject: name, detail: detail))
         if tracker.apply(e) {
             apply(policy.apply(.dockChanged(tracker.state == .docked)))
-            if tracker.state == .undocked, !asleep {
-                losses.dockDetached()
-                if losses.pending.isEmpty { DispatchQueue.main.asyncAfter(deadline: .now() + losses.window) { [weak self] in self?.flushLosses() } }
-            }
+            if tracker.state == .undocked, !asleep, losses.dockDetached() { scheduleLossFlush() }
         } else if e.kind == .detached, onDock, !isDockItself {
             noteLoss(.device(name))
         }
