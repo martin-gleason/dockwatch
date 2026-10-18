@@ -42,10 +42,10 @@ Counted from the register itself. A register with no rows still gets a line.
 |---|---|---|---|---|
 | Decisions (`D`) | 15 | 10 | 0 | 5 |
 | Risks (`RR`) | 14 | 13 | 0 | 1 |
-| Owner items (`O`) | 9 | 4 | 0 | 5 |
+| Owner items (`O`) | 10 | 5 | 0 | 5 |
 | Agent items (`A`) | 0 | 0 | 0 | 0 |
 | Hooks (`H`) | 6 | 6 | 0 | 0 |
-| Mutations (`M`) | 7 | 7 | 0 | 0 |
+| Mutations (`M`) | 7 | 6 | 0 | 1 |
 | Chores (`C`) | 2 | 2 | 0 | 0 |
 | Gates (`G`) | 7 | 5 | 0 | 2 |
 
@@ -60,10 +60,11 @@ Counted from the register itself. A register with no rows still gets a line.
 | `RR` | proposed | 2 |
 | `RR` | rejected | 1 |
 | `O` | closed | 5 |
-| `O` | open | 4 |
+| `O` | open | 5 |
 | `H` | not built | 5 |
 | `H` | open | 1 |
-| `M` | proposed | 7 |
+| `M` | killed | 1 |
+| `M` | proposed | 6 |
 | `C` | open | 2 |
 | `G` | done | 2 |
 | `G` | open | 5 |
@@ -105,7 +106,7 @@ Every open row in the register. Owner is the row's Owner column where the table 
 | owner | D1 | — | proposed | The project is DockWatch, at /LocalDevProjects/dockwatch. It is distinct from the shell monitor at /dockwatch, which kee… |
 | owner | D2 | — | proposed | Layout mirrors HueBar: DockCore library (no AppKit, fully testable) + DockWatch AppKit executable + DockCoreTests. Swift… |
 | owner | D3 | — | proposed | "Keep dock awake" is an IOPMLib PreventUserIdleSystemSleep assertion owned by the app process. Not pmset, not root, not … |
-| owner | D4 | — | proposed | The dock is identified by USB vendor:product 0x1532:0x122E (macOS name "Thunderbolt 4 Dock"). The Chroma controller 0x24… |
+| owner | D4 | — | proposed | The dock is identified by USB vendor:product 0x1532:0x122E (macOS name "Thunderbolt 4 Dock"). The Chroma controller 0x15… |
 | owner | D5 | — | proposed | The log is JSON Lines at /Library/Logs/DockWatch/events.jsonl, opened for append, rotated at 20 MB keeping one previous … |
 | owner | D7 | — | proposed | macOS 14 minimum, matching HueBar. Built with Xcode 27.1 on macOS 27. Apple silicon only is verified. |
 | owner | D9 | — | proposed | Build order for 2026-10-18: C1 → F1 → F2 → F3 → F5 → F4. F4 is cut first if the day runs out. |
@@ -114,6 +115,7 @@ Every open row in the register. Owner is the row's Owner column where the table 
 | owner | D15 | — | proposed | Mac App Store distribution is a v1.5 goal (Q6). MVP therefore adopts App Sandbox and hardened runtime from F5, ad-hoc si… |
 | owner | O6 | P2 | open | Create the GitHub repository and push. C1-T6 waits on it. |
 | owner | O7 | P1 | open | Ratify D1–D10. |
+| owner | O8 | P1 | open | With the app running, pull the dock's Thunderbolt cable and plug it back; paste the stderr lines. Closes F1's live FR1/F… |
 | owner | O9 | P1 | open | The vision sentence is now D11's and it adds FR9; the agent does not edit SPEC.md. Paste the sentence and FR9 into the s… |
 | owner | O10 | P1 | open | Gate F6 (eject dock volumes), proposed after F5 and before F4 in today's order. |
 | unassigned | G3 | — | open | F2 event log |
@@ -130,7 +132,6 @@ Every open row in the register. Owner is the row's Owner column where the table 
 | unassigned | M1 | — | proposed | Keep holding after the dock is removed |
 | unassigned | M2 | — | proposed | Hold while the toggle is off |
 | unassigned | M3 | — | proposed | Open the log with truncate instead of append |
-| unassigned | M4 | — | proposed | Match on vendor ID alone |
 | unassigned | M5 | — | proposed | Compute the 24-hour window by insertion order, not timestamp |
 | unassigned | M6 | — | proposed | Ignore the wake input |
 | unassigned | M7 | — | proposed | Compare the whole location ID instead of the controller byte |
