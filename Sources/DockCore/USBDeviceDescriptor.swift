@@ -1,5 +1,6 @@
-// Created: 2026-10-18 11:40 -05:00 · Edited: 2026-10-18 11:40 -05:00
+// Created: 2026-10-18 11:20 -05:00 · Edited: 2026-10-18 11:32 -05:00
 // F1-T2 — what DockCore knows about one USB device. Plain data; no IOKit here.
+import Foundation  // String(format:) — F1 review, finding 3
 
 public struct USBDeviceDescriptor: Equatable, Hashable {
     public let vendorID: Int

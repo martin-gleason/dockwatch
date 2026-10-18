@@ -1,4 +1,4 @@
-// Created: 2026-10-18 11:40 -05:00 · Edited: 2026-10-18 11:40 -05:00
+// Created: 2026-10-18 11:20 -05:00 · Edited: 2026-10-18 11:32 -05:00
 // F1-T3 — USB attach/detach straight from IOKit, no polling (FR2, NFR1, NFR2).
 
 import Foundation
@@ -38,7 +38,9 @@ public final class USBMonitor {
         }
         self.port = port
         let source = IONotificationPortGetRunLoopSource(port).takeUnretainedValue()
-        CFRunLoopAddSource(runLoop, source, .defaultMode)
+        // Common modes, not default: AppKit tracks an open menu in the event-tracking mode,
+        // and a default-mode-only source is not serviced until the menu closes (F1 review).
+        CFRunLoopAddSource(runLoop, source, .commonModes)
 
         let refcon = Unmanaged.passUnretained(self).toOpaque()
 
@@ -68,7 +70,7 @@ public final class USBMonitor {
         if removedIterator != 0 { IOObjectRelease(removedIterator); removedIterator = 0 }
         if let port {
             let source = IONotificationPortGetRunLoopSource(port).takeUnretainedValue()
-            CFRunLoopRemoveSource(runLoop, source, .defaultMode)
+            CFRunLoopRemoveSource(runLoop, source, .commonModes)
             IONotificationPortDestroy(port)
             self.port = nil
         }
