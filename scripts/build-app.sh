@@ -1,5 +1,5 @@
 #!/bin/zsh
-# Created: 2026-10-18 14:29 -05:00 · Edited: 2026-10-18 17:03 -05:00
+# Created: 2026-10-18 14:29 -05:00 · Edited: 2026-10-18 17:28 -05:00
 # F5-T1 — build a release binary and wrap it as a sandboxed, hardened, ad-hoc signed .app.
 #   scripts/build-app.sh            -> build/DockWatch.app
 #   scripts/build-app.sh --install  -> also copies to ~/Applications/DockWatch.app
@@ -17,6 +17,14 @@ cp Resources/Info.plist "$APP/Contents/Info.plist"
 xcrun actool Resources/AppIcon.icon --compile "$APP/Contents/Resources" --platform macosx \
   --minimum-deployment-target 14.0 --app-icon AppIcon --include-all-app-icons \
   --output-partial-info-plist build/icon-partial.plist --output-format human-readable-text >/dev/null
+# actool's fallback .icns stops at 128 px; macOS 14 and 15 read only the .icns (NFR5), so build a
+# full one from the same artwork and let it replace actool's.
+ICONSET=build/AppIcon.iconset; rm -rf "$ICONSET"; mkdir -p "$ICONSET"
+for s in 16 32 128 256 512; do
+  sips -z $s $s Resources/AppIcon.icon/Assets/Ring.png --out "$ICONSET/icon_${s}x${s}.png" >/dev/null
+  sips -z $((s*2)) $((s*2)) Resources/AppIcon.icon/Assets/Ring.png --out "$ICONSET/icon_${s}x${s}@2x.png" >/dev/null
+done
+iconutil -c icns "$ICONSET" -o "$APP/Contents/Resources/AppIcon.icns"
 codesign --force --options runtime --entitlements Resources/DockWatch.entitlements --sign - "$APP"
 codesign --verify --strict "$APP"
 echo "Built $APP"

@@ -1,4 +1,4 @@
-// Created: 2026-10-18 17:03 -05:00 · Edited: 2026-10-18 17:03 -05:00
+// Created: 2026-10-18 17:03 -05:00 · Edited: 2026-10-18 17:28 -05:00
 // F7-T2 — the hue ring, drawn for the menu bar at any phase (D16). CoreGraphics only.
 import AppKit
 
@@ -10,16 +10,27 @@ enum RingIcon {
     /// Red sits at the lower right, as in the artwork; the phase turns the whole wheel.
     static let redAngle: CGFloat = .pi / 4
 
-    /// `dimmed` is the not-connected look: the same ring, desaturated and faint.
-    static func image(phase: Double, dimmed: Bool) -> NSImage {
+    /// `dimmed` is the not-connected look: the same ring, desaturated and faint. `held` adds
+    /// a filled hub, so FR1's third state reads in a still glance, motion or no motion.
+    static func image(phase: Double, dimmed: Bool, held: Bool = false) -> NSImage {
         let image = NSImage(size: size, flipped: false) { rect in
             guard let ctx = NSGraphicsContext.current?.cgContext else { return false }
             draw(in: ctx, rect: rect, phase: CGFloat(phase), dimmed: dimmed)
+            if held { drawHub(in: ctx, rect: rect) }
             return true
         }
         image.isTemplate = false
-        image.accessibilityDescription = dimmed ? "Dock not connected" : "Dock connected"
+        image.accessibilityDescription = dimmed ? "Dock not connected" : (held ? "Dock connected, kept awake" : "Dock connected")
         return image
+    }
+
+    /// The held cue: a small filled disc in the hole, in the label colour so it follows the bar.
+    static func drawHub(in ctx: CGContext, rect: CGRect) {
+        let center = CGPoint(x: rect.midX, y: rect.midY)
+        let outer = min(rect.width, rect.height) / 2 - 0.5
+        let r = outer * innerRatio * 0.5
+        ctx.setFillColor(NSColor.labelColor.cgColor)
+        ctx.fillEllipse(in: CGRect(x: center.x - r, y: center.y - r, width: r * 2, height: r * 2))
     }
 
     static func draw(in ctx: CGContext, rect: CGRect, phase: CGFloat, dimmed: Bool) {
