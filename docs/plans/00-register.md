@@ -82,6 +82,7 @@ Outstanding items only the owner can close.
 | O10 | Gate F6 (eject dock volumes), proposed after F5 and before F4 in today's order. | P1 | open |
 | O11 | Which menu bar icon (D16)? An SF Symbol name, or an image file in `Resources/`. Until answered the connector symbols stay. | P2 | closed 2026-10-18 — the owner's hue ring, regenerated as a continuous sweep; motion policy is D20, built as F7 |
 | O12 | F2 live checks only the owner can do, with the app running: close the lid for a minute (expect `system.sleep` then `system.wake`); unplug the dock's cable from the Mac for ten seconds (expect `power.disconnected` with `lastWatts`, four `volume.disappeared`, seventeen `usb.detached`, then the reverse as `power.connected`, `usb.attached`, `volume.mounted`); click Open Log (Finder shows the file). | P1 | open |
+| O13 | **The experiment.** Turn on Keep Dock Awake (menu, ⌘K) and leave the Mac docked overnight. Next morning run `pmset -g log \| grep -E "^$(date +%Y-%m-%d).*acdetach" \| wc -l` and paste the number beside the earlier nights (50–294 a day). Also close the lid for a minute with the toggle on and confirm `pmset -g assertions` lists the DockWatch assertion after reopening (NFR8). | P0 | open |
 
 Questions for O1–O6 are laid out in `docs/handoffs/2026-10-18-planning-questions.md`.
 
@@ -136,12 +137,12 @@ A test is not evidence until a mutation proves it can fail.
 
 | ID | File | Mutation | Caught by | Status |
 |---|---|---|---|---|
-| M1 | `Sources/DockCore/HoldPolicy.swift` | Keep holding after the dock is removed | `HoldPolicyTests.testUndockReleasesHold` | proposed |
-| M2 | `Sources/DockCore/HoldPolicy.swift` | Hold while the toggle is off | `HoldPolicyTests.testToggleOffNeverHolds` | proposed |
+| M1 | `Sources/DockCore/HoldPolicy.swift` | Keep holding after the dock is removed | `HoldPolicyTests.testUndockReleasesHold` | killed 2026-10-18: 2 failures / 1 test (`scripts/mutate.sh M1`) |
+| M2 | `Sources/DockCore/HoldPolicy.swift` | Hold while the toggle is off | `HoldPolicyTests.testToggleOffNeverHolds` | killed 2026-10-18: 3 failures / 1 test (`scripts/mutate.sh M2`) |
 | M3 | `Sources/DockCore/EventStore.swift` | Open the log with truncate instead of append | `EventStoreTests.testAppendPreservesPriorLines` | killed 2026-10-18: 4 failures / 1 test (`scripts/mutate.sh M3`) |
 | M4 | `Sources/DockCore/DockIdentity.swift` | Match on vendor ID alone | `DockIdentityTests.testRazerMouseIsNotTheDock` and `testChromaControllerIsNotTheDock` (both share the dock's vendor ID) | killed 2026-10-18: 1 failure / 1 test (`scripts/mutate.sh M4`) |
 | M5 | `Sources/DockCore/EventQuery.swift` | Compute the 24-hour window by insertion order, not timestamp | `EventQueryTests.testWindowExcludesOldEvents` | proposed |
-| M6 | `Sources/DockCore/HoldPolicy.swift` | Ignore the wake input | `HoldPolicyTests.testWakeWhileDockedReasserts` | proposed |
+| M6 | `Sources/DockCore/HoldPolicy.swift` | Ignore the wake input | `HoldPolicyTests.testWakeWhileDockedReasserts` | killed 2026-10-18: 1 failure / 1 test (`scripts/mutate.sh M6`) |
 | M7 | `Sources/DockCore/DockMembership.swift` | Compare the whole location ID instead of the controller byte | `DockMembershipTests.testSiblingHubIsOnTheDock` | proposed |
 | M8 | `Sources/DockCore/EventStore.swift` | Delete the log at rotation instead of moving it aside | `EventStoreTests.testRotationKeepsExactlyOnePreviousFile` | killed 2026-10-18: 3 failures / 1 test (`scripts/mutate.sh M8`) |
 
