@@ -1,4 +1,4 @@
-// Created: 2026-10-18 11:20 -05:00 · Edited: 2026-10-18 16:54 -05:00
+// Created: 2026-10-18 11:20 -05:00 · Edited: 2026-10-18 17:10 -05:00
 // F1-T4 / F2-T4 / F3-T3 / F5-T2 / F6-T3 — the menu bar icon and its menu (FR1, FR5, FR7, FR8, FR9).
 import AppKit
 import DockCore
@@ -22,6 +22,7 @@ final class StatusItemController: NSObject, NSMenuDelegate {
     private let loginItem = NSMenuItem(title: "Launch at Login", action: #selector(toggleLaunchAtLogin), keyEquivalent: "")
     private let ejectHeader = NSMenuItem(title: "Dock Volumes", action: nil, keyEquivalent: "")
     private let countersLine = NSMenuItem(title: "Last 24 h: —", action: nil, keyEquivalent: "")
+    private let countersNote = NSMenuItem(title: "Charger drops during sleep are in the system power log (RR3).", action: nil, keyEquivalent: "")
     private let timelineItem = NSMenuItem(title: "Recent Events", action: nil, keyEquivalent: "")
     private let timelineMenu = NSMenu()
     private static let ejectTag = 900
@@ -53,8 +54,12 @@ final class StatusItemController: NSObject, NSMenuDelegate {
         menu.addItem(stateLine)
         menu.addItem(problemLine)
         countersLine.isEnabled = false
-        countersLine.toolTip = "Devices and volumes lost from the dock, charger drops, and full wakes in the last 24 hours. Charger drops during sleep are in the system power log (pmset -g log), not here."
+        countersLine.toolTip = "Devices and volumes lost from the dock, charger drops, and full wakes in the last 24 hours."
         menu.addItem(countersLine)
+        countersNote.isEnabled = false
+        countersNote.indentationLevel = 1
+        countersNote.attributedTitle = NSAttributedString(string: "Charger drops during sleep are in the system power log, not here.", attributes: [.font: NSFont.menuFont(ofSize: NSFont.smallSystemFontSize)])
+        menu.addItem(countersNote)
         timelineItem.submenu = timelineMenu
         menu.addItem(timelineItem)
         menu.addItem(.separator())

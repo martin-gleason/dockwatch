@@ -1,4 +1,4 @@
-// Created: 2026-10-18 16:54 -05:00 · Edited: 2026-10-18 16:54 -05:00
+// Created: 2026-10-18 16:54 -05:00 · Edited: 2026-10-18 17:10 -05:00
 import XCTest
 @testable import DockCore
 
@@ -19,8 +19,12 @@ final class LossCoalescerTests: XCTestCase {
         var c = LossCoalescer()
         c.add(.volume("Backups"), at: t0)
         for n in ["Das Keyboard", "USB Receiver", "USB 10/100/1000 LAN"] { c.add(.device(n), at: t0.addingTimeInterval(0.3)) }
-        c.dockDetached(at: t0.addingTimeInterval(0.5))
+        XCTAssertFalse(c.dockDetached(at: t0.addingTimeInterval(0.5)), "the window was already open")
         XCTAssertEqual(c.flush(), .dockDisconnected(devices: 3, volumes: 1))
+
+        var d = LossCoalescer()
+        XCTAssertTrue(d.dockDetached(at: t0), "the dock going first opens the window")
+        XCTAssertEqual(d.flush(), .dockDisconnected(devices: 0, volumes: 0))
     }
 
     /// FR6: a second loss inside an open window does not open another.

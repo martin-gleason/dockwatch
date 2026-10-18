@@ -17,7 +17,7 @@ Named, never numbered (`D2`). **No source read here marks a milestone as the cur
 
 | Milestone | Decisions landing here | Units |
 |---|---|---|
-| MVP | 24 | C1, F1, F2, F3, F4, F5, F6 |
+| MVP | 24 | C1, F1, F2, F3, F4, F4b, F5, F6 |
 | v1.5 | 4 | — |
 
 ## Features and chores
@@ -31,6 +31,7 @@ Status is what the unit's own plan header declares. What has landed in git is de
 | F2 | feature | in progress (gate crossed 2026-10-18, "start f2") | MVP | — | agent | `docs/plans/F2.md` | 5 planned |
 | F3 | feature | in progress (gate crossed 2026-10-18, "begin work on f3") | MVP | — | agent | `docs/plans/F3.md` | 3 planned |
 | F4 | feature | built 2026-10-18; review pending | MVP | — | agent | `docs/plans/F4.md` | 3 planned |
+| F4b | feature | built 2026-10-18 | MVP | — | agent | `docs/plans/F4b.md` | 0 planned |
 | F5 | feature | built 2026-10-18; reviewed (`docs/reviews/F5.md`); the login launch itself (log out and in) and the dock half of the sandbox proof (A1) remain | MVP | — | agent | `docs/plans/F5.md` | 3 planned |
 | F6 | feature | in progress (gate crossed 2026-10-18, "you can begin f6") | MVP | — | agent | `docs/plans/F6.md` | 3 planned |
 
@@ -45,7 +46,7 @@ Counted from the register itself. A register with no rows still gets a line.
 | Owner items (`O`) | 15 | 5 | 0 | 10 |
 | Agent items (`A`) | 1 | 1 | 0 | 0 |
 | Hooks (`H`) | 6 | 2 | 0 | 4 |
-| Mutations (`M`) | 12 | 0 | 0 | 12 |
+| Mutations (`M`) | 13 | 0 | 0 | 13 |
 | Chores (`C`) | 2 | 2 | 0 | 0 |
 | Gates (`G`) | 7 | 0 | 0 | 7 |
 
@@ -65,7 +66,7 @@ Counted from the register itself. A register with no rows still gets a line.
 | `H` | built | 4 |
 | `H` | not built | 1 |
 | `H` | open | 1 |
-| `M` | killed | 12 |
+| `M` | killed | 13 |
 | `C` | open | 2 |
 | `G` | done | 7 |
 
@@ -120,7 +121,7 @@ Every open row in the register. Owner is the row's Owner column where the table 
 | owner | D24 | — | proposed | Under App Sandbox the log lives in the app's container: /Library/Containers/com.martingleason.dockwatch/Data/Library/Log… |
 | owner | D27 | — | proposed | Loss notifications are coalesced for two seconds after the first loss, so a whole-dock pull is one notification ("Dock d… |
 | owner | D28 | — | proposed | The menu's 24-hour counters: devices lost = usb.detached on dock devices; volumes lost = volume.disappeared (unclean) on… |
-| owner | O7 | P1 | open | Ratify D1–D10. |
+| owner | O7 | P1 | open | Ratify the proposed decisions the build rests on: D1–D5, D7, D9, D10, D20, D21, D23, D24, D27, D28, D29. |
 | owner | O12 | P1 | open | F2 and F3 live checks only the owner can do, with the app running and Keep Dock Awake on: close the lid for a minute (ex… |
 | owner | O13 | P0 | open | The experiment. With the app running and the dock attached, turn on Keep Dock Awake in the menu (its ⌘K works only while… |
 | owner | O14 | P1 | open | F6 live checks only the owner can do, with the dock plugged back in: eject one volume from the menu and reopen the menu … |
