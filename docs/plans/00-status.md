@@ -17,7 +17,8 @@ Named, never numbered (`D2`). **No source read here marks a milestone as the cur
 
 | Milestone | Decisions landing here | Units |
 |---|---|---|
-| MVP | 10 | C1, F1, F2, F3, F4, F5 |
+| MVP | 13 | C1, F1, F2, F3, F4, F5, F6 |
+| v1.5 | 2 | — |
 
 ## Features and chores
 
@@ -31,6 +32,7 @@ Status is what the unit's own plan header declares. What has landed in git is de
 | F3 | feature | planned, awaiting the gate | MVP | — | agent | `docs/plans/F3.md` | 3 planned |
 | F4 | feature | planned, awaiting the gate | MVP | — | agent | `docs/plans/F4.md` | 3 planned |
 | F5 | feature | planned, awaiting the gate | MVP | — | agent | `docs/plans/F5.md` | 2 planned |
+| F6 | feature | planned, awaiting the gate (`O10`) | MVP | — | agent | `docs/plans/F6.md` | 3 planned |
 
 ## Registers
 
@@ -38,31 +40,33 @@ Counted from the register itself. A register with no rows still gets a line.
 
 | Register | Rows | Open | Unknown | Closed |
 |---|---|---|---|---|
-| Decisions (`D`) | 10 | 10 | 0 | 0 |
-| Risks (`RR`) | 11 | 10 | 0 | 1 |
-| Owner items (`O`) | 7 | 5 | 0 | 2 |
+| Decisions (`D`) | 15 | 10 | 0 | 5 |
+| Risks (`RR`) | 14 | 13 | 0 | 1 |
+| Owner items (`O`) | 9 | 4 | 0 | 5 |
 | Agent items (`A`) | 0 | 0 | 0 | 0 |
 | Hooks (`H`) | 6 | 6 | 0 | 0 |
-| Mutations (`M`) | 6 | 6 | 0 | 0 |
+| Mutations (`M`) | 7 | 7 | 0 | 0 |
 | Chores (`C`) | 1 | 1 | 0 | 0 |
-| Gates (`G`) | 6 | 4 | 0 | 2 |
+| Gates (`G`) | 7 | 5 | 0 | 2 |
 
 ### By status
 
 | Register | Status | Count |
 |---|---|---|
 | `D` | proposed | 10 |
-| `RR` | open | 8 |
+| `D` | ratified | 4 |
+| `D` | superseded | 1 |
+| `RR` | open | 11 |
 | `RR` | proposed | 2 |
 | `RR` | rejected | 1 |
-| `O` | closed | 2 |
-| `O` | open | 5 |
+| `O` | closed | 5 |
+| `O` | open | 4 |
 | `H` | not built | 5 |
 | `H` | open | 1 |
-| `M` | proposed | 6 |
+| `M` | proposed | 7 |
 | `C` | open | 1 |
 | `G` | done | 2 |
-| `G` | open | 4 |
+| `G` | open | 5 |
 
 ## Hooks
 
@@ -92,6 +96,9 @@ Every open row in the register. Owner is the row's Owner column where the table 
 | agent | RR8 | — | open | IOKit and DiskArbitration callbacks run on the main run loop; a slow menu rebuild delays them. |
 | agent | RR9 | — | proposed | No CI yet: every check runs only where somebody remembers to run it. Found by detectrisks.py (ls .github/workflows → non… |
 | agent | RR10 | — | proposed | docs/plans/00-status.md is generated and nothing yet regenerates it, so it will go stale and be believed. Found by detec… |
+| agent | RR12 | — | open | App Sandbox may refuse DiskArbitration unmount (FR9) or IOKit matching notifications; unverified on this stack. |
+| agent | RR13 | — | open | Time Machine holds Backups open during a backup, so "Eject all" will report it blocked by backupd. |
+| agent | RR14 | — | open | The identifying USB device 0x1532:0x122E sits on the dock's USB 2 chain, the chain the spec says drops unevenly. If it t… |
 | human | RR2 | — | open | A docked Mac held awake around the clock: no overnight sleep, idle energy use. |
 | human | RR5 | — | open | Due end of day 2026-10-18. |
 | owner | D1 | — | proposed | The project is DockWatch, at /LocalDevProjects/dockwatch. It is distinct from the shell monitor at /dockwatch, which kee… |
@@ -99,20 +106,20 @@ Every open row in the register. Owner is the row's Owner column where the table 
 | owner | D3 | — | proposed | "Keep dock awake" is an IOPMLib PreventUserIdleSystemSleep assertion owned by the app process. Not pmset, not root, not … |
 | owner | D4 | — | proposed | The dock is identified by USB vendor:product 0x1532:0x122E (macOS name "Thunderbolt 4 Dock"). The Chroma controller 0x24… |
 | owner | D5 | — | proposed | The log is JSON Lines at /Library/Logs/DockWatch/events.jsonl, opened for append, rotated at 20 MB keeping one previous … |
-| owner | D6 | — | proposed | Learning level 5%: the agent authors, the owner reviews. Reason: due 2026-10-18. |
 | owner | D7 | — | proposed | macOS 14 minimum, matching HueBar. Built with Xcode 27.1 on macOS 27. Apple silicon only is verified. |
-| owner | D8 | — | proposed | The shell monitor at /dockwatch (LaunchAgent com.marty.dockwatch) stays running as the control instrument. Agreement bet… |
 | owner | D9 | — | proposed | Build order for 2026-10-18: C1 → F1 → F2 → F3 → F5 → F4. F4 is cut first if the day runs out. |
 | owner | D10 | — | proposed | The "Keep dock awake" toggle defaults off. First launch changes nothing until the owner turns it on. |
-| owner | O2 | P1 | open | Lock the learning level. Agent proposes 5% (D6). |
-| owner | O3 | P1 | open | Accept a round-the-clock hold while docked for MVP, or pull the schedule window into scope. Default if silent: accept. |
-| owner | O5 | P2 | open | Decide whether the app replaces the shell monitor once F2's log agrees with it. Default if silent: both stay. |
+| owner | D14 | — | proposed | License MPL-2.0: file-level copyleft whose terms the Mac App Store permits; GPL's do not, and the owner asked for both (… |
+| owner | D15 | — | proposed | Mac App Store distribution is a v1.5 goal (Q6). MVP therefore adopts App Sandbox and hardened runtime from F5, ad-hoc si… |
 | owner | O6 | P2 | open | Create the GitHub repository and push. C1-T6 waits on it. |
 | owner | O7 | P1 | open | Ratify D1–D10. |
+| owner | O9 | P1 | open | The vision sentence is now D11's and it adds FR9; the agent does not edit SPEC.md. Paste the sentence and FR9 into the s… |
+| owner | O10 | P1 | open | Gate F6 (eject dock volumes), proposed after F5 and before F4 in today's order. |
 | unassigned | G3 | — | open | F2 event log |
 | unassigned | G4 | — | open | F3 keep the dock awake |
 | unassigned | G5 | — | open | F5 installable app and launch at login |
 | unassigned | G6 | — | open | F4 timeline, counters, notifications |
+| unassigned | G7 | — | open | F6 eject dock volumes |
 | unassigned | H1 | — | not built | swift test passes |
 | unassigned | H2 | — | not built | Assertion count not below Tests/ASSERTIONFLOOR |
 | unassigned | H3 | — | not built | No register ID in a commit, branch or PR title |
@@ -125,7 +132,8 @@ Every open row in the register. Owner is the row's Owner column where the table 
 | unassigned | M4 | — | proposed | Match on vendor ID alone |
 | unassigned | M5 | — | proposed | Compute the 24-hour window by insertion order, not timestamp |
 | unassigned | M6 | — | proposed | Ignore the wake input |
+| unassigned | M7 | — | proposed | Compare the whole location ID instead of the controller byte |
 
 ---
 
-42 open register rows.
+46 open register rows.

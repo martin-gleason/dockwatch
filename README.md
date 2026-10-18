@@ -6,4 +6,4 @@ A Mac menu bar tool that logs what the Thunderbolt 4 dock does and keeps it from
 - Decisions, risks, owner items: `docs/plans/00-register.md`. Status: `docs/plans/00-status.md` (generated).
 - How work happens here: `CLAUDE.md` and `docs/conventions.md`.
 
-Status: planning, 2026-10-18. Nothing is built yet.
+License: MPL-2.0. Status 2026-10-18: C1 harness merged; F1 under review.
