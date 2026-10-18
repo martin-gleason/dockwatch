@@ -1,4 +1,4 @@
-// Created: 2026-10-18 11:20 -05:00 · Edited: 2026-10-18 11:32 -05:00
+// Created: 2026-10-18 11:20 -05:00 · Edited: 2026-10-18 12:15 -05:00
 // F1-T2 — what DockCore knows about one USB device. Plain data; no IOKit here.
 import Foundation  // String(format:) — F1 review, finding 3
 
@@ -30,9 +30,13 @@ public struct USBEvent: Equatable {
     public enum Kind: String { case attached, detached }
     public let kind: Kind
     public let device: USBDeviceDescriptor
+    /// True for devices already present when the monitor started (the priming pass), so a
+    /// relaunch is never mistaken for a hub re-enumeration in the permanent log (F2 review).
+    public let initial: Bool
 
-    public init(kind: Kind, device: USBDeviceDescriptor) {
+    public init(kind: Kind, device: USBDeviceDescriptor, initial: Bool = false) {
         self.kind = kind
         self.device = device
+        self.initial = initial
     }
 }
