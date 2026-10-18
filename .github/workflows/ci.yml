@@ -1,0 +1,25 @@
+# Created: 2026-10-18 11:45 -05:00 · Edited: 2026-10-18 11:45 -05:00
+# C1-T6 — the test gate (H1) and the floor (H2) in CI. The status-page check needs the upstream
+# generator and stays local (pre-commit). Branch protection is the owner's setting; this is what it requires.
+name: ci
+on:
+  pull_request:
+  push:
+    branches: [main]
+jobs:
+  test:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Toolchain
+        run: swift --version
+      - name: Build
+        run: swift build
+      - name: Test
+        run: swift test 2>&1 | tee test.log; grep -E "Executed [0-9]+ tests?, with 0 failures" test.log
+      - name: Assertion floor
+        run: |
+          n=$(grep -E "Executed [0-9]+ tests?" test.log | tail -1 | sed -E 's/.*Executed ([0-9]+) tests?.*/\1/')
+          floor=$(tr -d '[:space:]' < Tests/ASSERTION_FLOOR)
+          echo "executed=$n floor=$floor"
+          test "$n" -ge "$floor"

@@ -44,8 +44,8 @@ Counted from the register itself. A register with no rows still gets a line.
 | Risks (`RR`) | 14 | 13 | 0 | 1 |
 | Owner items (`O`) | 10 | 5 | 0 | 5 |
 | Agent items (`A`) | 0 | 0 | 0 | 0 |
-| Hooks (`H`) | 6 | 6 | 0 | 0 |
-| Mutations (`M`) | 7 | 6 | 0 | 1 |
+| Hooks (`H`) | 6 | 2 | 0 | 4 |
+| Mutations (`M`) | 7 | 7 | 0 | 0 |
 | Chores (`C`) | 2 | 2 | 0 | 0 |
 | Gates (`G`) | 7 | 5 | 0 | 2 |
 
@@ -59,9 +59,10 @@ Counted from the register itself. A register with no rows still gets a line.
 | `RR` | open | 11 |
 | `RR` | proposed | 2 |
 | `RR` | rejected | 1 |
-| `O` | closed | 5 |
-| `O` | open | 5 |
-| `H` | not built | 5 |
+| `O` | closed | 6 |
+| `O` | open | 3 |
+| `H` | built | 4 |
+| `H` | not built | 1 |
 | `H` | open | 1 |
 | `M` | killed | 1 |
 | `M` | proposed | 6 |
@@ -71,14 +72,14 @@ Counted from the register itself. A register with no rows still gets a line.
 
 ## Hooks
 
-**0 of 6 built.** Prose is advisory; hooks are not. A hook's status is what the register says — this page does not go looking in `scripts/` for a file and infer that the hook works, because a file existing is not evidence that it ever failed.
+**4 of 6 built.** Prose is advisory; hooks are not. A hook's status is what the register says — this page does not go looking in `scripts/` for a file and infer that the hook works, because a file existing is not evidence that it ever failed.
 
 | ID | Hook | Surface | Protects | Status |
 |---|---|---|---|---|
-| H1 | swift test passes | pre-commit + CI | the test gate | not built |
-| H2 | Assertion count not below Tests/ASSERTIONFLOOR | pre-commit | a suite that silently shrank | not built |
-| H3 | No register ID in a commit, branch or PR title | commit-msg | the two-tier grammar | not built |
-| H4 | Harness declared and its commands run | upstream `check_harness.py --run` | an undeclared or dead harness | not built |
+| H1 | swift test passes | pre-commit + CI | the test gate | built |
+| H2 | Assertion count not below Tests/ASSERTIONFLOOR | pre-commit + CI | a suite that silently shrank | built |
+| H3 | No register ID in a commit, branch or PR title | commit-msg | the two-tier grammar | built |
+| H4 | Harness declared and its commands run | upstream `check_harness.py --run` | an undeclared or dead harness | built |
 | H5 | Every FR has a test or a named manual check with evidence | plan review checklist | drift, both directions | open |
 | H6 | Status page regenerates clean | CI | a stale status page | not built |
 
@@ -122,10 +123,6 @@ Every open row in the register. Owner is the row's Owner column where the table 
 | unassigned | G5 | — | open | F5 installable app and launch at login |
 | unassigned | G6 | — | open | F4 timeline, counters, notifications |
 | unassigned | G7 | — | open | F6 eject dock volumes |
-| unassigned | H1 | — | not built | swift test passes |
-| unassigned | H2 | — | not built | Assertion count not below Tests/ASSERTIONFLOOR |
-| unassigned | H3 | — | not built | No register ID in a commit, branch or PR title |
-| unassigned | H4 | — | not built | Harness declared and its commands run |
 | unassigned | H5 | — | open | Every FR has a test or a named manual check with evidence |
 | unassigned | H6 | — | not built | Status page regenerates clean |
 | unassigned | M1 | — | proposed | Keep holding after the dock is removed |
@@ -137,4 +134,4 @@ Every open row in the register. Owner is the row's Owner column where the table 
 
 ---
 
-46 open register rows.
+42 open register rows.
