@@ -2,7 +2,7 @@
 
 Created: 2026-10-18 10:55 -05:00 · Edited: 2026-10-18 10:55 -05:00
 
-DockWatch is a Mac menu bar tool that logs what the Thunderbolt 4 dock does and keeps it from falling asleep.
+DockWatch is a native Mac Menu Bar tool that logs the activity of the thunderbolt 4 dock, keeps it from falling asleep, and lets you eject or remove connected devices quickly and safely.
 
 @docs/conventions.md
 
@@ -27,7 +27,7 @@ Where the spec and the register conflict, **the register wins**.
 
 ## Non-negotiable
 
-- **Scope is `SPEC.md` FR1–FR8 plus ratified deltas (D11 adds FR9, eject).** Eject-before-sleep, auto-remount, schedules, dock pickers, hub port power cycling and lighting are future milestones. Do not build or stub them; open a `D<n>` and stop.
+- **Scope is `SPEC.md` FR1–FR9 plus ratified deltas.** Eject-before-sleep, auto-remount, schedules, dock pickers, hub port power cycling and lighting are future milestones. Do not build or stub them; open a `D<n>` and stop.
 - **Never claim control the API does not give.** The app holds a power assertion on the Mac. It cannot power-cycle, renegotiate or wake the dock, and no menu text, log line or PR may say it does.
 - **`DockCore` never imports AppKit.** Hold policy, dock matcher, event model and queries are pure and tested offline.
 - **No polling timers.** Device, volume, power and sleep state arrive through system callbacks (NFR2).

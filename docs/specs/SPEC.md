@@ -1,10 +1,10 @@
 # DockWatch — SPEC
 
-DockWatch is a Mac menu bar tool that logs what the Thunderbolt 4 dock does and keeps it from falling asleep.
+DockWatch is a native Mac Menu Bar tool that logs the activity of the thunderbolt 4 dock, keeps it from falling asleep, and lets you eject or remove connected devices quickly and safely.
 
-Created: 2026-10-18 10:55 -05:00 · Edited: 2026-10-18 11:10 -05:00
+Created: 2026-10-18 10:55 -05:00 · Edited: 2026-10-18 11:50 -05:00
 
-> **Vision sentence status: the owner's words from the planning session on 2026-10-18, reduced to one sentence by the agent. Ratification is `O1`.**
+> **Vision sentence status: ratified. The owner's own rewrite of 2026-10-18 (D11), pasted here on the owner's instruction; the original agent-reduced sentence is in git history.**
 
 ## What "falling asleep" means here
 
@@ -22,6 +22,7 @@ The investigation that preceded this project (2026-10-18, this Mac, Razer Thunde
 | FR6 | When a device or volume disappears while the Mac is awake, the user gets a notification naming it. |
 | FR7 | A "Launch at login" toggle. |
 | FR8 | An "Open log" action that reveals the log file in Finder. |
+| FR9 | Any volume on a disk attached through the dock can be ejected from the menu, singly or all at once, and the result is reported: done, or blocked and by what. No macOS API ejects a device without storage; for those, "remove" means the log confirms the device is gone, and the menu never offers an action it cannot perform. (Added by D11.) |
 
 ## Non-functional requirements
 

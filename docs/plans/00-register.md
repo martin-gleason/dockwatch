@@ -38,6 +38,8 @@ number has not been decided, however clearly it was said aloud.
 | D13 | ratified 2026-10-18 | MVP | **Supersedes D8.** Once F2's log is shown to agree with the shell monitor, the monitor's LaunchAgent is removed; replacing it is the test. Owner (Q5): "Replace. it's a real test." F2 gains a task for the removal. |
 | D14 | proposed | MVP | License **MPL-2.0**: file-level copyleft whose terms the Mac App Store permits; GPL's do not, and the owner asked for both (Q6). `LICENSE` added. |
 | D15 | proposed | v1.5 | Mac App Store distribution is a v1.5 goal (Q6). MVP therefore adopts App Sandbox and hardened runtime from F5, ad-hoc signed until a Developer ID exists, so nothing built now has to be unbuilt. |
+| D16 | proposed | MVP | The menu bar icon changes from the SF Symbol connector set to a symbol the owner picks. Owner 2026-10-18: "I do want to change the icon"; which one is `O11`. |
+| D17 | ratified 2026-10-18 | v1.5 | Users can choose the menu bar icon. Owner: "in v1.5 allow for users to select the icon." |
 
 ## Risks (RR)
 
@@ -72,8 +74,9 @@ Outstanding items only the owner can close.
 | O6 | Create the GitHub repository and push. C1-T6 waits on it. | P2 | closed 2026-10-18 — public at github.com/martin-gleason/dockwatch, created by the owner |
 | O7 | Ratify D1–D10. | P1 | open |
 | O8 | With the app running, pull the dock's Thunderbolt cable and plug it back; paste the stderr lines. Closes F1's live FR1/FR2 check. | P1 | open |
-| O9 | The vision sentence is now D11's and it adds FR9; the agent does not edit `SPEC.md`. Paste the sentence and FR9 into the spec, or tell the agent to. | P1 | open |
+| O9 | The vision sentence is now D11's and it adds FR9; the agent does not edit `SPEC.md`. Paste the sentence and FR9 into the spec, or tell the agent to. | P1 | closed 2026-10-18 — "paste the rewritten vision"; pasted by the agent on that instruction |
 | O10 | Gate F6 (eject dock volumes), proposed after F5 and before F4 in today's order. | P1 | open |
+| O11 | Which menu bar icon (D16)? An SF Symbol name, or an image file in `Resources/`. Until answered the connector symbols stay. | P2 | open |
 
 Questions for O1–O6 are laid out in `docs/handoffs/2026-10-18-planning-questions.md`.
 
@@ -101,7 +104,7 @@ already built.
 |---|---|---|---|---|---|
 | G1 | C1 harness | done (crossed) | 2026-10-18 | 2026-10-18 | "begin c1 and f1" |
 | G2 | F1 menu bar presence and dock detection | done (crossed) | 2026-10-18 | 2026-10-18 | "begin c1 and f1" |
-| G3 | F2 event log | open (awaiting the gate) | 2026-10-18 | — | — |
+| G3 | F2 event log | done (crossed) | 2026-10-18 | 2026-10-18 | "start f2" |
 | G4 | F3 keep the dock awake | open (awaiting the gate) | 2026-10-18 | — | — |
 | G5 | F5 installable app and launch at login | open (awaiting the gate) | 2026-10-18 | — | — |
 | G6 | F4 timeline, counters, notifications | open (awaiting the gate) | 2026-10-18 | — | — |
