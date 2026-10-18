@@ -46,6 +46,7 @@ number has not been decided, however clearly it was said aloud.
 | D21 | proposed | MVP | The log gains `hold.on` and `hold.off` lines when the sleep assertion is taken and released, so the overnight charger-drop comparison (F3 evidence, RR4) can be read against exactly when the hold was in force. Two kinds beyond FR3's list; the owner ratifies or they go. |
 | D22 | ratified 2026-10-18 | v1.5 | **Alert when something drops alone.** A device or volume on the dock detaching while the dock itself stays attached raises an alert; a whole-dock disconnect does not raise one per device. Owner: "v1.5: if something drops alone, we need an alert." Implication for F4 (MVP, FR6): its loss notifier must already tell a lone drop from a dock pull, so that this alert has a definition to build on. |
 | D23 | proposed | MVP | The menu's "Eject" is a DiskArbitration **unmount** of the volume, never a whole-disk `DADiskEject`: the disk stays attached, so a remount needs no replug, which suits a dock whose drives come and go. Finder's eject detaches the disk until it is replugged. A whole-disk eject is a v1.5 option. From the F6 review, finding 6. |
+| D24 | proposed | MVP | Under App Sandbox the log lives in the app's container: `~/Library/Containers/com.martingleason.dockwatch/Data/Library/Logs/DockWatch/events.jsonl`. "Open Log" in the menu is the way to it; commands in O12/O13 use that path for the installed app. The bare `swift run` binary keeps writing to `~/Library/Logs/DockWatch/`. |
 
 ## Risks (RR)
 
@@ -89,6 +90,14 @@ Outstanding items only the owner can close.
 | O14 | F6 live checks only the owner can do, with the dock plugged back in: eject one volume from the menu and reopen the menu within a minute — its row stays, greyed, reading “Ejected”; remount it (`diskutil mount disk5s2`) and reopen — the “Ejected” is gone. Then “Eject All Dock Volumes”: Backups reads “In use by a system process” if a backup is running (Time Machine runs as root and cannot be named), the others “Ejected”. Remount with `diskutil mountDisk disk5` / `disk6` / `disk7` or by replugging. | P1 | open |
 
 Questions for O1–O6 are laid out in `docs/handoffs/2026-10-18-planning-questions.md`.
+
+## Agent items (A)
+
+Outstanding items only the agent can close: defects in its own work, findings it owes a fix.
+
+| ID | Item | P | Status |
+|---|---|---|---|
+| A1 | Finish the RR12 sandbox proof once the dock is plugged back in: from the installed bundle, confirm the dock's USB devices are logged at launch, the hold is taken with the toggle on, an eject from the menu unmounts, and a held file's holder is named. Record each in `docs/plans/F5.md`. | P0 | open |
 
 ## Chores (C)
 
