@@ -14,9 +14,9 @@ id=${1:?usage: scripts/mutate.sh <M-id>}
 
 table='
 M1|Sources/DockCore/HoldPolicy.swift|s/dockChanged(false)/dockChanged(true)/|HoldPolicyTests/testUndockReleasesHold
-M2|Sources/DockCore/HoldPolicy.swift|s/toggle \&\& docked/docked/|HoldPolicyTests/testToggleOffNeverHolds
+M2|Sources/DockCore/HoldPolicy.swift|s/toggle && docked/docked/|HoldPolicyTests/testToggleOffNeverHolds
 M3|Sources/DockCore/EventStore.swift|s/O_APPEND/O_TRUNC/|EventStoreTests/testAppendPreservesPriorLines
-M4|Sources/DockCore/DockIdentity.swift|s/ \&\& device.productID == productID//|DockIdentityTests/testChromaControllerIsNotTheDock
+M4|Sources/DockCore/DockIdentity.swift|s/ && device.productID == productID//|DockIdentityTests/testRazerMouseIsNotTheDock
 M5|Sources/DockCore/EventQuery.swift|s/\$0.timestamp >= cutoff/true/|EventQueryTests/testWindowExcludesOldEvents
 M6|Sources/DockCore/HoldPolicy.swift|s/case .didWake: return apply()/case .didWake: return false/|HoldPolicyTests/testWakeWhileDockedReasserts
 '
@@ -30,7 +30,9 @@ if [[ ! -f "$file" ]]; then echo "mutate: $id names $file, which does not exist 
 
 backup=$(mktemp)
 cp "$file" "$backup"
-restore() { cp "$backup" "$file"; rm -f "$backup"; }
+# Restore the source AND rebuild: `swift test` rebuilt every target with the break in it, and
+# a restored tree over a mutated .build/ is how a vendor-only binary once ran as "F1 evidence".
+restore() { cp "$backup" "$file"; rm -f "$backup"; swift build >/dev/null 2>&1; }
 trap restore EXIT INT TERM
 
 sed -i '' -E "$expr" "$file"
