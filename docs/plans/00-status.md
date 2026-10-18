@@ -42,10 +42,10 @@ Counted from the register itself. A register with no rows still gets a line.
 |---|---|---|---|---|
 | Decisions (`D`) | 22 | 12 | 0 | 10 |
 | Risks (`RR`) | 14 | 13 | 0 | 1 |
-| Owner items (`O`) | 13 | 3 | 0 | 10 |
+| Owner items (`O`) | 14 | 4 | 0 | 10 |
 | Agent items (`A`) | 0 | 0 | 0 | 0 |
 | Hooks (`H`) | 6 | 2 | 0 | 4 |
-| Mutations (`M`) | 8 | 2 | 0 | 6 |
+| Mutations (`M`) | 9 | 1 | 0 | 8 |
 | Chores (`C`) | 2 | 2 | 0 | 0 |
 | Gates (`G`) | 7 | 2 | 0 | 5 |
 
@@ -60,12 +60,12 @@ Counted from the register itself. A register with no rows still gets a line.
 | `RR` | proposed | 2 |
 | `RR` | rejected | 1 |
 | `O` | closed | 10 |
-| `O` | open | 3 |
+| `O` | open | 4 |
 | `H` | built | 4 |
 | `H` | not built | 1 |
 | `H` | open | 1 |
-| `M` | killed | 6 |
-| `M` | proposed | 2 |
+| `M` | killed | 8 |
+| `M` | proposed | 1 |
 | `C` | open | 2 |
 | `G` | done | 5 |
 | `G` | open | 2 |
@@ -119,12 +119,12 @@ Every open row in the register. Owner is the row's Owner column where the table 
 | owner | O7 | P1 | open | Ratify D1–D10. |
 | owner | O12 | P1 | open | F2 and F3 live checks only the owner can do, with the app running and Keep Dock Awake on: close the lid for a minute (ex… |
 | owner | O13 | P0 | open | The experiment. With the app running and the dock attached, turn on Keep Dock Awake in the menu (its ⌘K works only while… |
+| owner | O14 | P1 | open | F6 live checks only the owner can do: eject one volume from the menu and reopen the menu within a minute to see “Ejected… |
 | unassigned | G5 | — | open | F5 installable app and launch at login |
 | unassigned | G6 | — | open | F4 timeline, counters, notifications |
 | unassigned | H5 | — | open | Every FR has a test or a named manual check with evidence |
 | unassigned | H6 | — | not built | Status page regenerates clean |
 | unassigned | M5 | — | proposed | Compute the 24-hour window by insertion order, not timestamp |
-| unassigned | M7 | — | proposed | Compare the whole location ID instead of the controller byte |
 
 ---
 
