@@ -17,7 +17,7 @@ Named, never numbered (`D2`). **No source read here marks a milestone as the cur
 
 | Milestone | Decisions landing here | Units |
 |---|---|---|
-| MVP | 22 | C1, F1, F2, F3, F4, F5, F6 |
+| MVP | 24 | C1, F1, F2, F3, F4, F5, F6 |
 | v1.5 | 4 | — |
 
 ## Features and chores
@@ -30,7 +30,7 @@ Status is what the unit's own plan header declares. What has landed in git is de
 | F1 | feature | in progress (gate crossed 2026-10-18) | MVP | — | agent | `docs/plans/F1.md` | 4 planned |
 | F2 | feature | in progress (gate crossed 2026-10-18, "start f2") | MVP | — | agent | `docs/plans/F2.md` | 5 planned |
 | F3 | feature | in progress (gate crossed 2026-10-18, "begin work on f3") | MVP | — | agent | `docs/plans/F3.md` | 3 planned |
-| F4 | feature | planned, awaiting the gate | MVP | — | agent | `docs/plans/F4.md` | 3 planned |
+| F4 | feature | in progress (gate crossed 2026-10-18, "begin f4") | MVP | — | agent | `docs/plans/F4.md` | 3 planned |
 | F5 | feature | built 2026-10-18; reviewed (`docs/reviews/F5.md`); the login launch itself (log out and in) and the dock half of the sandbox proof (A1) remain | MVP | — | agent | `docs/plans/F5.md` | 3 planned |
 | F6 | feature | in progress (gate crossed 2026-10-18, "you can begin f6") | MVP | — | agent | `docs/plans/F6.md` | 3 planned |
 
@@ -40,20 +40,20 @@ Counted from the register itself. A register with no rows still gets a line.
 
 | Register | Rows | Open | Unknown | Closed |
 |---|---|---|---|---|
-| Decisions (`D`) | 26 | 14 | 0 | 12 |
+| Decisions (`D`) | 28 | 16 | 0 | 12 |
 | Risks (`RR`) | 15 | 14 | 0 | 1 |
 | Owner items (`O`) | 14 | 4 | 0 | 10 |
 | Agent items (`A`) | 1 | 1 | 0 | 0 |
 | Hooks (`H`) | 6 | 2 | 0 | 4 |
 | Mutations (`M`) | 11 | 1 | 0 | 10 |
 | Chores (`C`) | 2 | 2 | 0 | 0 |
-| Gates (`G`) | 7 | 1 | 0 | 6 |
+| Gates (`G`) | 7 | 0 | 0 | 7 |
 
 ### By status
 
 | Register | Status | Count |
 |---|---|---|
-| `D` | proposed | 14 |
+| `D` | proposed | 16 |
 | `D` | ratified | 11 |
 | `D` | superseded | 1 |
 | `RR` | open | 12 |
@@ -68,8 +68,7 @@ Counted from the register itself. A register with no rows still gets a line.
 | `M` | killed | 10 |
 | `M` | proposed | 1 |
 | `C` | open | 2 |
-| `G` | done | 6 |
-| `G` | open | 1 |
+| `G` | done | 7 |
 
 ## Hooks
 
@@ -120,16 +119,17 @@ Every open row in the register. Owner is the row's Owner column where the table 
 | owner | D21 | — | proposed | The log gains hold.on and hold.off lines when the sleep assertion is taken and released, so the overnight charger-drop c… |
 | owner | D23 | — | proposed | The menu's "Eject" is a DiskArbitration unmount of the volume, never a whole-disk DADiskEject: the disk stays attached, … |
 | owner | D24 | — | proposed | Under App Sandbox the log lives in the app's container: /Library/Containers/com.martingleason.dockwatch/Data/Library/Log… |
+| owner | D27 | — | proposed | Loss notifications are coalesced for two seconds after the first loss, so a whole-dock pull is one notification ("Dock d… |
+| owner | D28 | — | proposed | The menu's 24-hour counters: devices lost = usb.detached on dock devices; volumes lost = volume.disappeared (unclean) on… |
 | owner | O7 | P1 | open | Ratify D1–D10. |
 | owner | O12 | P1 | open | F2 and F3 live checks only the owner can do, with the app running and Keep Dock Awake on: close the lid for a minute (ex… |
 | owner | O13 | P0 | open | The experiment. With the app running and the dock attached, turn on Keep Dock Awake in the menu (its ⌘K works only while… |
 | owner | O14 | P1 | open | F6 live checks only the owner can do, with the dock plugged back in: eject one volume from the menu and reopen the menu … |
 | unassigned | A1 | P0 | open | Finish the dock half of RR12 once the dock is plugged back in: from the installed bundle, confirm the dock's USB devices… |
-| unassigned | G6 | — | open | F4 timeline, counters, notifications |
 | unassigned | H5 | — | open | Every FR has a test or a named manual check with evidence |
 | unassigned | H6 | — | not built | Status page regenerates clean |
 | unassigned | M5 | — | proposed | Compute the 24-hour window by insertion order, not timestamp |
 
 ---
 
-39 open register rows.
+40 open register rows.

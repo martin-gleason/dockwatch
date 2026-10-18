@@ -49,6 +49,8 @@ number has not been decided, however clearly it was said aloud.
 | D24 | proposed | MVP | Under App Sandbox the log lives in the app's container: `~/Library/Containers/com.martingleason.dockwatch/Data/Library/Logs/DockWatch/events.jsonl`. "Open Log" in the menu is the way to it; commands in O12/O13 use that path for the installed app. The bare `swift run` binary keeps writing to `~/Library/Logs/DockWatch/`. |
 | D25 | ratified 2026-10-18 | MVP | **Under App Sandbox a busy eject cannot name its blocker**: the sandbox denies `proc_listpidspath` (RR12). Proposed: MVP accepts the wording "In use by another process; the sandbox cannot say which", and naming holders goes to v1.5, either outside the sandbox (direct distribution, notarized) or through a privileged helper. The alternative is dropping the sandbox now, which unwinds D15. From the F5 review. Owner: "d25 & d26 are approved." |
 | D26 | ratified 2026-10-18 | MVP | The Finder and Dock icon is a flat `.icns` for now, which macOS 26 shows inside a grey tile with the ring inset. The edge-to-edge Icon Composer `.icon` of the ring lands with F7, the icon feature. From the F5 review. Owner: "d25 & d26 are approved." |
+| D27 | proposed | MVP | Loss notifications are coalesced for two seconds after the first loss, so a whole-dock pull is one notification ("Dock disconnected: 17 devices, 4 volumes") and a lone drop is its own (D22's definition, built now). The two-second wait is a one-shot delay started by an event, not a poll (NFR2). Notification permission is requested once, at the first launch of the installed app; a `swift run` binary cannot post notifications (RR6) and logs that instead. |
+| D28 | proposed | MVP | The menu's 24-hour counters: devices lost = `usb.detached` on dock devices; volumes lost = `volume.disappeared` (unclean) on dock volumes; charger drops = `power.disconnected` not marked initial; wakes = `system.wake` (full wakes only, D18). The counters line says that sleep-time charger drops are in the system power log (RR3). |
 
 ## Risks (RR)
 
@@ -128,7 +130,7 @@ already built.
 | G3 | F2 event log | done (crossed) | 2026-10-18 | 2026-10-18 | "start f2" |
 | G4 | F3 keep the dock awake | done (crossed) | 2026-10-18 | 2026-10-18 | "begin work on f3" |
 | G5 | F5 installable app and launch at login | done (crossed) | 2026-10-18 | 2026-10-18 | "#5 is merged. begin f5" |
-| G6 | F4 timeline, counters, notifications | open (awaiting the gate) | 2026-10-18 | — | — |
+| G6 | F4 timeline, counters, notifications | done (crossed) | 2026-10-18 | 2026-10-18 | "#6 is merged. begin f4" |
 | G7 | F6 eject dock volumes | done (crossed) | 2026-10-18 | 2026-10-18 | "#4 is merged. you can begin f6" |
 
 ## Hooks (H)
