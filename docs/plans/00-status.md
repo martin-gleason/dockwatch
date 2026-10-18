@@ -32,7 +32,7 @@ Status is what the unit's own plan header declares. What has landed in git is de
 | F3 | feature | in progress (gate crossed 2026-10-18, "begin work on f3") | MVP | — | agent | `docs/plans/F3.md` | 3 planned |
 | F4 | feature | planned, awaiting the gate | MVP | — | agent | `docs/plans/F4.md` | 3 planned |
 | F5 | feature | planned, awaiting the gate | MVP | — | agent | `docs/plans/F5.md` | 2 planned |
-| F6 | feature | planned, awaiting the gate (`O10`) | MVP | — | agent | `docs/plans/F6.md` | 3 planned |
+| F6 | feature | in progress (gate crossed 2026-10-18, "you can begin f6") | MVP | — | agent | `docs/plans/F6.md` | 3 planned |
 
 ## Registers
 
@@ -42,12 +42,12 @@ Counted from the register itself. A register with no rows still gets a line.
 |---|---|---|---|---|
 | Decisions (`D`) | 22 | 12 | 0 | 10 |
 | Risks (`RR`) | 14 | 13 | 0 | 1 |
-| Owner items (`O`) | 13 | 4 | 0 | 9 |
+| Owner items (`O`) | 13 | 3 | 0 | 10 |
 | Agent items (`A`) | 0 | 0 | 0 | 0 |
 | Hooks (`H`) | 6 | 2 | 0 | 4 |
 | Mutations (`M`) | 8 | 2 | 0 | 6 |
 | Chores (`C`) | 2 | 2 | 0 | 0 |
-| Gates (`G`) | 7 | 3 | 0 | 4 |
+| Gates (`G`) | 7 | 2 | 0 | 5 |
 
 ### By status
 
@@ -59,16 +59,16 @@ Counted from the register itself. A register with no rows still gets a line.
 | `RR` | open | 11 |
 | `RR` | proposed | 2 |
 | `RR` | rejected | 1 |
-| `O` | closed | 9 |
-| `O` | open | 4 |
+| `O` | closed | 10 |
+| `O` | open | 3 |
 | `H` | built | 4 |
 | `H` | not built | 1 |
 | `H` | open | 1 |
 | `M` | killed | 6 |
 | `M` | proposed | 2 |
 | `C` | open | 2 |
-| `G` | done | 4 |
-| `G` | open | 3 |
+| `G` | done | 5 |
+| `G` | open | 2 |
 
 ## Hooks
 
@@ -117,12 +117,10 @@ Every open row in the register. Owner is the row's Owner column where the table 
 | owner | D20 | — | proposed | Icon motion policy for F7: the hue ring is still by default, turns slowly while the hold is in force, and makes one turn… |
 | owner | D21 | — | proposed | The log gains hold.on and hold.off lines when the sleep assertion is taken and released, so the overnight charger-drop c… |
 | owner | O7 | P1 | open | Ratify D1–D10. |
-| owner | O10 | P1 | open | Gate F6 (eject dock volumes), proposed after F5 and before F4 in today's order. |
 | owner | O12 | P1 | open | F2 and F3 live checks only the owner can do, with the app running and Keep Dock Awake on: close the lid for a minute (ex… |
 | owner | O13 | P0 | open | The experiment. With the app running and the dock attached, turn on Keep Dock Awake in the menu (its ⌘K works only while… |
 | unassigned | G5 | — | open | F5 installable app and launch at login |
 | unassigned | G6 | — | open | F4 timeline, counters, notifications |
-| unassigned | G7 | — | open | F6 eject dock volumes |
 | unassigned | H5 | — | open | Every FR has a test or a named manual check with evidence |
 | unassigned | H6 | — | not built | Status page regenerates clean |
 | unassigned | M5 | — | proposed | Compute the 24-hour window by insertion order, not timestamp |
@@ -130,4 +128,4 @@ Every open row in the register. Owner is the row's Owner column where the table 
 
 ---
 
-38 open register rows.
+36 open register rows.

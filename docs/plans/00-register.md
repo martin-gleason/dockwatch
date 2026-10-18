@@ -80,7 +80,7 @@ Outstanding items only the owner can close.
 | O7 | Ratify D1–D10. | P1 | open |
 | O8 | With the app running, pull the dock's Thunderbolt cable and plug it back; paste the stderr lines. Closes F1's live FR1/FR2 check. | P1 | closed 2026-10-18 — owner: "I did the test. it works beautifully." |
 | O9 | The vision sentence is now D11's and it adds FR9; the agent does not edit `SPEC.md`. Paste the sentence and FR9 into the spec, or tell the agent to. | P1 | closed 2026-10-18 — "paste the rewritten vision"; pasted by the agent on that instruction |
-| O10 | Gate F6 (eject dock volumes), proposed after F5 and before F4 in today's order. | P1 | open |
+| O10 | Gate F6 (eject dock volumes), proposed after F5 and before F4 in today's order. | P1 | closed 2026-10-18 — "you can begin f6" |
 | O11 | Which menu bar icon (D16)? An SF Symbol name, or an image file in `Resources/`. Until answered the connector symbols stay. | P2 | closed 2026-10-18 — the owner's hue ring, regenerated as a continuous sweep; motion policy is D20, built as F7 |
 | O12 | F2 and F3 live checks only the owner can do, with the app running and Keep Dock Awake on: close the lid for a minute (expect `system.sleep` then `system.wake`); unplug the dock's cable from the Mac for ten seconds (expect `power.disconnected` with `lastWatts`, four `volume.disappeared`, seventeen `usb.detached`, and `hold.off` within five seconds of the pull; then the reverse as `power.connected`, `usb.attached`, `volume.mounted`, and `hold.on`); click Open Log (Finder shows the file). | P1 | open |
 | O13 | **The experiment.** With the app running and the dock attached, turn on **Keep Dock Awake** in the menu (its ⌘K works only while the menu is open). Leave the lid **open** overnight: an idle-sleep assertion does not stop a lid-close sleep (RR1), and a `system.sleep` line after `hold.on` in `events.jsonl` invalidates the night. Next morning count charger drops **from the `hold.on` timestamp**, and compare with the same clock window on earlier nights, not with their day totals (the loop runs all day, so a morning-only count against a day total would flatter a partial result): `H=$(grep '"hold.on"' ~/Library/Logs/DockWatch/events.jsonl \| tail -1 \| sed -E 's/.*"ts":"([^"]+)".*/\\1/')` then `pmset -g log \| grep acdetach \| awk -v h="$H" '$1" "$2 >= substr(h,1,19)' \| wc -l`, beside `pmset -g log \| grep acdetach \| awk '{print $1}' \| sort \| uniq -c` for the earlier nights. Zero is unambiguous; anything else is read against the matching window. Lid check separately (NFR8): with the toggle on, close the lid for a minute, reopen, and look for `hold.on … reapplied=true` in the log and a fresh age on the assertion in `pmset -g assertions`. | P0 | open |
@@ -115,7 +115,7 @@ already built.
 | G4 | F3 keep the dock awake | done (crossed) | 2026-10-18 | 2026-10-18 | "begin work on f3" |
 | G5 | F5 installable app and launch at login | open (awaiting the gate) | 2026-10-18 | — | — |
 | G6 | F4 timeline, counters, notifications | open (awaiting the gate) | 2026-10-18 | — | — |
-| G7 | F6 eject dock volumes | open (awaiting the gate) | 2026-10-18 | — | — |
+| G7 | F6 eject dock volumes | done (crossed) | 2026-10-18 | 2026-10-18 | "#4 is merged. you can begin f6" |
 
 ## Hooks (H)
 
