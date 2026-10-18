@@ -46,7 +46,7 @@ Counted from the register itself. A register with no rows still gets a line.
 | Agent items (`A`) | 0 | 0 | 0 | 0 |
 | Hooks (`H`) | 6 | 6 | 0 | 0 |
 | Mutations (`M`) | 7 | 7 | 0 | 0 |
-| Chores (`C`) | 1 | 1 | 0 | 0 |
+| Chores (`C`) | 2 | 2 | 0 | 0 |
 | Gates (`G`) | 7 | 5 | 0 | 2 |
 
 ### By status
@@ -64,7 +64,7 @@ Counted from the register itself. A register with no rows still gets a line.
 | `H` | not built | 5 |
 | `H` | open | 1 |
 | `M` | proposed | 7 |
-| `C` | open | 1 |
+| `C` | open | 2 |
 | `G` | done | 2 |
 | `G` | open | 5 |
 
@@ -88,6 +88,7 @@ Every open row in the register. Owner is the row's Owner column where the table 
 | Owner | ID | P | Status | Item |
 |---|---|---|---|---|
 | agent | C1 | P0 | open | Build the harness: run, count, floor, mutate, pre-commit; CI once pushed. |
+| agent | C2 | P2 | open | Stamps: every Created/Edited line comes from the clock or git, never typed; correct the files whose stamps run ahead of … |
 | agent | RR1 | — | open | An idle-sleep assertion does not stop lid-close sleep on battery without an external display, nor an explicit Sleep comm… |
 | agent | RR3 | — | open | A user-space app observes nothing while the Mac sleeps, so sleep-time charger drops never reach the app log. |
 | agent | RR4 | — | open | The hypothesis is wrong: devices keep dropping with the Mac awake. |
@@ -136,4 +137,4 @@ Every open row in the register. Owner is the row's Owner column where the table 
 
 ---
 
-46 open register rows.
+47 open register rows.

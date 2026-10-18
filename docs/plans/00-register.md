@@ -87,6 +87,7 @@ days on the owner's track.
 | ID | Chore | P | Status | Owner | Plan |
 |---|---|---|---|---|---|
 | C1 | Build the harness: run, count, floor, mutate, pre-commit; CI once pushed. | P0 | open | agent | `docs/plans/C1.md` |
+| C2 | Stamps: every Created/Edited line comes from the clock or git, never typed; correct the files whose stamps run ahead of their commits (F1 review, finding 4). | P2 | open | agent | — |
 
 ## Gates (G)
 
