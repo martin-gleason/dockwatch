@@ -17,7 +17,7 @@ Named, never numbered (`D2`). **No source read here marks a milestone as the cur
 
 | Milestone | Decisions landing here | Units |
 |---|---|---|
-| MVP | 24 | C1, F1, F2, F3, F4, F5, F6 |
+| MVP | 25 | C1, F1, F2, F3, F4, F5, F6, F7 |
 | v1.5 | 4 | — |
 
 ## Features and chores
@@ -33,6 +33,7 @@ Status is what the unit's own plan header declares. What has landed in git is de
 | F4 | feature | built 2026-10-18; review pending | MVP | — | agent | `docs/plans/F4.md` | 3 planned |
 | F5 | feature | built 2026-10-18; reviewed (`docs/reviews/F5.md`); the login launch itself (log out and in) and the dock half of the sandbox proof (A1) remain | MVP | — | agent | `docs/plans/F5.md` | 3 planned |
 | F6 | feature | in progress (gate crossed 2026-10-18, "you can begin f6") | MVP | — | agent | `docs/plans/F6.md` | 3 planned |
+| F7 | feature | built 2026-10-18; review pending | MVP | — | agent | `docs/plans/F7.md` | 4 planned |
 
 ## Registers
 
@@ -40,34 +41,34 @@ Counted from the register itself. A register with no rows still gets a line.
 
 | Register | Rows | Open | Unknown | Closed |
 |---|---|---|---|---|
-| Decisions (`D`) | 28 | 16 | 0 | 12 |
+| Decisions (`D`) | 29 | 17 | 0 | 12 |
 | Risks (`RR`) | 15 | 14 | 0 | 1 |
-| Owner items (`O`) | 15 | 5 | 0 | 10 |
+| Owner items (`O`) | 16 | 6 | 0 | 10 |
 | Agent items (`A`) | 1 | 1 | 0 | 0 |
 | Hooks (`H`) | 6 | 2 | 0 | 4 |
-| Mutations (`M`) | 12 | 0 | 0 | 12 |
+| Mutations (`M`) | 13 | 0 | 0 | 13 |
 | Chores (`C`) | 2 | 2 | 0 | 0 |
-| Gates (`G`) | 7 | 0 | 0 | 7 |
+| Gates (`G`) | 8 | 0 | 0 | 8 |
 
 ### By status
 
 | Register | Status | Count |
 |---|---|---|
-| `D` | proposed | 16 |
+| `D` | proposed | 17 |
 | `D` | ratified | 11 |
 | `D` | superseded | 1 |
 | `RR` | open | 12 |
 | `RR` | proposed | 2 |
 | `RR` | rejected | 1 |
 | `O` | closed | 10 |
-| `O` | open | 5 |
+| `O` | open | 6 |
 | `A` | open | 1 |
 | `H` | built | 4 |
 | `H` | not built | 1 |
 | `H` | open | 1 |
-| `M` | killed | 12 |
+| `M` | killed | 13 |
 | `C` | open | 2 |
-| `G` | done | 7 |
+| `G` | done | 8 |
 
 ## Hooks
 
@@ -120,15 +121,17 @@ Every open row in the register. Owner is the row's Owner column where the table 
 | owner | D24 | — | proposed | Under App Sandbox the log lives in the app's container: /Library/Containers/com.martingleason.dockwatch/Data/Library/Log… |
 | owner | D27 | — | proposed | Loss notifications are coalesced for two seconds after the first loss, so a whole-dock pull is one notification ("Dock d… |
 | owner | D28 | — | proposed | The menu's 24-hour counters: devices lost = usb.detached on dock devices; volumes lost = volume.disappeared (unclean) on… |
+| owner | D29 | — | proposed | NFR2 reading for F7: the ring's frame timer is an animation clock that exists only while the ring is moving (held, or mi… |
 | owner | O7 | P1 | open | Ratify D1–D10. |
 | owner | O12 | P1 | open | F2 and F3 live checks only the owner can do, with the app running and Keep Dock Awake on: close the lid for a minute (ex… |
 | owner | O13 | P0 | open | The experiment. With the app running and the dock attached, turn on Keep Dock Awake in the menu (its ⌘K works only while… |
 | owner | O14 | P1 | open | F6 live checks only the owner can do, with the dock plugged back in: eject one volume from the menu and reopen the menu … |
 | owner | O15 | P1 | open | F4 live checks only the owner can do, from the installed app with the dock attached: allow notifications when asked at f… |
+| owner | O16 | P1 | open | F7 live checks only the owner can do, from a rebuilt installed app (scripts/build-app.sh --install): the ring in the men… |
 | unassigned | A1 | P0 | open | Finish the dock half of RR12 once the dock is plugged back in: from the installed bundle, confirm the dock's USB devices… |
 | unassigned | H5 | — | open | Every FR has a test or a named manual check with evidence |
 | unassigned | H6 | — | not built | Status page regenerates clean |
 
 ---
 
-40 open register rows.
+42 open register rows.
