@@ -1,0 +1,17 @@
+#!/bin/zsh
+# Created: 2026-10-18 11:25 -05:00 · Edited: 2026-10-18 11:25 -05:00
+# H3 — the two-tier grammar. Subject is `<type>(<F|C id or milestone>): <description>`
+# and never carries a register ID (D, RR, O, A, H, M, G, FR, NFR). Cite those in the body.
+set -u
+subject=$(head -1 "$1")
+
+if ! printf '%s' "$subject" | grep -qE '^(feat|fix|test|chore|docs|refactor|ci)\(([FC][0-9]+[a-z]?(-T[0-9]+)?|MVP|v[0-9]+(\.[0-9]+)*)\): .+'; then
+  printf 'commit-msg: subject must be "<type>(<F|C id or milestone>): <description>"\n  got: %s\n' "$subject"
+  exit 1
+fi
+
+if printf '%s' "$subject" | grep -qE '(^|[^A-Za-z0-9])(D|RR|O|A|H|M|G|FR|NFR)[0-9]+([^A-Za-z0-9]|$)'; then
+  printf 'commit-msg: a register ID in the subject — cite it in the body, carry the F/C id in the scope\n  got: %s\n' "$subject"
+  exit 1
+fi
+exit 0

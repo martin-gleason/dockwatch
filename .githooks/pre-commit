@@ -1,0 +1,63 @@
+#!/bin/zsh
+# Created: 2026-10-18 11:25 -05:00 · Edited: 2026-10-18 11:25 -05:00
+# H1 / H2 / H6 — the gates run at commit time, on the tree being committed, so they cannot
+# be satisfied in advance and then edited past.
+#
+# Install:  git config core.hooksPath .githooks
+# Bypass:   git commit --no-verify   (a deliberate act, and it says so in the reflog)
+set -u
+cd "$(git rev-parse --show-toplevel)"
+fail=0
+printf '\npre-commit gates\n'
+
+# H1 — the suite passes. The summary line is quoted, not just the exit code.
+out=$(swift test 2>&1); rc=$?
+summary=$(printf '%s\n' "$out" | grep -E "Executed [0-9]+ tests?" | tail -1)
+if [[ $rc -eq 0 ]]; then
+  printf '  ok    swift test — %s\n' "${summary:-no summary line}"
+else
+  printf '  FAIL  swift test\n'
+  printf '%s\n' "$out" | grep -E "error:|failed|XCTAssert" | head -10 | sed 's/^/          /'
+  fail=1
+fi
+
+# H2 — the floor. A suite that silently stopped running is the failure an exit code hides.
+n=$(printf '%s\n' "$summary" | sed -nE 's/.*Executed ([0-9]+) tests?.*/\1/p'); n=${n:-0}
+if [[ -f Tests/ASSERTION_FLOOR ]]; then
+  floor=$(tr -d '[:space:]' < Tests/ASSERTION_FLOOR)
+  if [[ "$n" -lt "$floor" ]]; then
+    printf '  FAIL  floor: %s executed, floor is %s\n' "$n" "$floor"; fail=1
+  else
+    printf '  ok    floor (%s >= %s)\n' "$n" "$floor"
+  fi
+else
+  printf '  FAIL  Tests/ASSERTION_FLOOR missing\n'; fail=1
+fi
+
+# H6 — the generated status page matches the register. The generator lives upstream.
+GS=$HOME/Local_Dev_Projects/turing-review/scripts/gen_status.py
+if [[ -f "$GS" ]]; then
+  if python3 "$GS" --check . >/dev/null 2>&1; then
+    printf '  ok    status page current\n'
+  else
+    printf '  FAIL  status page stale — run: python3 %s .\n' "$GS"; fail=1
+  fi
+else
+  printf '  note  upstream gen_status.py not found; status check skipped (lone clone)\n'
+fi
+
+# Secrets — a crude scan of what is staged.
+if git diff --cached | grep -qE '(AKIA[0-9A-Z]{16}|-----BEGIN (RSA|OPENSSH|EC) PRIVATE KEY|ghp_[A-Za-z0-9]{36}|xox[baprs]-[A-Za-z0-9-]+)'; then
+  printf '  FAIL  secret-looking string in the staged diff\n'; fail=1
+else
+  printf '  ok    no secret patterns staged\n'
+fi
+
+if ! git diff --quiet 2>/dev/null; then
+  printf '  note  unstaged changes present — these gates read the WORKING TREE\n'
+fi
+
+if [[ $fail -ne 0 ]]; then
+  printf '\nrefused. Fix, or --no-verify deliberately.\n\n'; exit 1
+fi
+printf 'all gates green\n\n'

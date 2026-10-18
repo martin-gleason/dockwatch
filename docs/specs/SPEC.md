@@ -38,7 +38,13 @@ The investigation that preceded this project (2026-10-18, this Mac, Razer Thunde
 
 ## Stack
 
-Swift 5.9 language mode on the Swift 6.4 toolchain (Xcode 27.1) · SwiftPM package, no Xcode project · AppKit · macOS 14 or later · runner: `swift test` (XCTest) · layout: `Sources/DockCore` (library, no AppKit), `Sources/DockWatch` (executable), `Tests/DockCoreTests` · CI: GitHub Actions on macOS once the repository is pushed · no third-party dependencies. Changing any of this is a `D<n>`.
+Baseline. Changing any of this is a `D<n>`.
+
+- language: Swift 5.9 language mode on the Swift 6.4 toolchain (Xcode 27.1)
+- framework: AppKit, no SwiftUI; SwiftPM package, no Xcode project; macOS 14 or later; no third-party dependencies
+- runner: `swift test` (XCTest)
+- layout: `Sources/DockCore` (library, no AppKit) · `Sources/DockWatch` (executable) · `Tests/DockCoreTests`
+- ci: GitHub Actions on macOS once the repository is pushed; `.githooks/pre-commit` locally until then
 
 ## Hook intentions
 
