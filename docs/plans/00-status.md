@@ -17,7 +17,7 @@ Named, never numbered (`D2`). **No source read here marks a milestone as the cur
 
 | Milestone | Decisions landing here | Units |
 |---|---|---|
-| MVP | 25 | C1, F1, F2, F3, F4, F5, F6, F7 |
+| MVP | 25 | C1, F1, F2, F3, F4, F4b, F5, F6, F7 |
 | v1.5 | 4 | — |
 
 ## Features and chores
@@ -43,11 +43,11 @@ Counted from the register itself. A register with no rows still gets a line.
 | Register | Rows | Open | Unknown | Closed |
 |---|---|---|---|---|
 | Decisions (`D`) | 29 | 17 | 0 | 12 |
-| Risks (`RR`) | 16 | 15 | 0 | 1 |
+| Risks (`RR`) | 17 | 16 | 0 | 1 |
 | Owner items (`O`) | 16 | 6 | 0 | 10 |
 | Agent items (`A`) | 1 | 1 | 0 | 0 |
 | Hooks (`H`) | 6 | 2 | 0 | 4 |
-| Mutations (`M`) | 13 | 0 | 0 | 13 |
+| Mutations (`M`) | 14 | 0 | 0 | 14 |
 | Chores (`C`) | 2 | 2 | 0 | 0 |
 | Gates (`G`) | 8 | 0 | 0 | 8 |
 
@@ -58,7 +58,7 @@ Counted from the register itself. A register with no rows still gets a line.
 | `D` | proposed | 17 |
 | `D` | ratified | 11 |
 | `D` | superseded | 1 |
-| `RR` | open | 13 |
+| `RR` | open | 14 |
 | `RR` | proposed | 2 |
 | `RR` | rejected | 1 |
 | `O` | closed | 10 |
@@ -67,7 +67,7 @@ Counted from the register itself. A register with no rows still gets a line.
 | `H` | built | 4 |
 | `H` | not built | 1 |
 | `H` | open | 1 |
-| `M` | killed | 13 |
+| `M` | killed | 14 |
 | `C` | open | 2 |
 | `G` | done | 8 |
 
@@ -105,6 +105,7 @@ Every open row in the register. Owner is the row's Owner column where the table 
 | agent | RR14 | — | open | The identifying USB device 0x1532:0x122E sits on the dock's USB 2 chain, the chain the spec says drops unevenly. If it t… |
 | agent | RR15 | — | open | libproc's header calls its interfaces "private … subject to change" although it ships in the SDK and lsof uses it; NFR1 … |
 | agent | RR16 | — | open | Two sessions in one working tree: the author switched the shared checkout to another branch while the F7 review ran ther… |
+| agent | RR17 | — | open | Two branches merged in parallel each appended a row to the same tables (scripts/mutate.sh, the mutation register); the h… |
 | human | RR2 | — | open | A docked Mac held awake around the clock: no overnight sleep, idle energy use. |
 | human | RR5 | — | open | Due end of day 2026-10-18. |
 | owner | D1 | — | proposed | The project is DockWatch, at /LocalDevProjects/dockwatch. It is distinct from the shell monitor at /dockwatch, which kee… |
@@ -124,7 +125,7 @@ Every open row in the register. Owner is the row's Owner column where the table 
 | owner | D27 | — | proposed | Loss notifications are coalesced for two seconds after the first loss, so a whole-dock pull is one notification ("Dock d… |
 | owner | D28 | — | proposed | The menu's 24-hour counters: devices lost = usb.detached on dock devices; volumes lost = volume.disappeared (unclean) on… |
 | owner | D29 | — | proposed | NFR2 reading for F7: the ring's frame timer is an animation clock that exists only while the ring is moving and the stat… |
-| owner | O7 | P1 | open | Ratify D1–D10. |
+| owner | O7 | P1 | open | Ratify the proposed decisions the build rests on: D1–D5, D7, D9, D10, D20, D21, D23, D24, D27, D28, D29. |
 | owner | O12 | P1 | open | F2 and F3 live checks only the owner can do, with the app running and Keep Dock Awake on: close the lid for a minute (ex… |
 | owner | O13 | P0 | open | The experiment. With the app running and the dock attached, turn on Keep Dock Awake in the menu (its ⌘K works only while… |
 | owner | O14 | P1 | open | F6 live checks only the owner can do, with the dock plugged back in: eject one volume from the menu and reopen the menu … |
@@ -136,4 +137,4 @@ Every open row in the register. Owner is the row's Owner column where the table 
 
 ---
 
-43 open register rows.
+44 open register rows.
