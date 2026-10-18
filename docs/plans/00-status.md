@@ -40,7 +40,7 @@ Counted from the register itself. A register with no rows still gets a line.
 
 | Register | Rows | Open | Unknown | Closed |
 |---|---|---|---|---|
-| Decisions (`D`) | 26 | 15 | 1 | 10 |
+| Decisions (`D`) | 26 | 14 | 0 | 12 |
 | Risks (`RR`) | 15 | 14 | 0 | 1 |
 | Owner items (`O`) | 14 | 4 | 0 | 10 |
 | Agent items (`A`) | 1 | 1 | 0 | 0 |
@@ -49,17 +49,13 @@ Counted from the register itself. A register with no rows still gets a line.
 | Chores (`C`) | 2 | 2 | 0 | 0 |
 | Gates (`G`) | 7 | 1 | 0 | 6 |
 
-`Unknown` is not a third kind of open. It means the source document said nothing about status, so the page will not guess — the row is a question for the owner (`RR37`).
-
-
 ### By status
 
 | Register | Status | Count |
 |---|---|---|
-| `D` | proposed | 15 |
-| `D` | ratified | 9 |
+| `D` | proposed | 14 |
+| `D` | ratified | 11 |
 | `D` | superseded | 1 |
-| `D` | unknown | 1 |
 | `RR` | open | 12 |
 | `RR` | proposed | 2 |
 | `RR` | rejected | 1 |
@@ -124,8 +120,6 @@ Every open row in the register. Owner is the row's Owner column where the table 
 | owner | D21 | — | proposed | The log gains hold.on and hold.off lines when the sleep assertion is taken and released, so the overnight charger-drop c… |
 | owner | D23 | — | proposed | The menu's "Eject" is a DiskArbitration unmount of the volume, never a whole-disk DADiskEject: the disk stays attached, … |
 | owner | D24 | — | proposed | Under App Sandbox the log lives in the app's container: /Library/Containers/com.martingleason.dockwatch/Data/Library/Log… |
-| owner | D25 | — | unknown | Under App Sandbox a busy eject cannot name its blocker: the sandbox denies proclistpidspath (RR12). Proposed: MVP accept… |
-| owner | D26 | — | proposed | The Finder and Dock icon is a flat .icns for now, which macOS 26 shows inside a grey tile with the ring inset. The edge-… |
 | owner | O7 | P1 | open | Ratify D1–D10. |
 | owner | O12 | P1 | open | F2 and F3 live checks only the owner can do, with the app running and Keep Dock Awake on: close the lid for a minute (ex… |
 | owner | O13 | P0 | open | The experiment. With the app running and the dock attached, turn on Keep Dock Awake in the menu (its ⌘K works only while… |
@@ -138,4 +132,4 @@ Every open row in the register. Owner is the row's Owner column where the table 
 
 ---
 
-41 open register rows.
+39 open register rows.
