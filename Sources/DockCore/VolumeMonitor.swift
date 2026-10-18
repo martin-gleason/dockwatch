@@ -1,4 +1,4 @@
-// Created: 2026-10-18 11:55 -05:00 · Edited: 2026-10-18 12:15 -05:00
+// Created: 2026-10-18 11:55 -05:00 · Edited: 2026-10-18 13:04 -05:00
 // F2-T2 — external volume mount, unmount and unclean disappearance from DiskArbitration (FR3, NFR2).
 import Foundation
 import DiskArbitration
@@ -37,6 +37,9 @@ public final class VolumeMonitor {
     private let runLoop: CFRunLoop
     private var session: DASession?
     private var mounted: [String: VolumeInfo] = [:]   // by BSD name
+
+    /// Currently mounted external volumes, by name.
+    public var mountedVolumes: [VolumeInfo] { mounted.values.sorted { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending } }
     private var startedAt = Date.distantPast
 
     public init(runLoop: CFRunLoop = CFRunLoopGetMain(), handler: @escaping Handler) {

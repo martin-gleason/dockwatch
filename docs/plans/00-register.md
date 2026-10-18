@@ -45,6 +45,7 @@ number has not been decided, however clearly it was said aloud.
 | D20 | proposed | MVP | Icon motion policy for F7: the hue ring is still by default, turns slowly while the hold is in force, and makes one turn on dock connect or disconnect. Rationale: an always-animating menu bar icon spends CPU around the clock, against the app's purpose. The owner may choose always-moving instead (`O11`). |
 | D21 | proposed | MVP | The log gains `hold.on` and `hold.off` lines when the sleep assertion is taken and released, so the overnight charger-drop comparison (F3 evidence, RR4) can be read against exactly when the hold was in force. Two kinds beyond FR3's list; the owner ratifies or they go. |
 | D22 | ratified 2026-10-18 | v1.5 | **Alert when something drops alone.** A device or volume on the dock detaching while the dock itself stays attached raises an alert; a whole-dock disconnect does not raise one per device. Owner: "v1.5: if something drops alone, we need an alert." Implication for F4 (MVP, FR6): its loss notifier must already tell a lone drop from a dock pull, so that this alert has a definition to build on. |
+| D23 | proposed | MVP | The menu's "Eject" is a DiskArbitration **unmount** of the volume, never a whole-disk `DADiskEject`: the disk stays attached, so a remount needs no replug, which suits a dock whose drives come and go. Finder's eject detaches the disk until it is replugged. A whole-disk eject is a v1.5 option. From the F6 review, finding 6. |
 
 ## Risks (RR)
 
@@ -62,9 +63,10 @@ number has not been decided, however clearly it was said aloud.
 | RR9 | No CI yet: every check runs only where somebody remembers to run it. Found by `detect_risks.py` (`ls .github/workflows` → none). | proposed | Certain until pushed | A red test blocks nothing. | C1-T3 pre-commit now; C1-T6 GitHub Actions once `O6` closes. | agent |
 | RR10 | `docs/plans/00-status.md` is generated and nothing yet regenerates it, so it will go stale and be believed. Found by `detect_risks.py`. | proposed | Certain until C1 | A stale status page. | C1-T3 pre-commit runs `gen_status.py --check`; H6 in CI. | agent |
 | RR11 | ~~[tests-collect-zero] pytest collects no tests.~~ Rejected 2026-10-18: this is a Swift project; the runner is `swift test` (SPEC § Stack), and pytest is not part of the stack. Kept so the detector does not re-propose it. | rejected | — | — | — | agent |
-| RR12 | App Sandbox may refuse DiskArbitration unmount (FR9) or IOKit matching notifications; unverified on this stack. | open | Medium | F6 or F1 silently broken inside the sandboxed bundle. | F5-T1 runs both under the entitlements and records the result before F6 is built. | agent |
-| RR13 | Time Machine holds `Backups` open during a backup, so "Eject all" will report it blocked by `backupd`. | open | Certain during a backup | One volume stays mounted. | The message names the process; the app never forces an unmount. | agent |
+| RR12 | App Sandbox may refuse DiskArbitration unmount (FR9), the libproc blocker lookup, or IOKit matching notifications; unverified on this stack. | open | Medium | F6 or F1 silently broken inside the sandboxed bundle. | F5-T1 runs the unmount, `processesUsing`, and the USB priming under the entitlements and records each result. | agent |
+| RR13 | Time Machine holds `Backups` open during a backup, so "Eject All" is refused for it. A non-root app cannot name root processes (libproc lists only the caller's user's), so the row reads "In use by a system process", not "backupd". | open | Certain during a backup | One volume stays mounted; the blocker is unnamed. | Honest wording in the menu; the app never forces an unmount. Naming root blockers would need a privileged helper, out of scope (NFR1). | agent |
 | RR14 | The identifying USB device `0x1532:0x122E` sits on the dock's USB 2 chain, the chain the spec says drops unevenly. If it terminates while the dock stays attached, the app shows "not connected" and F3 would release the hold. Found by the F1 review. | open | Unknown | A gap in the hold during the fault it exists to prevent. | Policy set in F3's plan: the hold follows the tracker exactly. A flicker costs a gap of seconds, and idle sleep needs the Mac idle for at least its one-minute setting, so a gap of seconds cannot start the loop; `hold.off`/`hold.on` lines (D21) will show it if it happens. | agent |
+| RR15 | libproc's header calls its interfaces "private … subject to change" although it ships in the SDK and `lsof` uses it; NFR1 does not list it. | open | Low | The blocker lookup stops compiling or returns nothing on a future macOS. | One call site; the menu degrades to "In use by a system process". From the F6 review. | agent |
 ## Owner items (O)
 
 Outstanding items only the owner can close.
@@ -80,10 +82,11 @@ Outstanding items only the owner can close.
 | O7 | Ratify D1–D10. | P1 | open |
 | O8 | With the app running, pull the dock's Thunderbolt cable and plug it back; paste the stderr lines. Closes F1's live FR1/FR2 check. | P1 | closed 2026-10-18 — owner: "I did the test. it works beautifully." |
 | O9 | The vision sentence is now D11's and it adds FR9; the agent does not edit `SPEC.md`. Paste the sentence and FR9 into the spec, or tell the agent to. | P1 | closed 2026-10-18 — "paste the rewritten vision"; pasted by the agent on that instruction |
-| O10 | Gate F6 (eject dock volumes), proposed after F5 and before F4 in today's order. | P1 | open |
+| O10 | Gate F6 (eject dock volumes), proposed after F5 and before F4 in today's order. | P1 | closed 2026-10-18 — "you can begin f6" |
 | O11 | Which menu bar icon (D16)? An SF Symbol name, or an image file in `Resources/`. Until answered the connector symbols stay. | P2 | closed 2026-10-18 — the owner's hue ring, regenerated as a continuous sweep; motion policy is D20, built as F7 |
 | O12 | F2 and F3 live checks only the owner can do, with the app running and Keep Dock Awake on: close the lid for a minute (expect `system.sleep` then `system.wake`); unplug the dock's cable from the Mac for ten seconds (expect `power.disconnected` with `lastWatts`, four `volume.disappeared`, seventeen `usb.detached`, and `hold.off` within five seconds of the pull; then the reverse as `power.connected`, `usb.attached`, `volume.mounted`, and `hold.on`); click Open Log (Finder shows the file). | P1 | open |
 | O13 | **The experiment.** With the app running and the dock attached, turn on **Keep Dock Awake** in the menu (its ⌘K works only while the menu is open). Leave the lid **open** overnight: an idle-sleep assertion does not stop a lid-close sleep (RR1), and a `system.sleep` line after `hold.on` in `events.jsonl` invalidates the night. Next morning count charger drops **from the `hold.on` timestamp**, and compare with the same clock window on earlier nights, not with their day totals (the loop runs all day, so a morning-only count against a day total would flatter a partial result): `H=$(grep '"hold.on"' ~/Library/Logs/DockWatch/events.jsonl \| tail -1 \| sed -E 's/.*"ts":"([^"]+)".*/\\1/')` then `pmset -g log \| grep acdetach \| awk -v h="$H" '$1" "$2 >= substr(h,1,19)' \| wc -l`, beside `pmset -g log \| grep acdetach \| awk '{print $1}' \| sort \| uniq -c` for the earlier nights. Zero is unambiguous; anything else is read against the matching window. Lid check separately (NFR8): with the toggle on, close the lid for a minute, reopen, and look for `hold.on … reapplied=true` in the log and a fresh age on the assertion in `pmset -g assertions`. | P0 | open |
+| O14 | F6 live checks only the owner can do, with the dock plugged back in: eject one volume from the menu and reopen the menu within a minute — its row stays, greyed, reading “Ejected”; remount it (`diskutil mount disk5s2`) and reopen — the “Ejected” is gone. Then “Eject All Dock Volumes”: Backups reads “In use by a system process” if a backup is running (Time Machine runs as root and cannot be named), the others “Ejected”. Remount with `diskutil mountDisk disk5` / `disk6` / `disk7` or by replugging. | P1 | open |
 
 Questions for O1–O6 are laid out in `docs/handoffs/2026-10-18-planning-questions.md`.
 
@@ -115,7 +118,7 @@ already built.
 | G4 | F3 keep the dock awake | done (crossed) | 2026-10-18 | 2026-10-18 | "begin work on f3" |
 | G5 | F5 installable app and launch at login | open (awaiting the gate) | 2026-10-18 | — | — |
 | G6 | F4 timeline, counters, notifications | open (awaiting the gate) | 2026-10-18 | — | — |
-| G7 | F6 eject dock volumes | open (awaiting the gate) | 2026-10-18 | — | — |
+| G7 | F6 eject dock volumes | done (crossed) | 2026-10-18 | 2026-10-18 | "#4 is merged. you can begin f6" |
 
 ## Hooks (H)
 
@@ -144,8 +147,11 @@ A test is not evidence until a mutation proves it can fail.
 | M4 | `Sources/DockCore/DockIdentity.swift` | Match on vendor ID alone | `DockIdentityTests.testRazerMouseIsNotTheDock` and `testChromaControllerIsNotTheDock` (both share the dock's vendor ID) | killed 2026-10-18: 1 failure / 1 test (`scripts/mutate.sh M4`) |
 | M5 | `Sources/DockCore/EventQuery.swift` | Compute the 24-hour window by insertion order, not timestamp | `EventQueryTests.testWindowExcludesOldEvents` | proposed |
 | M6 | `Sources/DockCore/HoldPolicy.swift` | Ignore the wake input | `HoldPolicyTests.testWakeWhileDockedReasserts` | killed 2026-10-18: 1 failure / 1 test (`scripts/mutate.sh M6`) |
-| M7 | `Sources/DockCore/DockMembership.swift` | Compare the whole location ID instead of the controller byte | `DockMembershipTests.testSiblingHubIsOnTheDock` | proposed |
+| M7 | `Sources/DockCore/DockMembership.swift` | Compare the whole location ID instead of the controller byte | `DockMembershipTests.testSiblingHubIsOnTheDock` | killed 2026-10-18: 2 failures / 1 test (`scripts/mutate.sh M7`) |
 | M8 | `Sources/DockCore/EventStore.swift` | Delete the log at rotation instead of moving it aside | `EventStoreTests.testRotationKeepsExactlyOnePreviousFile` | killed 2026-10-18: 3 failures / 1 test (`scripts/mutate.sh M8`) |
+| M9 | `Sources/DockCore/VolumeEjector.swift` | Never read a dissenter as busy (every refusal becomes "failed") | `VolumeEjectorTests.testBusyVolumeIsRefusedAndNamed_thenEjectsWhenFree` (live, on a disk image) | killed 2026-10-18: 1 failure / 1 test (`scripts/mutate.sh M9`) |
+| M10 | `Sources/DockCore/EjectMenuModel.swift` | Drop a result the moment its volume unmounts (a successful eject shows nothing) | `EjectMenuModelTests.testSuccessfulEjectStaysVisibleAfterUnmount` | killed 2026-10-18: 2 failures / 1 test (`scripts/mutate.sh M10`) |
+| M11 | `Sources/DockCore/EjectMenuModel.swift` | Keep a result after its volume mounts again (“Ejected” beside a mounted drive) | `EjectMenuModelTests.testRemountClearsResult` | killed 2026-10-18: 1 failure / 1 test (`scripts/mutate.sh M11`) |
 
 -----
 
