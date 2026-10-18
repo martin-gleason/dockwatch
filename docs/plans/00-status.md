@@ -118,8 +118,8 @@ Every open row in the register. Owner is the row's Owner column where the table 
 | owner | D21 | — | proposed | The log gains hold.on and hold.off lines when the sleep assertion is taken and released, so the overnight charger-drop c… |
 | owner | O7 | P1 | open | Ratify D1–D10. |
 | owner | O10 | P1 | open | Gate F6 (eject dock volumes), proposed after F5 and before F4 in today's order. |
-| owner | O12 | P1 | open | F2 live checks only the owner can do, with the app running: close the lid for a minute (expect system.sleep then system.… |
-| owner | O13 | P0 | open | The experiment. Turn on Keep Dock Awake (menu, ⌘K) and leave the Mac docked overnight. Next morning run pmset -g log \| g… |
+| owner | O12 | P1 | open | F2 and F3 live checks only the owner can do, with the app running and Keep Dock Awake on: close the lid for a minute (ex… |
+| owner | O13 | P0 | open | The experiment. With the app running and the dock attached, turn on Keep Dock Awake in the menu (its ⌘K works only while… |
 | unassigned | G5 | — | open | F5 installable app and launch at login |
 | unassigned | G6 | — | open | F4 timeline, counters, notifications |
 | unassigned | G7 | — | open | F6 eject dock volumes |
