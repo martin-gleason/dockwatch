@@ -40,7 +40,7 @@ number has not been decided, however clearly it was said aloud.
 | D15 | proposed | v1.5 | Mac App Store distribution is a v1.5 goal (Q6). MVP therefore adopts App Sandbox and hardened runtime from F5, ad-hoc signed until a Developer ID exists, so nothing built now has to be unbuilt. |
 | D16 | proposed | MVP | The menu bar icon changes from the SF Symbol connector set to a symbol the owner picks. Owner 2026-10-18: "I do want to change the icon"; which one is `O11`. |
 | D17 | ratified 2026-10-18 | v1.5 | Users can choose the menu bar icon. Owner: "in v1.5 allow for users to select the icon." |
-| D18 | proposed | MVP | **Dark wakes are not observable from a user-space app.** xnu sends the legacy-app power messages only when graphics come up, so the sleep/dark-wake loop the spec describes leaves no trace in the app's log. The `system.darkwake` kind is dropped; `system.wake` means a full wake; `pmset -g log` stays the record for dark wakes (RR3), and F4's "wakes" counter counts full wakes. Found by the F2 review from `IOPMrootDomain.cpp`. |
+| D18 | ratified | MVP | **Dark wakes are not observable from a user-space app.** xnu sends the legacy-app power messages only when graphics come up, so the sleep/dark-wake loop the spec describes leaves no trace in the app's log. The `system.darkwake` kind is dropped; `system.wake` means a full wake; `pmset -g log` stays the record for dark wakes (RR3), and F4's "wakes" counter counts full wakes. Found by the F2 review from `IOPMrootDomain.cpp`. |
 
 ## Risks (RR)
 

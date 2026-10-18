@@ -40,7 +40,7 @@ Counted from the register itself. A register with no rows still gets a line.
 
 | Register | Rows | Open | Unknown | Closed |
 |---|---|---|---|---|
-| Decisions (`D`) | 18 | 12 | 0 | 6 |
+| Decisions (`D`) | 18 | 11 | 0 | 7 |
 | Risks (`RR`) | 14 | 13 | 0 | 1 |
 | Owner items (`O`) | 12 | 4 | 0 | 8 |
 | Agent items (`A`) | 0 | 0 | 0 | 0 |
@@ -53,8 +53,8 @@ Counted from the register itself. A register with no rows still gets a line.
 
 | Register | Status | Count |
 |---|---|---|
-| `D` | proposed | 12 |
-| `D` | ratified | 5 |
+| `D` | proposed | 11 |
+| `D` | ratified | 6 |
 | `D` | superseded | 1 |
 | `RR` | open | 11 |
 | `RR` | proposed | 2 |
@@ -115,7 +115,6 @@ Every open row in the register. Owner is the row's Owner column where the table 
 | owner | D14 | — | proposed | License MPL-2.0: file-level copyleft whose terms the Mac App Store permits; GPL's do not, and the owner asked for both (… |
 | owner | D15 | — | proposed | Mac App Store distribution is a v1.5 goal (Q6). MVP therefore adopts App Sandbox and hardened runtime from F5, ad-hoc si… |
 | owner | D16 | — | proposed | The menu bar icon changes from the SF Symbol connector set to a symbol the owner picks. Owner 2026-10-18: "I do want to … |
-| owner | D18 | — | proposed | Dark wakes are not observable from a user-space app. xnu sends the legacy-app power messages only when graphics come up,… |
 | owner | O7 | P1 | open | Ratify D1–D10. |
 | owner | O10 | P1 | open | Gate F6 (eject dock volumes), proposed after F5 and before F4 in today's order. |
 | owner | O11 | P2 | open | Which menu bar icon (D16)? An SF Symbol name, or an image file in Resources/. Until answered the connector symbols stay.… |
@@ -134,4 +133,4 @@ Every open row in the register. Owner is the row's Owner column where the table 
 
 ---
 
-42 open register rows.
+41 open register rows.
