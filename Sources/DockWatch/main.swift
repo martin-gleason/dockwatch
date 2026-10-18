@@ -1,5 +1,9 @@
-// Created: 2026-10-18 11:25 -05:00 · Edited: 2026-10-18 11:25 -05:00
-// Placeholder entry point from C1-T1. F1-T1 replaces it with the AppKit status item.
-import DockCore
+// Created: 2026-10-18 11:25 -05:00 · Edited: 2026-10-18 11:40 -05:00
+// F1-T1 — entry point. A menu bar accessory: no Dock icon, no main window.
+import AppKit
 
-print("DockWatch \(DockCore.version) — no UI yet (C1-T1 skeleton)")
+let app = NSApplication.shared
+let delegate = AppDelegate()
+app.delegate = delegate
+app.setActivationPolicy(.accessory)
+app.run()

@@ -26,7 +26,7 @@ number has not been decided, however clearly it was said aloud.
 | D1 | proposed | MVP | The project is **DockWatch**, at `~/Local_Dev_Projects/dockwatch`. It is distinct from the shell monitor at `~/dockwatch`, which keeps its name and job (see D8). |
 | D2 | proposed | MVP | Layout mirrors HueBar: `DockCore` library (no AppKit, fully testable) + `DockWatch` AppKit executable + `DockCoreTests`. SwiftPM, no Xcode project. |
 | D3 | proposed | MVP | "Keep dock awake" is an IOPMLib `PreventUserIdleSystemSleep` assertion owned by the app process. Not `pmset`, not root, not `PreventSystemSleep`. It targets the observed mechanism (every charger drop happened in idle sleep), leaves display sleep alone, and dies with the app. |
-| D4 | proposed | MVP | The dock is identified by USB vendor:product `0x1532:0x122E` (macOS name "Thunderbolt 4 Dock"). The Chroma controller `0x24F0:0x0F21` on the same dock is not the dock. No picker UI in MVP. |
+| D4 | proposed | MVP | The dock is identified by USB vendor:product `0x1532:0x122E` (macOS name "Thunderbolt 4 Dock"). The Chroma controller `0x1532:0x0F21` on the same dock shares the vendor ID and is not the dock (ID corrected 2026-10-18 from IOKit; an earlier listing misread it). No picker UI in MVP. |
 | D5 | proposed | MVP | The log is JSON Lines at `~/Library/Logs/DockWatch/events.jsonl`, opened for append, rotated at 20 MB keeping one previous file. |
 | D6 | ratified 2026-10-18 | MVP | Learning level **5%**: the agent authors, the owner reviews. Reason: due 2026-10-18. Owner (handoff Q2): "5% is good. Review PRs and add 'what I learned' to each as a comment." |
 | D7 | proposed | MVP | macOS 14 minimum, matching HueBar. Built with Xcode 27.1 on macOS 27. Apple silicon only is verified. |
@@ -71,6 +71,7 @@ Outstanding items only the owner can close.
 | O5 | Decide whether the app replaces the shell monitor once F2's log agrees with it. Default if silent: both stay. | P2 | closed 2026-10-18 — "Replace. it's a real test." (D13) |
 | O6 | Create the GitHub repository and push. C1-T6 waits on it. | P2 | closed 2026-10-18 — public at github.com/martin-gleason/dockwatch, created by the owner |
 | O7 | Ratify D1–D10. | P1 | open |
+| O8 | With the app running, pull the dock's Thunderbolt cable and plug it back; paste the stderr lines. Closes F1's live FR1/FR2 check. | P1 | open |
 | O9 | The vision sentence is now D11's and it adds FR9; the agent does not edit `SPEC.md`. Paste the sentence and FR9 into the spec, or tell the agent to. | P1 | open |
 | O10 | Gate F6 (eject dock volumes), proposed after F5 and before F4 in today's order. | P1 | open |
 
@@ -130,7 +131,7 @@ A test is not evidence until a mutation proves it can fail.
 | M1 | `Sources/DockCore/HoldPolicy.swift` | Keep holding after the dock is removed | `HoldPolicyTests.testUndockReleasesHold` | proposed |
 | M2 | `Sources/DockCore/HoldPolicy.swift` | Hold while the toggle is off | `HoldPolicyTests.testToggleOffNeverHolds` | proposed |
 | M3 | `Sources/DockCore/EventStore.swift` | Open the log with truncate instead of append | `EventStoreTests.testAppendPreservesPriorLines` | proposed |
-| M4 | `Sources/DockCore/DockIdentity.swift` | Match on vendor ID alone | `DockIdentityTests.testChromaControllerIsNotTheDock` | proposed |
+| M4 | `Sources/DockCore/DockIdentity.swift` | Match on vendor ID alone | `DockIdentityTests.testRazerMouseIsNotTheDock` and `testChromaControllerIsNotTheDock` (both share the dock's vendor ID) | killed 2026-10-18: 1 failure / 1 test (`scripts/mutate.sh M4`) |
 | M5 | `Sources/DockCore/EventQuery.swift` | Compute the 24-hour window by insertion order, not timestamp | `EventQueryTests.testWindowExcludesOldEvents` | proposed |
 | M6 | `Sources/DockCore/HoldPolicy.swift` | Ignore the wake input | `HoldPolicyTests.testWakeWhileDockedReasserts` | proposed |
 | M7 | `Sources/DockCore/DockMembership.swift` | Compare the whole location ID instead of the controller byte | `DockMembershipTests.testSiblingHubIsOnTheDock` | proposed |
