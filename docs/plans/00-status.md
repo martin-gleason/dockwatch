@@ -17,8 +17,8 @@ Named, never numbered (`D2`). **No source read here marks a milestone as the cur
 
 | Milestone | Decisions landing here | Units |
 |---|---|---|
-| MVP | 25 | C1, F1, F2, F3, F4, F4b, F5, F6, F7 |
-| v1.5 | 4 | — |
+| MVP | 25 | C1, C3, F1, F2, F3, F4, F4b, F5, F6, F7 |
+| v1.5 | 6 | — |
 
 ## Features and chores
 
@@ -27,6 +27,7 @@ Status is what the unit's own plan header declares. What has landed in git is de
 | ID | Kind | Status | Milestone | P | Owner | Plan | Tasks |
 |---|---|---|---|---|---|---|---|
 | C1 | chore | in progress (gate crossed 2026-10-18) | MVP | P0 | agent | `docs/plans/C1.md` | 6 planned |
+| C3 | chore | open (awaiting the owner's yes, O20) | MVP | P1 | agent | `docs/plans/C3.md` | 6 planned |
 | F1 | feature | in progress (gate crossed 2026-10-18) | MVP | — | agent | `docs/plans/F1.md` | 4 planned |
 | F2 | feature | in progress (gate crossed 2026-10-18, "start f2") | MVP | — | agent | `docs/plans/F2.md` | 5 planned |
 | F3 | feature | in progress (gate crossed 2026-10-18, "begin work on f3") | MVP | — | agent | `docs/plans/F3.md` | 3 planned |
@@ -42,33 +43,33 @@ Counted from the register itself. A register with no rows still gets a line.
 
 | Register | Rows | Open | Unknown | Closed |
 |---|---|---|---|---|
-| Decisions (`D`) | 29 | 17 | 0 | 12 |
-| Risks (`RR`) | 17 | 16 | 0 | 1 |
-| Owner items (`O`) | 16 | 6 | 0 | 10 |
-| Agent items (`A`) | 1 | 1 | 0 | 0 |
+| Decisions (`D`) | 31 | 19 | 0 | 12 |
+| Risks (`RR`) | 20 | 19 | 0 | 1 |
+| Owner items (`O`) | 20 | 10 | 0 | 10 |
+| Agent items (`A`) | 2 | 2 | 0 | 0 |
 | Hooks (`H`) | 6 | 2 | 0 | 4 |
 | Mutations (`M`) | 14 | 0 | 0 | 14 |
-| Chores (`C`) | 2 | 2 | 0 | 0 |
+| Chores (`C`) | 3 | 3 | 0 | 0 |
 | Gates (`G`) | 8 | 0 | 0 | 8 |
 
 ### By status
 
 | Register | Status | Count |
 |---|---|---|
-| `D` | proposed | 17 |
+| `D` | proposed | 19 |
 | `D` | ratified | 11 |
 | `D` | superseded | 1 |
-| `RR` | open | 14 |
+| `RR` | open | 17 |
 | `RR` | proposed | 2 |
 | `RR` | rejected | 1 |
 | `O` | closed | 10 |
-| `O` | open | 6 |
-| `A` | open | 1 |
+| `O` | open | 10 |
+| `A` | open | 2 |
 | `H` | built | 4 |
 | `H` | not built | 1 |
 | `H` | open | 1 |
 | `M` | killed | 14 |
-| `C` | open | 2 |
+| `C` | open | 3 |
 | `G` | done | 8 |
 
 ## Hooks
@@ -92,6 +93,7 @@ Every open row in the register. Owner is the row's Owner column where the table 
 |---|---|---|---|---|
 | agent | C1 | P0 | open | Build the harness: run, count, floor, mutate, pre-commit; CI once pushed. |
 | agent | C2 | P2 | open | Stamps: every Created/Edited line comes from the clock or git, never typed; correct the files whose stamps run ahead of … |
+| agent | C3 | P1 | open | Security hardening from the black-hat review of 2026-10-18: ONOFOLLOW and a regular-file check on the log, tail trimming… |
 | agent | RR1 | — | open | An idle-sleep assertion does not stop lid-close sleep on battery without an external display, nor an explicit Sleep comm… |
 | agent | RR3 | — | open | A user-space app observes nothing while the Mac sleeps, so sleep-time charger drops never reach the app log. |
 | agent | RR4 | — | open | The hypothesis is wrong: devices keep dropping with the Mac awake. |
@@ -106,6 +108,8 @@ Every open row in the register. Owner is the row's Owner column where the table 
 | agent | RR15 | — | open | libproc's header calls its interfaces "private … subject to change" although it ships in the SDK and lsof uses it; NFR1 … |
 | agent | RR16 | — | open | Two sessions in one working tree: the author switched the shared checkout to another branch while the F7 review ran ther… |
 | agent | RR17 | — | open | Two branches merged in parallel each appended a row to the same tables (scripts/mutate.sh, the mutation register); the h… |
+| agent | RR19 | — | open | Running a pull-request branch locally runs its code: tests spawn processes, hooks live in the repo (core.hooksPath=.gith… |
+| agent | RR20 | — | open | Dock identity is vendor and product ID only and membership is the controller byte, never cleared; a programmable USB dev… |
 | human | RR2 | — | open | A docked Mac held awake around the clock: no overnight sleep, idle energy use. |
 | human | RR5 | — | open | Due end of day 2026-10-18. |
 | owner | D1 | — | proposed | The project is DockWatch, at /LocalDevProjects/dockwatch. It is distinct from the shell monitor at /dockwatch, which kee… |
@@ -125,16 +129,24 @@ Every open row in the register. Owner is the row's Owner column where the table 
 | owner | D27 | — | proposed | Loss notifications are coalesced for two seconds after the first loss, so a whole-dock pull is one notification ("Dock d… |
 | owner | D28 | — | proposed | The menu's 24-hour counters: devices lost = usb.detached on dock devices; volumes lost = volume.disappeared (unclean) on… |
 | owner | D29 | — | proposed | NFR2 reading for F7: the ring's frame timer is an animation clock that exists only while the ring is moving and the stat… |
+| owner | D30 | — | proposed | Sign with a Developer ID and notarize before any distribution and before Launch at Login is offered as a default. The ad… |
+| owner | D31 | — | proposed | Identify the dock by its IORegistry Thunderbolt ancestry as well as its vendor and product IDs, and judge membership bel… |
 | owner | O7 | P1 | open | Ratify the proposed decisions the build rests on: D1–D5, D7, D9, D10, D20, D21, D23, D24, D27, D28, D29. |
 | owner | O12 | P1 | open | F2 and F3 live checks only the owner can do, with the app running and Keep Dock Awake on: close the lid for a minute (ex… |
 | owner | O13 | P0 | open | The experiment. With the app running and the dock attached, turn on Keep Dock Awake in the menu (its ⌘K works only while… |
 | owner | O14 | P1 | open | F6 live checks only the owner can do, with the dock plugged back in: eject one volume from the menu and reopen the menu … |
 | owner | O15 | P1 | open | F4 live checks only the owner can do, from the installed app with the dock attached: allow notifications when asked at f… |
 | owner | O16 | P1 | open | F7 live checks only the owner can do, from a rebuilt installed app (scripts/build-app.sh --install): the ring in the men… |
+| owner | O17 | P1 | open | Confirm in System Settings › General › Login Items whether DockWatch is listed under Open at Login. Background Task Mana… |
+| owner | O18 | P1 | open | Repository settings only the owner can change (security review 2026-10-18, findings 2–4): in the "Rebase-n-Merge" rulese… |
+| owner | O19 | P2 | open | Personal-data posture for a public repository (security review 2026-10-18, finding 9): the commit author email on every … |
+| owner | O20 | P1 | open | Gate C3, the security hardening chore (docs/plans/C3.md): six tasks, no feature change. |
+| owner | RR18 | — | open | The installed bundle is ad-hoc signed in a user-writable path; same-user code can replace the binary, re-sign, and pass … |
 | unassigned | A1 | P0 | open | Finish the dock half of RR12 once the dock is plugged back in: from the installed bundle, confirm the dock's USB devices… |
+| unassigned | A2 | P1 | open | Promote upstream to turing-review: scripts/checkharness.py --run executes a declared command through shell=True even aft… |
 | unassigned | H5 | — | open | Every FR has a test or a named manual check with evidence |
 | unassigned | H6 | — | not built | Status page regenerates clean |
 
 ---
 
-44 open register rows.
+55 open register rows.
