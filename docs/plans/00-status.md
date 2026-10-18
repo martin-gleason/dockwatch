@@ -17,7 +17,7 @@ Named, never numbered (`D2`). **No source read here marks a milestone as the cur
 
 | Milestone | Decisions landing here | Units |
 |---|---|---|
-| MVP | 18 | C1, F1, F2, F3, F4, F5, F6 |
+| MVP | 19 | C1, F1, F2, F3, F4, F5, F6 |
 | v1.5 | 4 | — |
 
 ## Features and chores
@@ -40,12 +40,12 @@ Counted from the register itself. A register with no rows still gets a line.
 
 | Register | Rows | Open | Unknown | Closed |
 |---|---|---|---|---|
-| Decisions (`D`) | 22 | 12 | 0 | 10 |
-| Risks (`RR`) | 14 | 13 | 0 | 1 |
+| Decisions (`D`) | 23 | 13 | 0 | 10 |
+| Risks (`RR`) | 15 | 14 | 0 | 1 |
 | Owner items (`O`) | 14 | 4 | 0 | 10 |
 | Agent items (`A`) | 0 | 0 | 0 | 0 |
 | Hooks (`H`) | 6 | 2 | 0 | 4 |
-| Mutations (`M`) | 9 | 1 | 0 | 8 |
+| Mutations (`M`) | 11 | 1 | 0 | 10 |
 | Chores (`C`) | 2 | 2 | 0 | 0 |
 | Gates (`G`) | 7 | 2 | 0 | 5 |
 
@@ -53,10 +53,10 @@ Counted from the register itself. A register with no rows still gets a line.
 
 | Register | Status | Count |
 |---|---|---|
-| `D` | proposed | 12 |
+| `D` | proposed | 13 |
 | `D` | ratified | 9 |
 | `D` | superseded | 1 |
-| `RR` | open | 11 |
+| `RR` | open | 12 |
 | `RR` | proposed | 2 |
 | `RR` | rejected | 1 |
 | `O` | closed | 10 |
@@ -64,7 +64,7 @@ Counted from the register itself. A register with no rows still gets a line.
 | `H` | built | 4 |
 | `H` | not built | 1 |
 | `H` | open | 1 |
-| `M` | killed | 8 |
+| `M` | killed | 10 |
 | `M` | proposed | 1 |
 | `C` | open | 2 |
 | `G` | done | 5 |
@@ -99,9 +99,10 @@ Every open row in the register. Owner is the row's Owner column where the table 
 | agent | RR8 | — | open | IOKit and DiskArbitration callbacks run on the main run loop; a slow menu rebuild delays them. |
 | agent | RR9 | — | proposed | No CI yet: every check runs only where somebody remembers to run it. Found by detectrisks.py (ls .github/workflows → non… |
 | agent | RR10 | — | proposed | docs/plans/00-status.md is generated and nothing yet regenerates it, so it will go stale and be believed. Found by detec… |
-| agent | RR12 | — | open | App Sandbox may refuse DiskArbitration unmount (FR9) or IOKit matching notifications; unverified on this stack. |
-| agent | RR13 | — | open | Time Machine holds Backups open during a backup, so "Eject all" will report it blocked by backupd. |
+| agent | RR12 | — | open | App Sandbox may refuse DiskArbitration unmount (FR9), the libproc blocker lookup, or IOKit matching notifications; unver… |
+| agent | RR13 | — | open | Time Machine holds Backups open during a backup, so "Eject All" is refused for it. A non-root app cannot name root proce… |
 | agent | RR14 | — | open | The identifying USB device 0x1532:0x122E sits on the dock's USB 2 chain, the chain the spec says drops unevenly. If it t… |
+| agent | RR15 | — | open | libproc's header calls its interfaces "private … subject to change" although it ships in the SDK and lsof uses it; NFR1 … |
 | human | RR2 | — | open | A docked Mac held awake around the clock: no overnight sleep, idle energy use. |
 | human | RR5 | — | open | Due end of day 2026-10-18. |
 | owner | D1 | — | proposed | The project is DockWatch, at /LocalDevProjects/dockwatch. It is distinct from the shell monitor at /dockwatch, which kee… |
@@ -116,10 +117,11 @@ Every open row in the register. Owner is the row's Owner column where the table 
 | owner | D15 | — | proposed | Mac App Store distribution is a v1.5 goal (Q6). MVP therefore adopts App Sandbox and hardened runtime from F5, ad-hoc si… |
 | owner | D20 | — | proposed | Icon motion policy for F7: the hue ring is still by default, turns slowly while the hold is in force, and makes one turn… |
 | owner | D21 | — | proposed | The log gains hold.on and hold.off lines when the sleep assertion is taken and released, so the overnight charger-drop c… |
+| owner | D23 | — | proposed | The menu's "Eject" is a DiskArbitration unmount of the volume, never a whole-disk DADiskEject: the disk stays attached, … |
 | owner | O7 | P1 | open | Ratify D1–D10. |
 | owner | O12 | P1 | open | F2 and F3 live checks only the owner can do, with the app running and Keep Dock Awake on: close the lid for a minute (ex… |
 | owner | O13 | P0 | open | The experiment. With the app running and the dock attached, turn on Keep Dock Awake in the menu (its ⌘K works only while… |
-| owner | O14 | P1 | open | F6 live checks only the owner can do: eject one volume from the menu and reopen the menu within a minute to see “Ejected… |
+| owner | O14 | P1 | open | F6 live checks only the owner can do, with the dock plugged back in: eject one volume from the menu and reopen the menu … |
 | unassigned | G5 | — | open | F5 installable app and launch at login |
 | unassigned | G6 | — | open | F4 timeline, counters, notifications |
 | unassigned | H5 | — | open | Every FR has a test or a named manual check with evidence |
@@ -128,4 +130,4 @@ Every open row in the register. Owner is the row's Owner column where the table 
 
 ---
 
-36 open register rows.
+38 open register rows.
