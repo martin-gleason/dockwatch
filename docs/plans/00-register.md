@@ -113,10 +113,10 @@ label and **never appears in a commit, branch, or PR title**.
 
 | ID | Hook | Surface | Protects | Status |
 |---|---|---|---|---|
-| H1 | `swift test` passes | pre-commit + CI | the test gate | not built (C1-T3, C1-T6) |
-| H2 | Assertion count not below `Tests/ASSERTION_FLOOR` | pre-commit | a suite that silently shrank | not built (C1-T2, C1-T3) |
-| H3 | No register ID in a commit, branch or PR title | commit-msg | the two-tier grammar | not built (C1-T3) |
-| H4 | Harness declared and its commands run | upstream `check_harness.py --run` | an undeclared or dead harness | not built (declared; runnable after C1-T5) |
+| H1 | `swift test` passes | pre-commit + CI | the test gate | built — pre-commit proven 2026-10-18 (C1-T3); CI run 39145745024 green on PR #2 (C1-T6) |
+| H2 | Assertion count not below `Tests/ASSERTION_FLOOR` | pre-commit + CI | a suite that silently shrank | built — refused a floor of 2 against 1 (C1-T3); CI step `executed=1 floor=1` (C1-T6) |
+| H3 | No register ID in a commit, branch or PR title | commit-msg | the two-tier grammar | built — refused `D1` in a subject, and refused the agent's own `FR9` later the same day (C1-T3) |
+| H4 | Harness declared and its commands run | upstream `check_harness.py --run` | an undeclared or dead harness | built — reports `ok dockwatch` (C1-T5) |
 | H5 | Every FR has a test or a named manual check with evidence | plan review checklist | drift, both directions | open (manual checklist, no mechanism) |
 | H6 | Status page regenerates clean | CI | a stale status page | not built (C1-T6) |
 

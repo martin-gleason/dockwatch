@@ -72,11 +72,11 @@ The agent authors everything; Marty reviews every PR, does not write Swift, and 
 
 | Hook | Surface | Status |
 |---|---|---|
-| `swift test` passes | pre-commit + CI | not wired (C1) |
-| Assertion count not below `Tests/ASSERTION_FLOOR` | pre-commit | not wired (C1) |
-| No register ID in a commit, branch, or PR title | commit-msg | not wired (C1) |
-| Secret scan | pre-commit + CI | not wired (C1) |
-| Status page regenerates clean | CI | not wired (C1) |
+| `swift test` passes | pre-commit + CI | built (C1-T3, C1-T6) |
+| Assertion count not below `Tests/ASSERTION_FLOOR` | pre-commit + CI | built (C1-T3, C1-T6) |
+| No register ID in a commit, branch, or PR title | commit-msg | built (C1-T3) |
+| Secret scan | pre-commit | built, pre-commit only (C1-T3) |
+| Status page regenerates clean | pre-commit (needs the upstream generator) | built locally (C1-T3); not in CI |
 
 **Prove every hook by breaking it first.**
 
