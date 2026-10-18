@@ -74,6 +74,7 @@ number has not been decided, however clearly it was said aloud.
 | RR14 | The identifying USB device `0x1532:0x122E` sits on the dock's USB 2 chain, the chain the spec says drops unevenly. If it terminates while the dock stays attached, the app shows "not connected" and F3 would release the hold. Found by the F1 review. | open | Unknown | A gap in the hold during the fault it exists to prevent. | Policy set in F3's plan: the hold follows the tracker exactly. A flicker costs a gap of seconds, and idle sleep needs the Mac idle for at least its one-minute setting, so a gap of seconds cannot start the loop; `hold.off`/`hold.on` lines (D21) will show it if it happens. | agent |
 | RR15 | libproc's header calls its interfaces "private … subject to change" although it ships in the SDK and `lsof` uses it; NFR1 does not list it. | open | Low | The blocker lookup stops compiling or returns nothing on a future macOS. | One call site; the menu degrades to "In use by a system process". From the F6 review. | agent |
 | RR16 | Two sessions in one working tree: the author switched the shared checkout to another branch while the F7 review ran there; one of the reviewer's runs executed the wrong tree before it moved to a clean clone. | open | Medium | Review evidence taken from the wrong code. | Reviews run from a clean clone; the author uses a separate worktree for any work started while a review is running. | agent |
+| RR17 | Two branches merged in parallel each appended a row to the same tables (`scripts/mutate.sh`, the mutation register); the hand-resolved merge of PR #8 kept one row and dropped the other, so `scripts/mutate.sh M14` answered "no row" on main. | open | Medium | A mutation silently leaves the table and its test can decay unnoticed. | Restored the same evening. After any merge of parallel branches: run every row in the mutation table and diff each parent's removed lines against the merge before trusting it. | agent |
 ## Owner items (O)
 
 Outstanding items only the owner can close.
@@ -172,6 +173,7 @@ A test is not evidence until a mutation proves it can fail.
 | M11 | `Sources/DockCore/EjectMenuModel.swift` | Keep a result after its volume mounts again (“Ejected” beside a mounted drive) | `EjectMenuModelTests.testRemountClearsResult` | killed 2026-10-18: 1 failure / 1 test (`scripts/mutate.sh M11`) |
 | M12 | `Sources/DockCore/LossCoalescer.swift` | Ignore that the dock itself detached (a dock pull becomes seventeen notifications) | `LossCoalescerTests.testDockPullIsOneSummary` | killed 2026-10-18: 1 failure / 1 test (`scripts/mutate.sh M12`) |
 | M13 | `Sources/DockCore/RingMotion.swift` | Report the ring as moving while idle (a timer that never stops) | `RingMotionTests.testStillByDefault` | killed 2026-10-18: 1 failure / 1 test (`scripts/mutate.sh M13`) |
+| M14 | `Sources/DockCore/DockState.swift` | Forget the dock's controller on undock (children terminating after the dock device stop counting) | `DockPullFixtureTests.testRecordedPullCountsEveryChild` | killed 2026-10-18: 2 failures / 1 test (`scripts/mutate.sh M14`) |
 
 -----
 
