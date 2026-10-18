@@ -1,4 +1,4 @@
-// Created: 2026-10-18 11:20 -05:00 · Edited: 2026-10-18 17:10 -05:00
+// Created: 2026-10-18 11:20 -05:00 · Edited: 2026-10-18 17:28 -05:00
 // F1-T4 / F2-T4 / F3-T3 / F5-T2 / F6-T3 — the menu bar icon and its menu (FR1, FR5, FR7, FR8, FR9).
 import AppKit
 import DockCore
@@ -26,6 +26,12 @@ final class StatusItemController: NSObject, NSMenuDelegate {
     private let timelineItem = NSMenuItem(title: "Recent Events", action: nil, keyEquivalent: "")
     private let timelineMenu = NSMenu()
     private static let ejectTag = 900
+    private var motion = RingMotion()
+    private var frameTimer: Timer?
+    private var lastState: DockState = .undocked
+    private var hasRendered = false
+    private var held = false
+    private var occlusionObserver: NSObjectProtocol?
 
     /// FR8 — set by the app delegate; reveals the log file.
     var onOpenLog: (() -> Void)?
@@ -154,24 +160,70 @@ final class StatusItemController: NSObject, NSMenuDelegate {
         keepAwakeItem.state = on ? .on : .off
     }
 
-    /// FR1: docked and held awake · docked, not held · not docked.
+    /// FR1: docked and held awake · docked, not held · not docked. The ring (D16): colour when
+    /// docked, faint grey when not; turning while held (D20).
     func render(state: DockState, held: Bool) {
-        let (symbol, text): (String, String)
+        let text: String
         switch (state, held) {
-        case (.docked, true):  (symbol, text) = ("cable.connector.horizontal", "Dock: connected, kept awake")
-        case (.docked, false): (symbol, text) = ("cable.connector", "Dock: connected")
-        case (.undocked, _):   (symbol, text) = ("cable.connector.slash", "Dock: not connected")
+        case (.docked, true):  text = "Dock: connected, kept awake"
+        case (.docked, false): text = "Dock: connected"
+        case (.undocked, _):   text = "Dock: not connected"
         }
-        if let image = NSImage(systemSymbolName: symbol, accessibilityDescription: text) {
-            image.isTemplate = true
-            item.button?.image = image
-            item.button?.title = ""
-        } else {
-            item.button?.image = nil
-            item.button?.title = state == .docked ? "⚡︎" : "–"
+        // The first render only sets the scene; a launch while docked is not a connect (review, 4).
+        if hasRendered, state != lastState, !reduceMotion {
+            motion.dockChanged()   // one quick turn on connect or disconnect
         }
+        hasRendered = true
+        lastState = state
+        self.held = held && state == .docked
+        motion.setHeld(self.held && !reduceMotion)
         item.button?.toolTip = text
         stateLine.title = text
+        drawFrame()
+        syncTimer()
+    }
+
+    private var reduceMotion: Bool { NSWorkspace.shared.accessibilityDisplayShouldReduceMotion }
+
+    /// The status item's window is hidden with an auto-hiding menu bar; drawing then is waste.
+    private var isVisible: Bool { item.button?.window?.occlusionState.contains(.visible) ?? true }
+
+    private func drawFrame() {
+        item.button?.image = RingIcon.image(phase: motion.phase, dimmed: lastState != .docked, held: held)
+        item.button?.title = ""
+    }
+
+    /// D29: an animation clock that exists only while the ring is moving and the menu bar is
+    /// showing, at the motion's own rate (one frame a second for the slow turn). At rest, or
+    /// with the bar hidden, no timer.
+    private func syncTimer() {
+        if occlusionObserver == nil, let window = item.button?.window {
+            occlusionObserver = NotificationCenter.default.addObserver(forName: NSWindow.didChangeOcclusionStateNotification, object: window, queue: .main) { [weak self] _ in
+                self?.drawFrame()
+                self?.syncTimer()
+            }
+        }
+        let wanted = motion.isMoving && isVisible
+        let interval = 1 / motion.currentFramesPerSecond
+        if wanted, let t = frameTimer, abs(t.timeInterval - interval) > 0.001 {
+            t.invalidate()
+            frameTimer = nil
+        }
+        if wanted, frameTimer == nil {
+            let t = Timer(timeInterval: interval, repeats: true) { [weak self] _ in self?.frame() }
+            t.tolerance = interval * 0.2
+            RunLoop.main.add(t, forMode: .common)
+            frameTimer = t
+        } else if !wanted, let t = frameTimer {
+            t.invalidate()
+            frameTimer = nil
+        }
+    }
+
+    private func frame() {
+        motion.tick()
+        drawFrame()
+        syncTimer()
     }
 
     func showProblem(_ text: String) {

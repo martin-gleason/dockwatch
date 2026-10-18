@@ -24,7 +24,7 @@ M7|Sources/DockCore/DockMembership.swift|s/controllerShift: UInt32 = 24/controll
 M9|Sources/DockCore/VolumeEjector.swift|s/if isBusy\(status\), let path/if false, let path/|VolumeEjectorLiveTests/testBusyVolumeIsRefusedAndNamed_thenEjectsWhenFree
 M10|Sources/DockCore/EjectMenuModel.swift|s/showUnmounted = true/showUnmounted = false/|EjectMenuModelTests/testSuccessfulEjectStaysVisibleAfterUnmount
 M11|Sources/DockCore/EjectMenuModel.swift|s/results.removeValue\(forKey: bsdName\)/_ = bsdName/|EjectMenuModelTests/testRemountClearsResult
-M14|Sources/DockCore/DockState.swift|s/dockLocationID \?\? lastKnownDockLocationID/dockLocationID/|DockPullFixtureTests/testRecordedPullCountsEveryChild
+M13|Sources/DockCore/RingMotion.swift|s/movesWhenIdle = false/movesWhenIdle = true/|RingMotionTests/testStillByDefault
 M8|Sources/DockCore/EventStore.swift|s/try FileManager.default.moveItem\(at: url, to: rotatedURL\)/try FileManager.default.removeItem(at: url)/|EventStoreTests/testRotationKeepsExactlyOnePreviousFile
 '
 

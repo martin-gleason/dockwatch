@@ -17,7 +17,7 @@ Named, never numbered (`D2`). **No source read here marks a milestone as the cur
 
 | Milestone | Decisions landing here | Units |
 |---|---|---|
-| MVP | 24 | C1, F1, F2, F3, F4, F4b, F5, F6 |
+| MVP | 25 | C1, F1, F2, F3, F4, F5, F6, F7 |
 | v1.5 | 4 | — |
 
 ## Features and chores
@@ -34,6 +34,7 @@ Status is what the unit's own plan header declares. What has landed in git is de
 | F4b | feature | built 2026-10-18 | MVP | — | agent | `docs/plans/F4b.md` | 0 planned |
 | F5 | feature | built 2026-10-18; reviewed (`docs/reviews/F5.md`); the login launch itself (log out and in) and the dock half of the sandbox proof (A1) remain | MVP | — | agent | `docs/plans/F5.md` | 3 planned |
 | F6 | feature | in progress (gate crossed 2026-10-18, "you can begin f6") | MVP | — | agent | `docs/plans/F6.md` | 3 planned |
+| F7 | feature | built 2026-10-18; reviewed (`docs/reviews/F7.md`), fixes landed; the owner's eyes remain (O16) | MVP | — | agent | `docs/plans/F7.md` | 4 planned |
 
 ## Registers
 
@@ -41,34 +42,34 @@ Counted from the register itself. A register with no rows still gets a line.
 
 | Register | Rows | Open | Unknown | Closed |
 |---|---|---|---|---|
-| Decisions (`D`) | 28 | 16 | 0 | 12 |
-| Risks (`RR`) | 15 | 14 | 0 | 1 |
-| Owner items (`O`) | 15 | 5 | 0 | 10 |
+| Decisions (`D`) | 29 | 17 | 0 | 12 |
+| Risks (`RR`) | 16 | 15 | 0 | 1 |
+| Owner items (`O`) | 16 | 6 | 0 | 10 |
 | Agent items (`A`) | 1 | 1 | 0 | 0 |
 | Hooks (`H`) | 6 | 2 | 0 | 4 |
 | Mutations (`M`) | 13 | 0 | 0 | 13 |
 | Chores (`C`) | 2 | 2 | 0 | 0 |
-| Gates (`G`) | 7 | 0 | 0 | 7 |
+| Gates (`G`) | 8 | 0 | 0 | 8 |
 
 ### By status
 
 | Register | Status | Count |
 |---|---|---|
-| `D` | proposed | 16 |
+| `D` | proposed | 17 |
 | `D` | ratified | 11 |
 | `D` | superseded | 1 |
-| `RR` | open | 12 |
+| `RR` | open | 13 |
 | `RR` | proposed | 2 |
 | `RR` | rejected | 1 |
 | `O` | closed | 10 |
-| `O` | open | 5 |
+| `O` | open | 6 |
 | `A` | open | 1 |
 | `H` | built | 4 |
 | `H` | not built | 1 |
 | `H` | open | 1 |
 | `M` | killed | 13 |
 | `C` | open | 2 |
-| `G` | done | 7 |
+| `G` | done | 8 |
 
 ## Hooks
 
@@ -103,6 +104,7 @@ Every open row in the register. Owner is the row's Owner column where the table 
 | agent | RR13 | — | open | Time Machine holds Backups open during a backup, so "Eject All" is refused for it. A non-root app cannot name root proce… |
 | agent | RR14 | — | open | The identifying USB device 0x1532:0x122E sits on the dock's USB 2 chain, the chain the spec says drops unevenly. If it t… |
 | agent | RR15 | — | open | libproc's header calls its interfaces "private … subject to change" although it ships in the SDK and lsof uses it; NFR1 … |
+| agent | RR16 | — | open | Two sessions in one working tree: the author switched the shared checkout to another branch while the F7 review ran ther… |
 | human | RR2 | — | open | A docked Mac held awake around the clock: no overnight sleep, idle energy use. |
 | human | RR5 | — | open | Due end of day 2026-10-18. |
 | owner | D1 | — | proposed | The project is DockWatch, at /LocalDevProjects/dockwatch. It is distinct from the shell monitor at /dockwatch, which kee… |
@@ -115,21 +117,23 @@ Every open row in the register. Owner is the row's Owner column where the table 
 | owner | D10 | — | proposed | The "Keep dock awake" toggle defaults off. First launch changes nothing until the owner turns it on. |
 | owner | D14 | — | proposed | License MPL-2.0: file-level copyleft whose terms the Mac App Store permits; GPL's do not, and the owner asked for both (… |
 | owner | D15 | — | proposed | Mac App Store distribution is a v1.5 goal (Q6). MVP therefore adopts App Sandbox and hardened runtime from F5, ad-hoc si… |
-| owner | D20 | — | proposed | Icon motion policy for F7: the hue ring is still by default, turns slowly while the hold is in force, and makes one turn… |
+| owner | D20 | — | proposed | Icon motion policy for F7, as amended after the F7 review: the hue ring is still by default; while the hold is in force … |
 | owner | D21 | — | proposed | The log gains hold.on and hold.off lines when the sleep assertion is taken and released, so the overnight charger-drop c… |
 | owner | D23 | — | proposed | The menu's "Eject" is a DiskArbitration unmount of the volume, never a whole-disk DADiskEject: the disk stays attached, … |
 | owner | D24 | — | proposed | Under App Sandbox the log lives in the app's container: /Library/Containers/com.martingleason.dockwatch/Data/Library/Log… |
 | owner | D27 | — | proposed | Loss notifications are coalesced for two seconds after the first loss, so a whole-dock pull is one notification ("Dock d… |
 | owner | D28 | — | proposed | The menu's 24-hour counters: devices lost = usb.detached on dock devices; volumes lost = volume.disappeared (unclean) on… |
-| owner | O7 | P1 | open | Ratify the proposed decisions the build rests on: D1–D5, D7, D9, D10, D20, D21, D23, D24, D27, D28, D29. |
+| owner | D29 | — | proposed | NFR2 reading for F7: the ring's frame timer is an animation clock that exists only while the ring is moving and the stat… |
+| owner | O7 | P1 | open | Ratify D1–D10. |
 | owner | O12 | P1 | open | F2 and F3 live checks only the owner can do, with the app running and Keep Dock Awake on: close the lid for a minute (ex… |
 | owner | O13 | P0 | open | The experiment. With the app running and the dock attached, turn on Keep Dock Awake in the menu (its ⌘K works only while… |
 | owner | O14 | P1 | open | F6 live checks only the owner can do, with the dock plugged back in: eject one volume from the menu and reopen the menu … |
 | owner | O15 | P1 | open | F4 live checks only the owner can do, from the installed app with the dock attached: allow notifications when asked at f… |
+| owner | O16 | P1 | open | F7 live checks only the owner can do, from a rebuilt installed app (scripts/build-app.sh --install): the ring in the men… |
 | unassigned | A1 | P0 | open | Finish the dock half of RR12 once the dock is plugged back in: from the installed bundle, confirm the dock's USB devices… |
 | unassigned | H5 | — | open | Every FR has a test or a named manual check with evidence |
 | unassigned | H6 | — | not built | Status page regenerates clean |
 
 ---
 
-40 open register rows.
+43 open register rows.
