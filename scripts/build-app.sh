@@ -1,5 +1,5 @@
 #!/bin/zsh
-# Created: 2026-10-18 14:29 -05:00 · Edited: 2026-10-18 14:29 -05:00
+# Created: 2026-10-18 14:29 -05:00 · Edited: 2026-10-18 17:03 -05:00
 # F5-T1 — build a release binary and wrap it as a sandboxed, hardened, ad-hoc signed .app.
 #   scripts/build-app.sh            -> build/DockWatch.app
 #   scripts/build-app.sh --install  -> also copies to ~/Applications/DockWatch.app
@@ -12,7 +12,11 @@ rm -rf "$APP"
 mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
 cp .build/release/DockWatch "$APP/Contents/MacOS/DockWatch"
 cp Resources/Info.plist "$APP/Contents/Info.plist"
-cp Resources/AppIcon.icns "$APP/Contents/Resources/AppIcon.icns"
+# App icon: Resources/AppIcon.icon is an Icon Composer document (the owner's ring, D26). actool
+# emits Assets.car for the macOS 26 renderer and a flat .icns fallback (needs Xcode 26+).
+xcrun actool Resources/AppIcon.icon --compile "$APP/Contents/Resources" --platform macosx \
+  --minimum-deployment-target 14.0 --app-icon AppIcon --include-all-app-icons \
+  --output-partial-info-plist build/icon-partial.plist --output-format human-readable-text >/dev/null
 codesign --force --options runtime --entitlements Resources/DockWatch.entitlements --sign - "$APP"
 codesign --verify --strict "$APP"
 echo "Built $APP"
