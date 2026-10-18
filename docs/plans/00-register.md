@@ -38,9 +38,12 @@ number has not been decided, however clearly it was said aloud.
 | D13 | ratified 2026-10-18 | MVP | **Supersedes D8.** Once F2's log is shown to agree with the shell monitor, the monitor's LaunchAgent is removed; replacing it is the test. Owner (Q5): "Replace. it's a real test." F2 gains a task for the removal. |
 | D14 | proposed | MVP | License **MPL-2.0**: file-level copyleft whose terms the Mac App Store permits; GPL's do not, and the owner asked for both (Q6). `LICENSE` added. |
 | D15 | proposed | v1.5 | Mac App Store distribution is a v1.5 goal (Q6). MVP therefore adopts App Sandbox and hardened runtime from F5, ad-hoc signed until a Developer ID exists, so nothing built now has to be unbuilt. |
-| D16 | proposed | MVP | The menu bar icon changes from the SF Symbol connector set to a symbol the owner picks. Owner 2026-10-18: "I do want to change the icon"; which one is `O11`. |
+| D16 | ratified 2026-10-18 | MVP | The menu bar icon is the owner's hue ring, regenerated as a continuous sweep and drawn in code so it can turn (F7). Owner: "menubar icon is ratified. excellent!" |
 | D17 | ratified 2026-10-18 | v1.5 | Users can choose the menu bar icon. Owner: "in v1.5 allow for users to select the icon." |
 | D18 | ratified | MVP | **Dark wakes are not observable from a user-space app.** xnu sends the legacy-app power messages only when graphics come up, so the sleep/dark-wake loop the spec describes leaves no trace in the app's log. The `system.darkwake` kind is dropped; `system.wake` means a full wake; `pmset -g log` stays the record for dark wakes (RR3), and F4's "wakes" counter counts full wakes. Found by the F2 review from `IOPMrootDomain.cpp`. |
+| D19 | ratified 2026-10-18 | MVP | Build order after F2 is F3, then F6, then F5, then F4. Owner: "begin work on f3" after "then begin f6"; supersedes the order in D9 from F3 onward. |
+| D20 | proposed | MVP | Icon motion policy for F7: the hue ring is still by default, turns slowly while the hold is in force, and makes one turn on dock connect or disconnect. Rationale: an always-animating menu bar icon spends CPU around the clock, against the app's purpose. The owner may choose always-moving instead (`O11`). |
+| D21 | proposed | MVP | The log gains `hold.on` and `hold.off` lines when the sleep assertion is taken and released, so the overnight charger-drop comparison (F3 evidence, RR4) can be read against exactly when the hold was in force. Two kinds beyond FR3's list; the owner ratifies or they go. |
 
 ## Risks (RR)
 
@@ -60,7 +63,7 @@ number has not been decided, however clearly it was said aloud.
 | RR11 | ~~[tests-collect-zero] pytest collects no tests.~~ Rejected 2026-10-18: this is a Swift project; the runner is `swift test` (SPEC § Stack), and pytest is not part of the stack. Kept so the detector does not re-propose it. | rejected | — | — | — | agent |
 | RR12 | App Sandbox may refuse DiskArbitration unmount (FR9) or IOKit matching notifications; unverified on this stack. | open | Medium | F6 or F1 silently broken inside the sandboxed bundle. | F5-T1 runs both under the entitlements and records the result before F6 is built. | agent |
 | RR13 | Time Machine holds `Backups` open during a backup, so "Eject all" will report it blocked by `backupd`. | open | Certain during a backup | One volume stays mounted. | The message names the process; the app never forces an unmount. | agent |
-| RR14 | The identifying USB device `0x1532:0x122E` sits on the dock's USB 2 chain, the chain the spec says drops unevenly. If it terminates while the dock stays attached, the app shows "not connected" and F3 would release the hold. No evidence either way yet (control log has zero LOST lines). Found by the F1 review. | open | Unknown | The hold drops during exactly the fault it exists to prevent. | F2's log will show whether `0x122E` ever terminates alone; F3's plan must decide the policy before building. | agent |
+| RR14 | The identifying USB device `0x1532:0x122E` sits on the dock's USB 2 chain, the chain the spec says drops unevenly. If it terminates while the dock stays attached, the app shows "not connected" and F3 would release the hold. Found by the F1 review. | open | Unknown | A gap in the hold during the fault it exists to prevent. | Policy set in F3's plan: the hold follows the tracker exactly. A flicker costs a gap of seconds, and idle sleep needs the Mac idle for at least its one-minute setting, so a gap of seconds cannot start the loop; `hold.off`/`hold.on` lines (D21) will show it if it happens. | agent |
 ## Owner items (O)
 
 Outstanding items only the owner can close.
@@ -77,7 +80,7 @@ Outstanding items only the owner can close.
 | O8 | With the app running, pull the dock's Thunderbolt cable and plug it back; paste the stderr lines. Closes F1's live FR1/FR2 check. | P1 | closed 2026-10-18 — owner: "I did the test. it works beautifully." |
 | O9 | The vision sentence is now D11's and it adds FR9; the agent does not edit `SPEC.md`. Paste the sentence and FR9 into the spec, or tell the agent to. | P1 | closed 2026-10-18 — "paste the rewritten vision"; pasted by the agent on that instruction |
 | O10 | Gate F6 (eject dock volumes), proposed after F5 and before F4 in today's order. | P1 | open |
-| O11 | Which menu bar icon (D16)? An SF Symbol name, or an image file in `Resources/`. Until answered the connector symbols stay. | P2 | open |
+| O11 | Which menu bar icon (D16)? An SF Symbol name, or an image file in `Resources/`. Until answered the connector symbols stay. | P2 | closed 2026-10-18 — the owner's hue ring, regenerated as a continuous sweep; motion policy is D20, built as F7 |
 | O12 | F2 live checks only the owner can do, with the app running: close the lid for a minute (expect `system.sleep` then `system.wake`); unplug the dock's cable from the Mac for ten seconds (expect `power.disconnected` with `lastWatts`, four `volume.disappeared`, seventeen `usb.detached`, then the reverse as `power.connected`, `usb.attached`, `volume.mounted`); click Open Log (Finder shows the file). | P1 | open |
 
 Questions for O1–O6 are laid out in `docs/handoffs/2026-10-18-planning-questions.md`.
@@ -107,7 +110,7 @@ already built.
 | G1 | C1 harness | done (crossed) | 2026-10-18 | 2026-10-18 | "begin c1 and f1" |
 | G2 | F1 menu bar presence and dock detection | done (crossed) | 2026-10-18 | 2026-10-18 | "begin c1 and f1" |
 | G3 | F2 event log | done (crossed) | 2026-10-18 | 2026-10-18 | "start f2" |
-| G4 | F3 keep the dock awake | open (awaiting the gate) | 2026-10-18 | — | — |
+| G4 | F3 keep the dock awake | done (crossed) | 2026-10-18 | 2026-10-18 | "begin work on f3" |
 | G5 | F5 installable app and launch at login | open (awaiting the gate) | 2026-10-18 | — | — |
 | G6 | F4 timeline, counters, notifications | open (awaiting the gate) | 2026-10-18 | — | — |
 | G7 | F6 eject dock volumes | open (awaiting the gate) | 2026-10-18 | — | — |
