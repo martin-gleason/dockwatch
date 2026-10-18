@@ -1,0 +1,55 @@
+# DockWatch — SPEC
+
+DockWatch is a Mac menu bar tool that logs what the Thunderbolt 4 dock does and keeps it from falling asleep.
+
+Created: 2026-10-18 10:55 -05:00 · Edited: 2026-10-18 11:10 -05:00
+
+> **Vision sentence status: the owner's words from the planning session on 2026-10-18, reduced to one sentence by the agent. Ratification is `O1`.**
+
+## What "falling asleep" means here
+
+The investigation that preceded this project (2026-10-18, this Mac, Razer Thunderbolt 4 Dock Chroma, firmware 38.1) established the mechanism the tool targets. Every one of roughly 920 recorded charger-detach events in eight days happened while the Mac was in deep idle sleep: the Mac sleeps, 3 to 4 seconds later the dock's power-delivery contract drops, the Mac dark-wakes for about 45 seconds, sleeps again, and the loop repeats every 1 to 2 minutes around the clock. Attached devices drop after enough suspend/resume cycles, unevenly between the dock's USB 2 and USB 3 hub chains. **"Keeping the dock awake" therefore means keeping the Mac out of idle system sleep while the dock is attached.** The display may still sleep. No user-space API can touch the dock's own power controller, and this spec does not pretend otherwise.
+
+## Functional requirements
+
+| ID | Requirement |
+|---|---|
+| FR1 | The menu bar icon shows the dock state at a glance, in three states: docked and held awake · docked, not held · not docked. |
+| FR2 | The dock is recognised by its USB vendor and product ID (default: Razer `0x1532:0x122E`, the device named "Thunderbolt 4 Dock"), detected at launch and on every attach or detach, without polling. |
+| FR3 | Every USB device attach and detach, every external volume mount, unmount and unexpected disappearance, every system sleep, dark wake and wake, and every charger connect and disconnect (with negotiated watts) is recorded with a timestamp to an append-only log file. |
+| FR4 | The menu shows the most recent events (at least 20) and four rolling 24-hour counters: devices lost, volumes lost, charger drops, wakes. |
+| FR5 | A "Keep dock awake" toggle. While it is on and the dock is present, the app holds a system idle-sleep-prevention assertion that leaves display sleep untouched. The assertion is released within 5 seconds of the dock leaving or the toggle turning off, is re-asserted after a wake if the dock is still present, and the toggle's state survives relaunch. |
+| FR6 | When a device or volume disappears while the Mac is awake, the user gets a notification naming it. |
+| FR7 | A "Launch at login" toggle. |
+| FR8 | An "Open log" action that reveals the log file in Finder. |
+
+## Non-functional requirements
+
+| ID | Requirement |
+|---|---|
+| NFR1 | No root, no kernel or system extension, no private API. Everything goes through public IOKit, DiskArbitration, IOPMLib, ServiceManagement and UserNotifications. |
+| NFR2 | Event-driven. Device, volume, power and sleep state arrive through system callbacks; there are no polling timers. |
+| NFR3 | Resident memory under 30 MB at idle. AppKit only; no SwiftUI. |
+| NFR4 | No third-party dependencies. |
+| NFR5 | macOS 14 or later on Apple silicon. Intel is not verified (the owner has no Intel Mac). |
+| NFR6 | The log is JSON Lines, one event per line, opened for append, rotated at 20 MB keeping one previous file. An unwritable log never crashes the app; it surfaces in the menu. |
+| NFR7 | `DockCore` never imports AppKit. The hold policy, dock matcher, event model and event queries are pure and unit-tested offline. |
+| NFR8 | The app survives sleep and wake: every subscription is re-armed and the hold state is re-evaluated on wake. |
+
+## Stack
+
+Swift 5.9 language mode on the Swift 6.4 toolchain (Xcode 27.1) · SwiftPM package, no Xcode project · AppKit · macOS 14 or later · runner: `swift test` (XCTest) · layout: `Sources/DockCore` (library, no AppKit), `Sources/DockWatch` (executable), `Tests/DockCoreTests` · CI: GitHub Actions on macOS once the repository is pushed · no third-party dependencies. Changing any of this is a `D<n>`.
+
+## Hook intentions
+
+- Every FR has a test or a named manual check, recorded in the feature plan with its evidence.
+- `swift test` is the harness; offline tests pass on every change.
+- Every mutation row in the register names the test that catches it, and the row says `run` only after that test was seen red.
+
+## Out of scope for MVP (future milestones, enter via `D<n>`)
+
+Eject-before-sleep and remount-on-wake · auto-remount of a volume that reappears unmounted · a schedule window for the hold · a dock picker UI for non-Razer docks · per-port hub power cycling (uhubctl, unverified on this dock) · Chroma lighting · dock firmware · charts or exports beyond the log file · multiple docks · Intel verification.
+
+## What this is not
+
+Not a general sleep blocker: the hold exists only while the dock is present. Not a drive guardian: unmounting drives before sleep treats one symptom and loses the diagnosis. Not a dock power-cycler: there is no API for that. Not a USB event logger for everything: it is about one dock.
