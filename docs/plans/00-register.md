@@ -69,7 +69,7 @@ Outstanding items only the owner can close.
 | O3 | Accept a round-the-clock hold while docked for MVP, or pull the schedule window into scope. Default if silent: accept. | P1 | closed 2026-10-18 — no scheduling in MVP, v1.5 (D12) |
 | O4 | Gate C1 and F1: the yes that opens today's build. | P0 | closed 2026-10-18 — owner: "begin c1 and f1" |
 | O5 | Decide whether the app replaces the shell monitor once F2's log agrees with it. Default if silent: both stay. | P2 | closed 2026-10-18 — "Replace. it's a real test." (D13) |
-| O6 | Create the GitHub repository and push. C1-T6 waits on it. | P2 | open |
+| O6 | Create the GitHub repository and push. C1-T6 waits on it. | P2 | closed 2026-10-18 — public at github.com/martin-gleason/dockwatch, created by the owner |
 | O7 | Ratify D1–D10. | P1 | open |
 | O9 | The vision sentence is now D11's and it adds FR9; the agent does not edit `SPEC.md`. Paste the sentence and FR9 into the spec, or tell the agent to. | P1 | open |
 | O10 | Gate F6 (eject dock volumes), proposed after F5 and before F4 in today's order. | P1 | open |

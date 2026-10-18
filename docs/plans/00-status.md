@@ -42,7 +42,7 @@ Counted from the register itself. A register with no rows still gets a line.
 |---|---|---|---|---|
 | Decisions (`D`) | 15 | 10 | 0 | 5 |
 | Risks (`RR`) | 14 | 13 | 0 | 1 |
-| Owner items (`O`) | 9 | 4 | 0 | 5 |
+| Owner items (`O`) | 9 | 3 | 0 | 6 |
 | Agent items (`A`) | 0 | 0 | 0 | 0 |
 | Hooks (`H`) | 6 | 6 | 0 | 0 |
 | Mutations (`M`) | 7 | 7 | 0 | 0 |
@@ -59,8 +59,8 @@ Counted from the register itself. A register with no rows still gets a line.
 | `RR` | open | 11 |
 | `RR` | proposed | 2 |
 | `RR` | rejected | 1 |
-| `O` | closed | 5 |
-| `O` | open | 4 |
+| `O` | closed | 6 |
+| `O` | open | 3 |
 | `H` | not built | 5 |
 | `H` | open | 1 |
 | `M` | proposed | 7 |
@@ -112,7 +112,6 @@ Every open row in the register. Owner is the row's Owner column where the table 
 | owner | D10 | — | proposed | The "Keep dock awake" toggle defaults off. First launch changes nothing until the owner turns it on. |
 | owner | D14 | — | proposed | License MPL-2.0: file-level copyleft whose terms the Mac App Store permits; GPL's do not, and the owner asked for both (… |
 | owner | D15 | — | proposed | Mac App Store distribution is a v1.5 goal (Q6). MVP therefore adopts App Sandbox and hardened runtime from F5, ad-hoc si… |
-| owner | O6 | P2 | open | Create the GitHub repository and push. C1-T6 waits on it. |
 | owner | O7 | P1 | open | Ratify D1–D10. |
 | owner | O9 | P1 | open | The vision sentence is now D11's and it adds FR9; the agent does not edit SPEC.md. Paste the sentence and FR9 into the s… |
 | owner | O10 | P1 | open | Gate F6 (eject dock volumes), proposed after F5 and before F4 in today's order. |
@@ -137,4 +136,4 @@ Every open row in the register. Owner is the row's Owner column where the table 
 
 ---
 
-47 open register rows.
+46 open register rows.
