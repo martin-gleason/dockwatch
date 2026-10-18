@@ -1,4 +1,4 @@
-// Created: 2026-10-18 11:55 -05:00 · Edited: 2026-10-18 13:04 -05:00
+// Created: 2026-10-18 11:55 -05:00 · Edited: 2026-10-18 16:54 -05:00
 import XCTest
 @testable import DockCore
 
@@ -59,6 +59,17 @@ final class EventStoreTests: XCTestCase {
         XCTAssertEqual(try lines(store.url).count, 2)
         let all = try FileManager.default.contentsOfDirectory(atPath: dir.path).filter { $0.hasSuffix(".jsonl") }.sorted()
         XCTAssertEqual(all, ["events.1.jsonl", "events.jsonl"])
+    }
+
+    /// FR4: the tail seeds the menu at launch; a line that does not decode is skipped (F2 review note).
+    func testTailSkipsABadLine() throws {
+        let store = EventStore(directory: dir)
+        store.append(Event(kind: .systemWake, subject: "system"))
+        let fd = FileHandle(forWritingAtPath: store.url.path)!
+        try fd.seekToEnd(); fd.write(Data("{\"kind\":\"from.the.future\",\"subject\":\"?\",\"ts\":\"2030-01-01T00:00:00.000Z\"}\n".utf8)); try fd.close()
+        store.append(Event(kind: .systemSleep, subject: "system"))
+        XCTAssertEqual(store.tail(10).map(\.kind), [.systemWake, .systemSleep])
+        XCTAssertEqual(store.tail(1).map(\.kind), [.systemSleep])
     }
 
     /// NFR6: an unwritable location is reported, not thrown.

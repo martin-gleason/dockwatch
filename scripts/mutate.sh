@@ -17,7 +17,8 @@ M1|Sources/DockCore/HoldPolicy.swift|s/docked = present/docked = true/|HoldPolic
 M2|Sources/DockCore/HoldPolicy.swift|s/toggle && docked/docked/|HoldPolicyTests/testToggleOffNeverHolds
 M3|Sources/DockCore/EventStore.swift|s/O_APPEND/O_TRUNC/|EventStoreTests/testAppendPreservesPriorLines
 M4|Sources/DockCore/DockIdentity.swift|s/ && device.productID == productID//|DockIdentityTests/testRazerMouseIsNotTheDock
-M5|Sources/DockCore/EventQuery.swift|s/\$0.timestamp >= cutoff/true/|EventQueryTests/testWindowExcludesOldEvents
+M5|Sources/DockCore/EventQuery.swift|s/where e.ts >= cutoff/where true/|EventQueryTests/testWindowExcludesOldEvents
+M12|Sources/DockCore/LossCoalescer.swift|s/= dockWentAway \? .dockDisconnected/= false ? .dockDisconnected/|LossCoalescerTests/testDockPullIsOneSummary
 M6|Sources/DockCore/HoldPolicy.swift|s/reapply: true\)/reapply: false)/|HoldPolicyTests/testWakeWhileDockedReasserts
 M7|Sources/DockCore/DockMembership.swift|s/controllerShift: UInt32 = 24/controllerShift: UInt32 = 0/|DockMembershipTests/testSiblingHubIsOnTheDock
 M9|Sources/DockCore/VolumeEjector.swift|s/if isBusy\(status\), let path/if false, let path/|VolumeEjectorLiveTests/testBusyVolumeIsRefusedAndNamed_thenEjectsWhenFree

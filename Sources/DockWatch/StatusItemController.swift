@@ -1,4 +1,4 @@
-// Created: 2026-10-18 11:20 -05:00 · Edited: 2026-10-18 14:52 -05:00
+// Created: 2026-10-18 11:20 -05:00 · Edited: 2026-10-18 16:54 -05:00
 // F1-T4 / F2-T4 / F3-T3 / F5-T2 / F6-T3 — the menu bar icon and its menu (FR1, FR5, FR7, FR8, FR9).
 import AppKit
 import DockCore
@@ -21,6 +21,9 @@ final class StatusItemController: NSObject, NSMenuDelegate {
     private let keepAwakeItem = NSMenuItem(title: "Keep Dock Awake", action: #selector(toggleKeepAwake), keyEquivalent: "k")
     private let loginItem = NSMenuItem(title: "Launch at Login", action: #selector(toggleLaunchAtLogin), keyEquivalent: "")
     private let ejectHeader = NSMenuItem(title: "Dock Volumes", action: nil, keyEquivalent: "")
+    private let countersLine = NSMenuItem(title: "Last 24 h: —", action: nil, keyEquivalent: "")
+    private let timelineItem = NSMenuItem(title: "Recent Events", action: nil, keyEquivalent: "")
+    private let timelineMenu = NSMenu()
     private static let ejectTag = 900
 
     /// FR8 — set by the app delegate; reveals the log file.
@@ -29,6 +32,9 @@ final class StatusItemController: NSObject, NSMenuDelegate {
     var onToggleKeepAwake: (() -> Void)?
     /// FR7 — set by the app delegate; flips launch at login.
     var onToggleLaunchAtLogin: (() -> Void)?
+    /// FR4 — the counters line and the recent-event lines, asked for each time the menu opens.
+    var countersText: (() -> String)?
+    var timelineLines: (() -> [String])?
     /// FR9 — the volumes on the dock right now, asked for each time the menu opens.
     var ejectEntries: (() -> [EjectEntry])?
     /// FR9 — eject one volume by BSD name, or all of them.
@@ -46,6 +52,11 @@ final class StatusItemController: NSObject, NSMenuDelegate {
         ejectHeader.isEnabled = false
         menu.addItem(stateLine)
         menu.addItem(problemLine)
+        countersLine.isEnabled = false
+        countersLine.toolTip = "Devices and volumes lost from the dock, charger drops, and full wakes in the last 24 hours. Charger drops during sleep are in the system power log (pmset -g log), not here."
+        menu.addItem(countersLine)
+        timelineItem.submenu = timelineMenu
+        menu.addItem(timelineItem)
         menu.addItem(.separator())
         keepAwakeItem.target = self
         keepAwakeItem.toolTip = "While on and the dock is attached, the Mac does not idle-sleep. The display still sleeps."
@@ -68,6 +79,22 @@ final class StatusItemController: NSObject, NSMenuDelegate {
     // MARK: FR9 — rebuilt when the menu opens, never on a timer (NFR2)
 
     func menuNeedsUpdate(_ menu: NSMenu) {
+        guard menu === self.menu else { return }
+        // FR4: counters and the timeline, computed on open.
+        countersLine.title = countersText?() ?? "Last 24 h: —"
+        timelineMenu.removeAllItems()
+        let lines = timelineLines?() ?? []
+        if lines.isEmpty {
+            let none = NSMenuItem(title: "No events yet", action: nil, keyEquivalent: "")
+            none.isEnabled = false
+            timelineMenu.addItem(none)
+        }
+        for line in lines {
+            let row = NSMenuItem(title: line, action: nil, keyEquivalent: "")
+            row.isEnabled = false
+            row.attributedTitle = NSAttributedString(string: line, attributes: [.font: NSFont.monospacedDigitSystemFont(ofSize: NSFont.smallSystemFontSize, weight: .regular)])
+            timelineMenu.addItem(row)
+        }
         for existing in menu.items where existing.tag == Self.ejectTag { menu.removeItem(existing) }
         let entries = ejectEntries?() ?? []
         var index = menu.index(of: ejectHeader) + 1

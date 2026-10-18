@@ -1,4 +1,4 @@
-// Created: 2026-10-18 11:55 -05:00 · Edited: 2026-10-18 12:15 -05:00
+// Created: 2026-10-18 11:55 -05:00 · Edited: 2026-10-18 16:54 -05:00
 // F2-T1 — append-only JSON Lines log with one rotation (FR3, NFR6). Main thread only.
 import Foundation
 
@@ -55,6 +55,20 @@ public final class EventStore {
             lastError = "\(error)"
             return false
         }
+    }
+
+    /// The last `n` events in the file, oldest first. Reads at most the final 512 KB. A line
+    /// that does not decode (a future kind, a torn write) is skipped, not fatal.
+    public func tail(_ n: Int) -> [Event] {
+        guard let handle = try? FileHandle(forReadingFrom: url) else { return [] }
+        defer { try? handle.close() }
+        let size = (try? handle.seekToEnd()) ?? 0
+        let start = size > 524_288 ? size - 524_288 : 0
+        try? handle.seek(toOffset: start)
+        let data = (try? handle.readToEnd()) ?? Data()
+        var lines = String(decoding: data, as: UTF8.self).split(separator: "\n", omittingEmptySubsequences: true)
+        if start > 0, !lines.isEmpty { lines.removeFirst() }   // the first line is probably torn
+        return lines.suffix(n).compactMap { try? EventLine.decode(String($0)) }
     }
 
     private func write(_ line: String) throws {
