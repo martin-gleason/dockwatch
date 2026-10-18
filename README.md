@@ -1,6 +1,6 @@
 # DockWatch
 
-A Mac menu bar tool that logs what the Thunderbolt 4 dock does and keeps it from falling asleep.
+A native Mac menu bar tool that logs the activity of the Thunderbolt 4 dock, keeps it from falling asleep, and lets you eject or remove connected devices quickly and safely.
 
 - The contract: `docs/specs/SPEC.md`. The why: `docs/intents/intent.md`.
 - Decisions, risks, owner items: `docs/plans/00-register.md`. Status: `docs/plans/00-status.md` (generated).

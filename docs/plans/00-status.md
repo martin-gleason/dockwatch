@@ -28,7 +28,7 @@ Status is what the unit's own plan header declares. What has landed in git is de
 |---|---|---|---|---|---|---|---|
 | C1 | chore | in progress (gate crossed 2026-10-18) | MVP | P0 | agent | `docs/plans/C1.md` | 6 planned |
 | F1 | feature | in progress (gate crossed 2026-10-18) | MVP | — | agent | `docs/plans/F1.md` | 4 planned |
-| F2 | feature | planned, awaiting the gate | MVP | — | agent | `docs/plans/F2.md` | 4 planned |
+| F2 | feature | in progress (gate crossed 2026-10-18, "start f2") | MVP | — | agent | `docs/plans/F2.md` | 5 planned |
 | F3 | feature | planned, awaiting the gate | MVP | — | agent | `docs/plans/F3.md` | 3 planned |
 | F4 | feature | planned, awaiting the gate | MVP | — | agent | `docs/plans/F4.md` | 3 planned |
 | F5 | feature | planned, awaiting the gate | MVP | — | agent | `docs/plans/F5.md` | 2 planned |
