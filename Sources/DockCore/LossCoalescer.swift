@@ -1,4 +1,4 @@
-// Created: 2026-10-18 16:54 -05:00 · Edited: 2026-10-18 17:10 -05:00
+// Created: 2026-10-18 16:54 -05:00 · Edited: 2026-10-18 20:05 -05:00
 // F4-T3 — one notification for a dock pull, one per lone drop (FR6, D22, D27). Pure.
 import Foundation
 
@@ -28,7 +28,11 @@ public struct LossCoalescer: Equatable {
     /// to arrange one flush `window` seconds from now.
     @discardableResult
     public mutating func add(_ loss: Loss, at now: Date = Date()) -> Bool {
-        pending.append(loss)
+        // The name goes into a notification body; it is plain text from here (C3 review, 2).
+        switch loss {
+        case .device(let n): pending.append(.device(Event.plain(n)))
+        case .volume(let n): pending.append(.volume(Event.plain(n)))
+        }
         if openedAt == nil {
             openedAt = now
             return true

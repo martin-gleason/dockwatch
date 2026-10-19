@@ -1,4 +1,4 @@
-// Created: 2026-10-18 11:55 -05:00 · Edited: 2026-10-18 19:25 -05:00
+// Created: 2026-10-18 11:55 -05:00 · Edited: 2026-10-18 20:05 -05:00
 import XCTest
 @testable import DockCore
 
@@ -157,11 +157,45 @@ final class EventStoreTests: XCTestCase {
         XCTAssertEqual(e.subject, "DasKeyboard!")
         XCTAssertEqual(e.detail["model"], "AB")
         XCTAssertEqual(Event(kind: .usbAttached, subject: "Clé USB 日本語 🙂").subject, "Clé USB 日本語 🙂")
+        // C3 review, finding 6: joiners stay, so emoji sequences and Persian words survive.
+        XCTAssertEqual(Event.plain("👨\u{200D}👩\u{200D}👧 🏳️\u{200D}🌈 می\u{200C}خواهم"), "👨\u{200D}👩\u{200D}👧 🏳️\u{200D}🌈 می\u{200C}خواهم")
         let line = try EventLine.encode(e)
         XCTAssertFalse(line.contains("\u{202E}"))
         XCTAssertFalse(line.contains("\\u0000"))
         // A line written by something else, with the override still in it.
         let forged = #"{"detail":{},"kind":"usb.attached","subject":"evil\u202Elive","ts":"2025-10-09T08:53:20.250Z"}"#
         XCTAssertEqual(try EventLine.decode(forged).subject, "evillive")
+    }
+
+    /// C3 review, finding 1; M19: a FIFO at the log path is refused at once, on read and on
+    /// write. Without `O_NONBLOCK` the open blocks until a peer appears, and the app's first
+    /// `tail` at launch never returns.
+    func testFifoAtLogPathIsRefusedWithoutBlocking() throws {
+        try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
+        let store = EventStore(directory: dir)
+        XCTAssertEqual(mkfifo(store.url.path, 0o644), 0)
+        let done = DispatchSemaphore(value: 0)
+        var tailCount = -1, appended = true
+        DispatchQueue.global().async {
+            tailCount = store.tail(10).count
+            appended = store.append(Event(kind: .systemWake, subject: "system"))
+            done.signal()
+        }
+        XCTAssertEqual(done.wait(timeout: .now() + 3), .success, "open must not block on the FIFO")
+        XCTAssertEqual(tailCount, 0)
+        XCTAssertFalse(appended)
+        XCTAssertNotNil(store.lastError)
+    }
+
+    /// C3 review, finding 4: a dangling symlink at the previous-file path does not stop
+    /// rotation, so the cap holds.
+    func testRotationReplacesADanglingLinkAtThePreviousFile() throws {
+        try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
+        let store = EventStore(directory: dir, maxBytes: 300)
+        try FileManager.default.createSymbolicLink(at: store.rotatedURL, withDestinationURL: dir.appendingPathComponent("nowhere"))
+        for _ in 0..<10 { store.append(Event(kind: .systemWake, subject: "system")) }
+        XCTAssertNil(store.lastError, "rotation happened")
+        let attrs = try FileManager.default.attributesOfItem(atPath: store.rotatedURL.path)
+        XCTAssertEqual(attrs[.type] as? FileAttributeType, .typeRegular, "the link was replaced by the rotated file")
     }
 }

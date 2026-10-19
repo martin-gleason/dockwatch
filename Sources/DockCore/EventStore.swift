@@ -1,4 +1,4 @@
-// Created: 2026-10-18 11:55 -05:00 · Edited: 2026-10-18 19:20 -05:00
+// Created: 2026-10-18 11:55 -05:00 · Edited: 2026-10-18 20:05 -05:00
 // F2-T1 — append-only JSON Lines log with one rotation (FR3, NFR6). Main thread only.
 import Foundation
 
@@ -80,20 +80,23 @@ public final class EventStore {
         var st = stat()
         guard fstat(fd, &st) == 0 else { throw StoreError.open(errno: errno) }
         guard st.st_size > 0 else { return true }
-        let rfd = try openRegularFile(O_RDONLY)
-        defer { close(rfd) }
         var last: UInt8 = 0
-        return pread(rfd, &last, 1, st.st_size - 1) == 1 && last == UInt8(ascii: "\n")
+        return pread(fd, &last, 1, st.st_size - 1) == 1 && last == UInt8(ascii: "\n")
     }
 
     /// `O_NOFOLLOW`, named so M15 can drop it and prove the symlink test has teeth.
     static let noFollow = O_NOFOLLOW
+    /// `O_NONBLOCK`, named so M19 can drop it and prove the FIFO test has teeth.
+    static let nonBlocking = O_NONBLOCK
 
     /// Opens the log without following a symlink and refuses anything but a regular file, so
-    /// a link or a directory planted at the path is reported, never written through or read
-    /// (security review 2026-10-18, finding 6). The caller closes the descriptor.
+    /// a link, a directory or a FIFO planted at the path is reported, never written through,
+    /// read, or waited on (security review 2026-10-18, finding 6; C3 review, finding 1). A hard
+    /// link is out of scope: only the same user can make one, and that user can write the
+    /// target directly. `O_NONBLOCK` is what keeps a FIFO from blocking `open` before `fstat`
+    /// can refuse it; a regular file ignores the flag. The caller closes the descriptor.
     private func openRegularFile(_ flags: Int32) throws -> Int32 {
-        let fd = open(url.path, flags | Self.noFollow, 0o644)
+        let fd = open(url.path, flags | Self.noFollow | Self.nonBlocking, 0o644)
         guard fd >= 0 else { throw StoreError.open(errno: errno) }
         var st = stat()
         guard fstat(fd, &st) == 0, (st.st_mode & S_IFMT) == S_IFREG else {
@@ -106,7 +109,9 @@ public final class EventStore {
     private func write(_ line: String) throws {
         // O_APPEND: every write lands at the current end, and this process never truncates
         // the file (M3 breaks exactly this).
-        let fd = try openRegularFile(O_WRONLY | O_APPEND | O_CREAT)
+        // Read-write so the fresh-line probe reads the same file the write lands in; O_APPEND
+        // governs writes only.
+        let fd = try openRegularFile(O_RDWR | O_APPEND | O_CREAT)
         defer { close(fd) }
         // Always start on a fresh line: an unterminated write by something else must not swallow
         // the next event into itself (found by the C3-T2 test).
@@ -124,9 +129,10 @@ public final class EventStore {
         guard let size = (try? FileManager.default.attributesOfItem(atPath: url.path))?[.size] as? Int,
               size + adding > maxBytes else { return nil }
         do {
-            if FileManager.default.fileExists(atPath: rotatedURL.path) {
-                try FileManager.default.removeItem(at: rotatedURL)
-            }
+            // Remove whatever is at the previous-file path, a dangling link included:
+            // `fileExists` follows links and would say no, and `moveItem` would then refuse to
+            // replace it on every append past the cap (C3 review, finding 4).
+            try? FileManager.default.removeItem(at: rotatedURL)
             try FileManager.default.moveItem(at: url, to: rotatedURL)
             return nil
         } catch {

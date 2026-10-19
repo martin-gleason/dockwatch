@@ -1,5 +1,5 @@
 #!/bin/zsh
-# Created: 2026-10-18 11:14 -05:00 · Edited: 2026-10-18 19:35 -05:00
+# Created: 2026-10-18 11:14 -05:00 · Edited: 2026-10-18 20:05 -05:00
 # Harness `mutate` (C1-T4): apply a named break from the register, run the test that must
 # catch it, restore the file. Exit 0 = caught (the test went red), 1 = ESCAPED (stayed
 # green), 2 = the mutation could not be applied.
@@ -30,6 +30,7 @@ M15|Sources/DockCore/EventStore.swift|s/noFollow = O_NOFOLLOW/noFollow: Int32 = 
 M16|Sources/DockCore/EventStore.swift|s/if try !endsWithNewline\(fd\)/if false/|EventStoreTests/testOversizedTrailingLineDoesNotBlankTheTail
 M17|Sources/DockCore/DockState.swift|s/lastKnownDockLocationID = nil/_ = last/|DockPullFixtureTests/testControllerIsForgottenOnceEmpty
 M18|Sources/DockCore/Event.swift|s/Self.plain\(subject\)/subject/|EventStoreTests/testSubjectsAreMadePlainOnWriteAndOnRead
+M19|Sources/DockCore/EventStore.swift|s/nonBlocking = O_NONBLOCK/nonBlocking: Int32 = 0/|EventStoreTests/testFifoAtLogPathIsRefusedWithoutBlocking
 M8|Sources/DockCore/EventStore.swift|s/try FileManager.default.moveItem\(at: url, to: rotatedURL\)/try FileManager.default.removeItem(at: url)/|EventStoreTests/testRotationKeepsExactlyOnePreviousFile
 '
 

@@ -1,4 +1,4 @@
-// Created: 2026-10-18 13:55 -05:00 · Edited: 2026-10-18 19:20 -05:00
+// Created: 2026-10-18 13:55 -05:00 · Edited: 2026-10-18 20:05 -05:00
 // F6-T3 — what the Dock Volumes section shows (FR9: "the result is reported"). Pure.
 
 import Foundation
@@ -35,7 +35,7 @@ public struct EjectMenuModel: Equatable {
     }
 
     public mutating func record(bsdName: String, title: String, text: String, done: Bool = false, at: Date = Date()) {
-        results[bsdName] = Result(title: title, text: text, done: done, at: at)
+        results[bsdName] = Result(title: Event.plain(title), text: text, done: done, at: at)
     }
 
     /// A volume that mounts again has no current result.
@@ -49,7 +49,9 @@ public struct EjectMenuModel: Equatable {
         results = results.filter { now.timeIntervalSince($0.value.at) < lifetime }
         var rows = mounted.map { m -> Row in
             let r = results[m.bsdName]
-            return Row(bsdName: m.bsdName, title: m.title, status: r?.done == false ? r?.text : nil, isEjectable: true)
+            // The title is what the menu shows; a volume name is whatever the disk says it is
+            // (C3 review, finding 2).
+            return Row(bsdName: m.bsdName, title: Event.plain(m.title), status: r?.done == false ? r?.text : nil, isEjectable: true)
         }
         let mountedSet = Set(mounted.map(\.bsdName))
         for (bsd, r) in results.sorted(by: { $0.value.at < $1.value.at }) where Self.showUnmounted && !mountedSet.contains(bsd) {
