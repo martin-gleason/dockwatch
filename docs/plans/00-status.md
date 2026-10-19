@@ -18,7 +18,7 @@ Named, never numbered (`D2`). **No source read here marks a milestone as the cur
 | Milestone | Decisions landing here | Units |
 |---|---|---|
 | MVP | 25 | C1, C3, F1, F2, F3, F4, F4b, F6, F7 |
-| v1.5 | 7 | — |
+| v1.5 | 9 | — |
 | — | 0 | F5 |
 
 ## Features and chores
@@ -44,7 +44,7 @@ Counted from the register itself. A register with no rows still gets a line.
 
 | Register | Rows | Open | Unknown | Closed |
 |---|---|---|---|---|
-| Decisions (`D`) | 32 | 20 | 0 | 12 |
+| Decisions (`D`) | 34 | 22 | 0 | 12 |
 | Risks (`RR`) | 20 | 16 | 0 | 4 |
 | Owner items (`O`) | 20 | 7 | 0 | 13 |
 | Agent items (`A`) | 3 | 2 | 0 | 1 |
@@ -57,7 +57,7 @@ Counted from the register itself. A register with no rows still gets a line.
 
 | Register | Status | Count |
 |---|---|---|
-| `D` | proposed | 20 |
+| `D` | proposed | 22 |
 | `D` | ratified | 11 |
 | `D` | superseded | 1 |
 | `RR` | open | 16 |
@@ -130,6 +130,8 @@ Every open row in the register. Owner is the row's Owner column where the table 
 | owner | D30 | — | proposed | Sign with a Developer ID and notarize before any distribution and before Launch at Login is offered as a default. The ad… |
 | owner | D31 | — | proposed | Identify the dock by its IORegistry Thunderbolt ancestry as well as its vendor and product IDs, and judge membership bel… |
 | owner | D32 | — | proposed | When notification authorization is denied, the menu shows a line saying notifications are off, and choosing it opens Sys… |
+| owner | D33 | — | proposed | Notify when a device attaches to the dock, not only when one is lost: the owner's request 2026-10-18 after seeing the lo… |
+| owner | D34 | — | proposed | The held ring must visibly spin. The F7 review set the slow turn to one frame a second and one turn a minute to hold CPU… |
 | owner | O7 | P1 | open | Ratify the proposed decisions the build rests on: D1–D5, D7, D9, D10, D20, D21, D23, D24, D27, D28, D29. |
 | owner | O12 | P1 | open | F2 and F3 live checks only the owner can do, with the app running and Keep Dock Awake on: close the lid for a minute (ex… |
 | owner | O13 | P0 | open | The experiment. With the app running and the dock attached, turn on Keep Dock Awake in the menu (its ⌘K works only while… |
@@ -145,4 +147,4 @@ Every open row in the register. Owner is the row's Owner column where the table 
 
 ---
 
-48 open register rows.
+50 open register rows.
