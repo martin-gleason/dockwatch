@@ -1,6 +1,6 @@
 # Register — dockwatch
 
-Created: 2026-10-18 11:11 -05:00 · Edited: 2026-10-19 08:49 -05:00
+Created: 2026-10-18 11:11 -05:00 · Edited: 2026-10-19 15:09 -05:00
 
 Every register for this project, one `##` per register. This is the
 "where are we" read.
@@ -126,6 +126,7 @@ Outstanding items only the agent can close: defects in its own work, findings it
 | A1 | Finish the dock half of RR12 once the dock is plugged back in: from the installed bundle, confirm the dock's USB devices are logged at launch, the hold is taken with the toggle on, and an eject from the menu unmounts a dock volume. (Blocker naming is settled: denied by the sandbox, D25.) Record each in `docs/plans/F5.md`. | P0 | closed 2026-10-18 — all three from the running bundle: 20 dock descriptors at priming, `hold.on` + `pmset` assertion for pid 9506, `Eject “Down Under”` → `volume.eject result=Ejected`; recorded in `docs/plans/F5.md` |
 | A2 | Promote upstream to turing-review: `scripts/check_harness.py --run` executes a declared command through `shell=True` even after its static check has failed; it should skip execution after a static failure and accept only a whitelist of exact commands without a shell (security review 2026-10-18, finding 2). | P1 | closed 2026-10-18 — upstream retrofit F8b, https://github.com/martin-gleason/code-process-review/pull/2: argv only, known shapes only, nothing after a static failure; the planted-touch case is a test there |
 | A3 | Priming order: devices enumerated before the dock's own device at launch are logged without `dock=true` (seven of twenty on 2026-10-18 20:42, `docs/plans/F5.md` addendum). Counters are unaffected (D28 reads detaches), the attach lines are wrong. Fix: judge the priming batch after it has all been applied to the tracker, or re-mark it once the dock device arrives. Defect; no gate. | P2 | open |
+| A4 | Quitting the app writes no `hold.off` line: on 2026-10-19 08:57:57 powerd logged the assertion `Released` (the owner chose Quit, the toggle stayed persisted on) and the log has no line for it, so a day with the app absent read as a quiet day until the power log said otherwise. `applicationWillTerminate` calls `apply(hold: false)`; the line it should write never lands. Fix: a `hold.off` (and an `app.quit`) line written synchronously before the assertion is released, tested. | P1 | open |
 
 ## Chores (C)
 

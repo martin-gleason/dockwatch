@@ -1,6 +1,6 @@
 # Keep Dock Awake — the overnight experiment
 
-Created: 2026-10-19 08:48 -05:00 · Edited: 2026-10-19 08:48 -05:00
+Created: 2026-10-19 08:48 -05:00 · Edited: 2026-10-19 15:09 -05:00
 
 **What this is.** The record of every night the hold is tested, the protocol the nights
 follow (D35), and the rule that decides what the nights mean, written down before the
@@ -171,3 +171,4 @@ Append-only. "Valid" is by the rules above.
 | # | Night | Mode | Valid | Sleep | Dark wakes | Charger drops | wifibt | Drops (devices) | Volumes gone | Morning volumes | Holders besides DockWatch | Notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|
 | 1 | 2026-10-18 → 19 | on | yes as an on night; **unattributable** (RR21) | 0 | 0 | 0 | 0 | 0 | 0 | 4 of 4 | Siri AI (UIIntelligenceSupport, 23 h) | window from 20:55:15; T1000-E attached; TM ran |
+| d1 | 2026-10-19 day, 09:15 → 15:01 | off | **off-run valid for the power log; the app was not running** (A4) | 73 | 68 | 35 | 0 | **1** — the dock's whole USB 3 side at 14:53:54–14:54:13: SATA bridge, two-bay enclosure, LAN, USB 3 hubs; USB 2 side and the Thunderbolt link stayed up | 4 | 0 of 4 at 15:02 | none; Siri AI cleared by `killall` at 09:0x | the owner's dose day. Idle sleep 09:18:07. First disks removed 14:53:54 with the Mac awake and the display dark since 14:47:44, the rest at the 14:54:13 charger-drop dark wake, after 60 cycles and 29 charger drops. Dock lighting flashing purple, keyboard dead though enumerated. Recovery: app relaunched, cable replugged 15:08, all four volumes back by 15:09:03 |
