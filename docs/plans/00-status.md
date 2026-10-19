@@ -27,7 +27,7 @@ Status is what the unit's own plan header declares. What has landed in git is de
 | ID | Kind | Status | Milestone | P | Owner | Plan | Tasks |
 |---|---|---|---|---|---|---|---|
 | C1 | chore | in progress (gate crossed 2026-10-18) | MVP | P0 | agent | `docs/plans/C1.md` | 6 planned |
-| C3 | chore | open (awaiting the owner's yes, O20) | MVP | P1 | agent | `docs/plans/C3.md` | 6 planned |
+| C3 | chore | built 2026-10-18 (gate crossed 2026-10-18, O20) | MVP | P1 | agent | `docs/plans/C3.md` | 6 planned |
 | F1 | feature | in progress (gate crossed 2026-10-18) | MVP | — | agent | `docs/plans/F1.md` | 4 planned |
 | F2 | feature | in progress (gate crossed 2026-10-18, "start f2") | MVP | — | agent | `docs/plans/F2.md` | 5 planned |
 | F3 | feature | in progress (gate crossed 2026-10-18, "begin work on f3") | MVP | — | agent | `docs/plans/F3.md` | 3 planned |
@@ -45,11 +45,11 @@ Counted from the register itself. A register with no rows still gets a line.
 |---|---|---|---|---|
 | Decisions (`D`) | 31 | 19 | 0 | 12 |
 | Risks (`RR`) | 20 | 19 | 0 | 1 |
-| Owner items (`O`) | 20 | 10 | 0 | 10 |
+| Owner items (`O`) | 20 | 9 | 0 | 11 |
 | Agent items (`A`) | 2 | 2 | 0 | 0 |
 | Hooks (`H`) | 6 | 2 | 0 | 4 |
-| Mutations (`M`) | 14 | 0 | 0 | 14 |
-| Chores (`C`) | 3 | 3 | 0 | 0 |
+| Mutations (`M`) | 18 | 0 | 0 | 18 |
+| Chores (`C`) | 3 | 2 | 0 | 1 |
 | Gates (`G`) | 8 | 0 | 0 | 8 |
 
 ### By status
@@ -62,14 +62,15 @@ Counted from the register itself. A register with no rows still gets a line.
 | `RR` | open | 17 |
 | `RR` | proposed | 2 |
 | `RR` | rejected | 1 |
-| `O` | closed | 10 |
-| `O` | open | 10 |
+| `O` | closed | 11 |
+| `O` | open | 9 |
 | `A` | open | 2 |
 | `H` | built | 4 |
 | `H` | not built | 1 |
 | `H` | open | 1 |
-| `M` | killed | 14 |
-| `C` | open | 3 |
+| `M` | killed | 18 |
+| `C` | built | 1 |
+| `C` | open | 2 |
 | `G` | done | 8 |
 
 ## Hooks
@@ -93,7 +94,6 @@ Every open row in the register. Owner is the row's Owner column where the table 
 |---|---|---|---|---|
 | agent | C1 | P0 | open | Build the harness: run, count, floor, mutate, pre-commit; CI once pushed. |
 | agent | C2 | P2 | open | Stamps: every Created/Edited line comes from the clock or git, never typed; correct the files whose stamps run ahead of … |
-| agent | C3 | P1 | open | Security hardening from the black-hat review of 2026-10-18: ONOFOLLOW and a regular-file check on the log, tail trimming… |
 | agent | RR1 | — | open | An idle-sleep assertion does not stop lid-close sleep on battery without an external display, nor an explicit Sleep comm… |
 | agent | RR3 | — | open | A user-space app observes nothing while the Mac sleeps, so sleep-time charger drops never reach the app log. |
 | agent | RR4 | — | open | The hypothesis is wrong: devices keep dropping with the Mac awake. |
@@ -140,7 +140,6 @@ Every open row in the register. Owner is the row's Owner column where the table 
 | owner | O17 | P1 | open | Confirm in System Settings › General › Login Items whether DockWatch is listed under Open at Login. Background Task Mana… |
 | owner | O18 | P1 | open | Repository settings only the owner can change (security review 2026-10-18, findings 2–4): in the "Rebase-n-Merge" rulese… |
 | owner | O19 | P2 | open | Personal-data posture for a public repository (security review 2026-10-18, finding 9): the commit author email on every … |
-| owner | O20 | P1 | open | Gate C3, the security hardening chore (docs/plans/C3.md): six tasks, no feature change. |
 | owner | RR18 | — | open | The installed bundle is ad-hoc signed in a user-writable path; same-user code can replace the binary, re-sign, and pass … |
 | unassigned | A1 | P0 | open | Finish the dock half of RR12 once the dock is plugged back in: from the installed bundle, confirm the dock's USB devices… |
 | unassigned | A2 | P1 | open | Promote upstream to turing-review: scripts/checkharness.py --run executes a declared command through shell=True even aft… |
@@ -149,4 +148,4 @@ Every open row in the register. Owner is the row's Owner column where the table 
 
 ---
 
-55 open register rows.
+53 open register rows.
