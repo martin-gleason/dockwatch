@@ -1,4 +1,4 @@
-// Created: 2026-10-18 13:55 -05:00 · Edited: 2026-10-18 13:55 -05:00
+// Created: 2026-10-18 13:55 -05:00 · Edited: 2026-10-18 19:25 -05:00
 import XCTest
 @testable import DockCore
 
@@ -46,5 +46,16 @@ final class EjectMenuModelTests: XCTestCase {
         m.record(bsdName: down.bsdName, title: down.title, text: "Ejected", at: t0)
         XCTAssertEqual(m.rows(mounted: [], now: t0.addingTimeInterval(59)).count, 1)
         XCTAssertEqual(m.rows(mounted: [], now: t0.addingTimeInterval(61)).count, 0)
+    }
+
+    /// C3: a result that says the volume was unmounted never decorates a row that is mounted
+    /// (security review 2026-10-18, finding 11); a refusal still does.
+    func testDoneResultNeverShowsOnAMountedRow() {
+        var m = EjectMenuModel()
+        m.record(bsdName: down.bsdName, title: down.title, text: "Ejected", done: true, at: t0)
+        m.record(bsdName: backups.bsdName, title: backups.title, text: "In use by a system process", done: false, at: t0)
+        let rows = m.rows(mounted: [down, backups], now: t0.addingTimeInterval(1))
+        XCTAssertEqual(rows.map(\.status), [nil, "In use by a system process"])
+        XCTAssertEqual(rows.map(\.isEjectable), [true, true])
     }
 }

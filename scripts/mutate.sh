@@ -1,5 +1,5 @@
 #!/bin/zsh
-# Created: 2026-10-18 11:14 -05:00 · Edited: 2026-10-18 18:33 -05:00
+# Created: 2026-10-18 11:14 -05:00 · Edited: 2026-10-18 19:35 -05:00
 # Harness `mutate` (C1-T4): apply a named break from the register, run the test that must
 # catch it, restore the file. Exit 0 = caught (the test went red), 1 = ESCAPED (stayed
 # green), 2 = the mutation could not be applied.
@@ -26,6 +26,10 @@ M10|Sources/DockCore/EjectMenuModel.swift|s/showUnmounted = true/showUnmounted =
 M11|Sources/DockCore/EjectMenuModel.swift|s/results.removeValue\(forKey: bsdName\)/_ = bsdName/|EjectMenuModelTests/testRemountClearsResult
 M13|Sources/DockCore/RingMotion.swift|s/movesWhenIdle = false/movesWhenIdle = true/|RingMotionTests/testStillByDefault
 M14|Sources/DockCore/DockState.swift|s/dockLocationID \?\? lastKnownDockLocationID/dockLocationID/|DockPullFixtureTests/testRecordedPullCountsEveryChild
+M15|Sources/DockCore/EventStore.swift|s/noFollow = O_NOFOLLOW/noFollow: Int32 = 0/|EventStoreTests/testSymlinkAtLogPathIsRefusedNotFollowed
+M16|Sources/DockCore/EventStore.swift|s/if try !endsWithNewline\(fd\)/if false/|EventStoreTests/testOversizedTrailingLineDoesNotBlankTheTail
+M17|Sources/DockCore/DockState.swift|s/lastKnownDockLocationID = nil/_ = last/|DockPullFixtureTests/testControllerIsForgottenOnceEmpty
+M18|Sources/DockCore/Event.swift|s/Self.plain\(subject\)/subject/|EventStoreTests/testSubjectsAreMadePlainOnWriteAndOnRead
 M8|Sources/DockCore/EventStore.swift|s/try FileManager.default.moveItem\(at: url, to: rotatedURL\)/try FileManager.default.removeItem(at: url)/|EventStoreTests/testRotationKeepsExactlyOnePreviousFile
 '
 
@@ -50,9 +54,13 @@ if cmp -s "$backup" "$file"; then
 fi
 echo "mutate: applied $id to $file; running $filter"
 out=$(swift test --filter "$filter" 2>&1); rc=$?
-summary=$(printf '%s\n' "$out" | grep -E "Executed [0-9]+ tests?" | tail -1)
+summary=$(printf '%s\n' "$out" | grep -aE "Executed [0-9]+ tests?" | tail -1)
 if [[ -z "$summary" ]]; then
-  echo "mutate: $id ran no test — the filter '$filter' matched nothing (renamed test?)"
+  if printf '%s\n' "$out" | grep -aq "error:"; then
+    echo "mutate: $id did not compile — a mutation must leave the code buildable: $(printf '%s\n' "$out" | grep -a "error:" | head -1)"
+  else
+    echo "mutate: $id ran no test — the filter '$filter' matched nothing (renamed test?)"
+  fi
   exit 2
 fi
 if [[ $rc -ne 0 ]]; then

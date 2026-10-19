@@ -1,4 +1,4 @@
-// Created: 2026-10-18 11:20 -05:00 · Edited: 2026-10-18 17:10 -05:00
+// Created: 2026-10-18 11:20 -05:00 · Edited: 2026-10-18 19:25 -05:00
 // F1-T4 / F2-T4 / F3-T3 / F6-T3 — wires the monitors to the tracker, the store, the hold, the ejector and the status item.
 import AppKit
 import DockCore
@@ -161,7 +161,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     private func reportEject(bsdName: String, title: String, text: String, done: Bool) {
-        ejectMenu.record(bsdName: bsdName, title: title, text: text)
+        ejectMenu.record(bsdName: bsdName, title: title, text: text, done: done)
         record(Event(kind: .volumeEject, subject: title, detail: ["bsd": bsdName, "result": text, "done": done ? "true" : "false"]))
     }
 

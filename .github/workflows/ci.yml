@@ -1,4 +1,4 @@
-# Created: 2026-10-18 11:45 -05:00 · Edited: 2026-10-18 11:45 -05:00
+# Created: 2026-10-18 11:45 -05:00 · Edited: 2026-10-18 19:25 -05:00
 # C1-T6 — the test gate (H1) and the floor (H2) in CI. The status-page check needs the upstream
 # generator and stays local (pre-commit). Branch protection is the owner's setting; this is what it requires.
 name: ci
@@ -6,11 +6,16 @@ on:
   pull_request:
   push:
     branches: [main]
+# C3-T6: the token can read the checkout and nothing else; the action is pinned to a commit.
+permissions:
+  contents: read
 jobs:
   test:
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - name: Secret scan
+        run: scripts/scan_secrets.sh --tree
       - name: Toolchain
         run: swift --version
       - name: Build

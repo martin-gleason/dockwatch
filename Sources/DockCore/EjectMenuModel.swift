@@ -1,4 +1,4 @@
-// Created: 2026-10-18 13:55 -05:00 · Edited: 2026-10-18 13:55 -05:00
+// Created: 2026-10-18 13:55 -05:00 · Edited: 2026-10-18 19:20 -05:00
 // F6-T3 — what the Dock Volumes section shows (FR9: "the result is reported"). Pure.
 
 import Foundation
@@ -18,6 +18,9 @@ public struct EjectMenuModel: Equatable {
     public struct Result: Equatable {
         public let title: String
         public let text: String
+        /// True when the volume was unmounted. Such a result belongs to an unmounted row only
+        /// (security review 2026-10-18, finding 11).
+        public let done: Bool
         public let at: Date
     }
 
@@ -31,8 +34,8 @@ public struct EjectMenuModel: Equatable {
         self.lifetime = lifetime
     }
 
-    public mutating func record(bsdName: String, title: String, text: String, at: Date = Date()) {
-        results[bsdName] = Result(title: title, text: text, at: at)
+    public mutating func record(bsdName: String, title: String, text: String, done: Bool = false, at: Date = Date()) {
+        results[bsdName] = Result(title: title, text: text, done: done, at: at)
     }
 
     /// A volume that mounts again has no current result.
@@ -44,7 +47,10 @@ public struct EjectMenuModel: Equatable {
     /// are no longer mounted, as rows without an action. Expired results are dropped.
     public mutating func rows(mounted: [(bsdName: String, title: String)], now: Date = Date()) -> [Row] {
         results = results.filter { now.timeIntervalSince($0.value.at) < lifetime }
-        var rows = mounted.map { Row(bsdName: $0.bsdName, title: $0.title, status: results[$0.bsdName]?.text, isEjectable: true) }
+        var rows = mounted.map { m -> Row in
+            let r = results[m.bsdName]
+            return Row(bsdName: m.bsdName, title: m.title, status: r?.done == false ? r?.text : nil, isEjectable: true)
+        }
         let mountedSet = Set(mounted.map(\.bsdName))
         for (bsd, r) in results.sorted(by: { $0.value.at < $1.value.at }) where Self.showUnmounted && !mountedSet.contains(bsd) {
             rows.append(Row(bsdName: bsd, title: r.title, status: r.text, isEjectable: false))

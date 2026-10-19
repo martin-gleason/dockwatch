@@ -1,4 +1,4 @@
-// Created: 2026-10-18 11:40 -05:00 · Edited: 2026-10-18 17:10 -05:00
+// Created: 2026-10-18 11:40 -05:00 · Edited: 2026-10-18 19:20 -05:00
 // F1-T2 — folds USB events into "is the dock here" (FR1, FR2). Pure; no IOKit.
 
 public enum DockState: String, Equatable {
@@ -12,8 +12,12 @@ public struct DockTracker: Equatable {
     /// cannot leave the tracker saying "undocked" while a dock is still attached.
     private var present: [UInt64: UInt32] = [:]   // registry ID → USB location
     /// The dock's controller as last seen. Kept after the undock so the children that
-    /// terminate after the dock device are still judged the dock's (F4b).
+    /// terminate after the dock device are still judged the dock's (F4b), and forgotten once
+    /// nothing remains on that controller, so a later device there is not the dock's
+    /// (security review 2026-10-18, finding 5).
     public private(set) var lastKnownDockLocationID: UInt32?
+    /// Every other USB device present, registry ID → location: what decides "nothing remains".
+    private var others: [UInt64: UInt32] = [:]
 
     public init(identity: DockIdentity = .razerThunderbolt4Dock) {
         self.identity = identity
@@ -35,14 +39,32 @@ public struct DockTracker: Equatable {
     /// Applies one event. Returns `true` only when `state` changed.
     @discardableResult
     public mutating func apply(_ event: USBEvent) -> Bool {
-        guard identity.matches(event.device) else { return false }
+        guard identity.matches(event.device) else {
+            switch event.kind {
+            case .attached: others[event.device.registryID] = event.device.locationID
+            case .detached: others.removeValue(forKey: event.device.registryID)
+            }
+            forgetControllerIfEmpty()
+            return false
+        }
         let before = state
         switch event.kind {
         case .attached:
             present[event.device.registryID] = event.device.locationID
             lastKnownDockLocationID = event.device.locationID
-        case .detached: present.removeValue(forKey: event.device.registryID)
+        case .detached:
+            present.removeValue(forKey: event.device.registryID)
+            forgetControllerIfEmpty()
         }
         return state != before
+    }
+
+    /// Undocked and no device left on the remembered controller: forget it. Judged after each
+    /// detach is applied, so the last child was still counted before this runs.
+    private mutating func forgetControllerIfEmpty() {
+        guard present.isEmpty, let last = lastKnownDockLocationID else { return }
+        if !others.values.contains(where: { DockMembership.isOnDock(usbLocationID: $0, dockLocationID: last) }) {
+            lastKnownDockLocationID = nil
+        }
     }
 }
