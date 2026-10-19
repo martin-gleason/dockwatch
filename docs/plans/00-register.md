@@ -105,7 +105,7 @@ Outstanding items only the owner can close.
 | O17 | Confirm in System Settings › General › Login Items whether DockWatch is listed under Open at Login. Background Task Management records the item as enabled at `~/Applications/DockWatch.app` while launchd shows no job; the setting should be off until D30 (security review 2026-10-18, finding 1). | P1 | open |
 | O18 | Repository settings only the owner can change (security review 2026-10-18, findings 2–4): in the "Rebase-n-Merge" ruleset require a pull request and the `ci / test` status check; set Actions fork-PR approval to all outside collaborators; enable secret scanning and push protection. `gh api -X PUT repos/martin-gleason/dockwatch/actions/permissions/workflow -f default_workflow_permissions=read` is already the state; the rest is in Settings › Rules, Settings › Actions, Settings › Code security. | P1 | open |
 | O19 | Personal-data posture for a public repository (security review 2026-10-18, finding 9): the commit author email on every commit, the machine model and versions, the owner's volume names and disk identifiers in `docs/plans/F2.md` and `F6.md`, and the product names in the recorded-pull fixture. Decide whether to switch to a noreply address for future commits and whether the agent should scrub the volume and product names; the fixture needs only its locationIDs. | P2 | open |
-| O20 | Gate C3, the security hardening chore (`docs/plans/C3.md`): six tasks, no feature change. | P1 | open |
+| O20 | Gate C3, the security hardening chore (`docs/plans/C3.md`): six tasks, no feature change. | P1 | closed 2026-10-18 — owner: "begin c3 hardening" |
 
 Questions for O1–O6 are laid out in `docs/handoffs/2026-10-18-planning-questions.md`.
 
@@ -130,7 +130,7 @@ days on the owner's track.
 |---|---|---|---|---|---|
 | C1 | Build the harness: run, count, floor, mutate, pre-commit; CI once pushed. | P0 | open | agent | `docs/plans/C1.md` |
 | C2 | Stamps: every Created/Edited line comes from the clock or git, never typed; correct the files whose stamps run ahead of their commits (F1 review, finding 4). | P2 | open | agent | — |
-| C3 | Security hardening from the black-hat review of 2026-10-18: O_NOFOLLOW and a regular-file check on the log, tail trimming that cannot blank the seed, forget the dock controller when empty, a broader secret scan in the hook and CI, plain-text device names, pinned least-privilege CI. | P1 | open | agent | `docs/plans/C3.md` |
+| C3 | Security hardening from the black-hat review of 2026-10-18: O_NOFOLLOW and a regular-file check on the log, tail trimming that cannot blank the seed, forget the dock controller when empty, a broader secret scan in the hook and CI, plain-text device names, pinned least-privilege CI. | P1 | built 2026-10-18 (PR #11; owner's review) | agent | `docs/plans/C3.md` |
 
 ## Gates (G)
 
@@ -185,6 +185,10 @@ A test is not evidence until a mutation proves it can fail.
 | M12 | `Sources/DockCore/LossCoalescer.swift` | Ignore that the dock itself detached (a dock pull becomes seventeen notifications) | `LossCoalescerTests.testDockPullIsOneSummary` | killed 2026-10-18: 1 failure / 1 test (`scripts/mutate.sh M12`) |
 | M13 | `Sources/DockCore/RingMotion.swift` | Report the ring as moving while idle (a timer that never stops) | `RingMotionTests.testStillByDefault` | killed 2026-10-18: 1 failure / 1 test (`scripts/mutate.sh M13`) |
 | M14 | `Sources/DockCore/DockState.swift` | Forget the dock's controller on undock (children terminating after the dock device stop counting) | `DockPullFixtureTests.testRecordedPullCountsEveryChild` | killed 2026-10-18: 2 failures / 1 test (`scripts/mutate.sh M14`) |
+| M15 | `Sources/DockCore/EventStore.swift` | Follow a symlink planted at the log path (drop `O_NOFOLLOW`) | `EventStoreTests.testSymlinkAtLogPathIsRefusedNotFollowed` | killed 2026-10-18: 4 failures / 1 test (`scripts/mutate.sh M15`) |
+| M16 | `Sources/DockCore/EventStore.swift` | Append onto an unterminated line left by someone else, so the next event is swallowed into it | `EventStoreTests.testOversizedTrailingLineDoesNotBlankTheTail` | killed 2026-10-18: 1 failure / 1 test (`scripts/mutate.sh M16`) |
+| M17 | `Sources/DockCore/DockState.swift` | Never forget the dock's controller once nothing remains on it | `DockPullFixtureTests.testControllerIsForgottenOnceEmpty` | killed 2026-10-18: 2 failures / 1 test (`scripts/mutate.sh M17`) |
+| M18 | `Sources/DockCore/Event.swift` | Log and show a device name with its control and bidi characters intact | `EventStoreTests.testSubjectsAreMadePlainOnWriteAndOnRead` | killed 2026-10-18: 4 failures / 1 test (`scripts/mutate.sh M18`) |
 
 -----
 
