@@ -47,7 +47,7 @@ Counted from the register itself. A register with no rows still gets a line.
 | Decisions (`D`) | 34 | 22 | 0 | 12 |
 | Risks (`RR`) | 20 | 16 | 0 | 4 |
 | Owner items (`O`) | 20 | 7 | 0 | 13 |
-| Agent items (`A`) | 3 | 2 | 0 | 1 |
+| Agent items (`A`) | 3 | 1 | 0 | 2 |
 | Hooks (`H`) | 6 | 2 | 0 | 4 |
 | Mutations (`M`) | 19 | 0 | 0 | 19 |
 | Chores (`C`) | 3 | 1 | 0 | 2 |
@@ -65,8 +65,8 @@ Counted from the register itself. A register with no rows still gets a line.
 | `RR` | resolved | 3 |
 | `O` | closed | 13 |
 | `O` | open | 7 |
-| `A` | closed | 1 |
-| `A` | open | 2 |
+| `A` | closed | 2 |
+| `A` | open | 1 |
 | `H` | built | 4 |
 | `H` | not built | 1 |
 | `H` | open | 1 |
@@ -140,11 +140,10 @@ Every open row in the register. Owner is the row's Owner column where the table 
 | owner | O16 | P1 | open | F7 live checks only the owner can do, from a rebuilt installed app (scripts/build-app.sh --install): the ring in the men… |
 | owner | O19 | P2 | open | Personal-data posture for a public repository (security review 2026-10-18, finding 9): the commit author email on every … |
 | owner | RR18 | — | open | The installed bundle is ad-hoc signed in a user-writable path; same-user code can replace the binary, re-sign, and pass … |
-| unassigned | A2 | P1 | open | Promote upstream to turing-review: scripts/checkharness.py --run executes a declared command through shell=True even aft… |
 | unassigned | A3 | P2 | open | Priming order: devices enumerated before the dock's own device at launch are logged without dock=true (seven of twenty o… |
 | unassigned | H5 | — | open | Every FR has a test or a named manual check with evidence |
 | unassigned | H6 | — | not built | Status page regenerates clean |
 
 ---
 
-50 open register rows.
+49 open register rows.
