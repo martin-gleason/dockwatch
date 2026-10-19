@@ -1,4 +1,4 @@
-// Created: 2026-10-18 13:55 -05:00 · Edited: 2026-10-18 19:25 -05:00
+// Created: 2026-10-18 13:55 -05:00 · Edited: 2026-10-18 20:05 -05:00
 import XCTest
 @testable import DockCore
 
@@ -57,5 +57,14 @@ final class EjectMenuModelTests: XCTestCase {
         let rows = m.rows(mounted: [down, backups], now: t0.addingTimeInterval(1))
         XCTAssertEqual(rows.map(\.status), [nil, "In use by a system process"])
         XCTAssertEqual(rows.map(\.isEjectable), [true, true])
+    }
+
+    /// C3 review, finding 2: a volume name is whatever the disk says; the row title is plain text.
+    func testRowTitlesArePlainText() {
+        var m = EjectMenuModel()
+        let hostile = (bsdName: "disk7s1", title: "Back\u{202E}pukcab\u{0000}")
+        m.record(bsdName: hostile.bsdName, title: hostile.title, text: "Ejected", done: true, at: t0)
+        XCTAssertEqual(m.rows(mounted: [hostile], now: t0).map(\.title), ["Backpukcab"])
+        XCTAssertEqual(m.rows(mounted: [], now: t0).map(\.title), ["Backpukcab"])
     }
 }

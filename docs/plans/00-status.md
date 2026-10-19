@@ -27,7 +27,7 @@ Status is what the unit's own plan header declares. What has landed in git is de
 | ID | Kind | Status | Milestone | P | Owner | Plan | Tasks |
 |---|---|---|---|---|---|---|---|
 | C1 | chore | in progress (gate crossed 2026-10-18) | MVP | P0 | agent | `docs/plans/C1.md` | 6 planned |
-| C3 | chore | built 2026-10-18 (gate crossed 2026-10-18, O20) | MVP | P1 | agent | `docs/plans/C3.md` | 6 planned |
+| C3 | chore | built and reviewed 2026-10-18 (gate crossed 2026-10-18, O20; review `docs/reviews/C3.md`, all findings in) | MVP | P1 | agent | `docs/plans/C3.md` | 6 planned |
 | F1 | feature | in progress (gate crossed 2026-10-18) | MVP | — | agent | `docs/plans/F1.md` | 4 planned |
 | F2 | feature | in progress (gate crossed 2026-10-18, "start f2") | MVP | — | agent | `docs/plans/F2.md` | 5 planned |
 | F3 | feature | in progress (gate crossed 2026-10-18, "begin work on f3") | MVP | — | agent | `docs/plans/F3.md` | 3 planned |
@@ -48,7 +48,7 @@ Counted from the register itself. A register with no rows still gets a line.
 | Owner items (`O`) | 20 | 9 | 0 | 11 |
 | Agent items (`A`) | 2 | 2 | 0 | 0 |
 | Hooks (`H`) | 6 | 2 | 0 | 4 |
-| Mutations (`M`) | 18 | 0 | 0 | 18 |
+| Mutations (`M`) | 19 | 0 | 0 | 19 |
 | Chores (`C`) | 3 | 2 | 0 | 1 |
 | Gates (`G`) | 8 | 0 | 0 | 8 |
 
@@ -68,7 +68,7 @@ Counted from the register itself. A register with no rows still gets a line.
 | `H` | built | 4 |
 | `H` | not built | 1 |
 | `H` | open | 1 |
-| `M` | killed | 18 |
+| `M` | killed | 19 |
 | `C` | built | 1 |
 | `C` | open | 2 |
 | `G` | done | 8 |

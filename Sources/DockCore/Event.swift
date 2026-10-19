@@ -1,4 +1,4 @@
-// Created: 2026-10-18 11:55 -05:00 · Edited: 2026-10-18 19:20 -05:00
+// Created: 2026-10-18 11:55 -05:00 · Edited: 2026-10-18 20:05 -05:00
 // F2-T1 — one dock event, and its one-line JSON form (FR3, NFR6).
 import Foundation
 
@@ -45,14 +45,17 @@ public struct Event: Codable, Equatable {
     private enum CodingKeys: String, CodingKey { case ts, kind, subject, detail }
 
     /// A device or volume name as plain text: C0 and DEL controls, bidi overrides and
-    /// isolates, zero-width characters and the byte-order mark are removed. A USB product
-    /// string is whatever the device says it is; U+202E can make a menu row read backwards
-    /// (security review 2026-10-18, finding 7). Letters of every script pass unchanged.
+    /// isolates, the zero-width space, the word joiner and the byte-order mark are removed.
+    /// A USB product string is whatever the device says it is; U+202E can make a menu row
+    /// read backwards (security review 2026-10-18, finding 7). Letters of every script,
+    /// combining marks, and the zero-width joiner and non-joiner pass: ZWJ builds emoji
+    /// sequences and ZWNJ is orthographic in Persian and Urdu, and neither can hide or
+    /// reorder text (C3 review, finding 6).
     public static func plain(_ s: String) -> String {
         String(s.unicodeScalars.filter { u in
             switch u.value {
             case 0x00...0x1F, 0x7F: return false                  // C0 controls, DEL
-            case 0x200B...0x200D, 0x2060, 0xFEFF: return false    // zero-width, word joiner, BOM
+            case 0x200B, 0x2060, 0xFEFF: return false             // zero-width space, word joiner, BOM
             case 0x202A...0x202E, 0x2066...0x2069: return false   // bidi embeddings, overrides, isolates
             default: return true
             }

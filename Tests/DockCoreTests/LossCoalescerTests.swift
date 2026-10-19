@@ -1,4 +1,4 @@
-// Created: 2026-10-18 16:54 -05:00 · Edited: 2026-10-18 17:10 -05:00
+// Created: 2026-10-18 16:54 -05:00 · Edited: 2026-10-18 20:05 -05:00
 import XCTest
 @testable import DockCore
 
@@ -42,5 +42,12 @@ final class LossCoalescerTests: XCTestCase {
         XCTAssertEqual(LossCoalescer.Flush.lone([.volume("Down Under")]).title, "Dropped from the dock")
         XCTAssertEqual(LossCoalescer.Flush.lone([.volume("Down Under")]).body, "Down Under (volume, not ejected)")
         XCTAssertEqual(LossCoalescer.Flush.lone([.device("a"), .device("b")]).title, "2 dropped from the dock")
+    }
+
+    /// C3 review, finding 2: a device name goes into a notification body as plain text.
+    func testLossNamesArePlainText() {
+        var c = LossCoalescer()
+        c.add(.device("Das\u{202E}Keyboard\u{0000}"), at: Date(timeIntervalSince1970: 0))
+        XCTAssertEqual(c.pending, [.device("DasKeyboard")])
     }
 }
