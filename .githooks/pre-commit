@@ -46,11 +46,12 @@ else
   printf '  note  upstream gen_status.py not found; status check skipped (lone clone)\n'
 fi
 
-# Secrets — a crude scan of what is staged.
-if git diff --cached | grep -qE '(AKIA[0-9A-Z]{16}|-----BEGIN (RSA|OPENSSH|EC) PRIVATE KEY|ghp_[A-Za-z0-9]{36}|xox[baprs]-[A-Za-z0-9-]+)'; then
-  printf '  FAIL  secret-looking string in the staged diff\n'; fail=1
-else
+# Secrets — every staged blob, binaries included, against scripts/secret-patterns.txt; the
+# same scan runs over the whole tree in CI (C3-T4).
+if hits=$(scripts/scan_secrets.sh --staged); then
   printf '  ok    no secret patterns staged\n'
+else
+  printf '  FAIL  secret-looking string staged:\n%s\n' "$hits"; fail=1
 fi
 
 if ! git diff --quiet 2>/dev/null; then

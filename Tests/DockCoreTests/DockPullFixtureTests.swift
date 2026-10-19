@@ -1,4 +1,4 @@
-// Created: 2026-10-18 17:10 -05:00 · Edited: 2026-10-18 17:10 -05:00
+// Created: 2026-10-18 17:10 -05:00 · Edited: 2026-10-18 19:25 -05:00
 import XCTest
 @testable import DockCore
 
@@ -75,12 +75,16 @@ final class DockPullFixtureTests: XCTestCase {
     /// FR4: after the dock is gone, a device on another controller is still not the dock's.
     func testOtherControllerIsNeverTheDocks() {
         var tracker = DockTracker()
+        let straggler = USBDeviceDescriptor(vendorID: 0x046d, productID: 0xc52b, productName: "USB Receiver", locationID: 0x02143210, registryID: 6)
+        tracker.apply(USBEvent(kind: .attached, device: straggler))   // primed like everything else
         for d in devices() { tracker.apply(USBEvent(kind: .attached, device: d)) }
         for d in devices() { tracker.apply(USBEvent(kind: .detached, device: d)) }
         let iphone = USBDeviceDescriptor(vendorID: 0x05ac, productID: 0x12a8, productName: "iPhone", locationID: 0x01100000, registryID: 5)
         XCTAssertFalse(tracker.isOnDock(iphone))
-        let straggler = USBDeviceDescriptor(vendorID: 0x046d, productID: 0xc52b, productName: "USB Receiver", locationID: 0x02143210, registryID: 6)
-        XCTAssertTrue(tracker.isOnDock(straggler), "the dock's controller is remembered")
+        XCTAssertTrue(tracker.isOnDock(straggler), "the dock's controller is remembered while a device remains on it")
+        tracker.apply(USBEvent(kind: .detached, device: straggler))
+        let unseen = USBDeviceDescriptor(vendorID: 0x046d, productID: 0xc52b, productName: "USB Receiver", locationID: 0x02143211, registryID: 7)
+        XCTAssertFalse(tracker.isOnDock(unseen), "and forgotten once nothing does (C3-T3)")
     }
 
     /// FR4: before any dock was ever seen, nothing is the dock's except the dock itself.
@@ -88,5 +92,42 @@ final class DockPullFixtureTests: XCTestCase {
         let tracker = DockTracker()
         XCTAssertFalse(tracker.isOnDock(devices()[0]))
         XCTAssertTrue(tracker.isOnDock(devices()[10]), "the identifying device is always the dock")
+    }
+
+    /// C3-T3, M17: once the dock and every device on its controller are gone, the controller
+    /// is forgotten, so a later device there is not the dock's (security review 2026-10-18,
+    /// finding 5). The pull itself still counts every child, in the recorded order.
+    func testControllerIsForgottenOnceEmpty() {
+        var tracker = DockTracker()
+        for d in devices() { tracker.apply(USBEvent(kind: .attached, device: d)) }
+        var counted = 0
+        for d in devices() {
+            if tracker.isOnDock(d) { counted += 1 }
+            tracker.apply(USBEvent(kind: .detached, device: d))
+        }
+        XCTAssertEqual(counted, 18)
+        XCTAssertNil(tracker.lastKnownDockLocationID, "nothing remains on the controller")
+        let later = USBDeviceDescriptor(vendorID: 0x0781, productID: 0x5581, productName: "SanDisk", locationID: 0x02990000, registryID: 9)
+        XCTAssertFalse(tracker.isOnDock(later))
+    }
+
+    /// C3-T3: children seen before the dock device at priming, detached after it, still count,
+    /// and the controller is forgotten only after the last of them.
+    func testChildrenPrimedBeforeTheDockStillCountToTheLast() {
+        var tracker = DockTracker()
+        var primed = devices()
+        let dock = primed.remove(at: 10)
+        for d in primed { tracker.apply(USBEvent(kind: .attached, device: d)) }
+        tracker.apply(USBEvent(kind: .attached, device: dock))
+        tracker.apply(USBEvent(kind: .detached, device: dock))
+        XCTAssertEqual(tracker.state, .undocked)
+        XCTAssertNotNil(tracker.lastKnownDockLocationID, "children remain")
+        var counted = 0
+        for d in primed {
+            if tracker.isOnDock(d) { counted += 1 }
+            tracker.apply(USBEvent(kind: .detached, device: d))
+        }
+        XCTAssertEqual(counted, 17)
+        XCTAssertNil(tracker.lastKnownDockLocationID)
     }
 }

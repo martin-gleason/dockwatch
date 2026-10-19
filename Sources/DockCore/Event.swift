@@ -1,4 +1,4 @@
-// Created: 2026-10-18 11:55 -05:00 · Edited: 2026-10-18 13:04 -05:00
+// Created: 2026-10-18 11:55 -05:00 · Edited: 2026-10-18 19:20 -05:00
 // F2-T1 — one dock event, and its one-line JSON form (FR3, NFR6).
 import Foundation
 
@@ -28,8 +28,35 @@ public struct Event: Codable, Equatable {
     public init(ts: Date = Date(), kind: Kind, subject: String, detail: [String: String] = [:]) {
         self.ts = ts
         self.kind = kind
-        self.subject = subject
-        self.detail = detail
+        self.subject = Self.plain(subject)
+        self.detail = detail.mapValues(Self.plain)
+    }
+
+    /// Decoded lines get the same treatment, so a line written by something else cannot put
+    /// a control character into the menu.
+    public init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        self.init(ts: try c.decode(Date.self, forKey: .ts),
+                  kind: try c.decode(Kind.self, forKey: .kind),
+                  subject: try c.decode(String.self, forKey: .subject),
+                  detail: try c.decodeIfPresent([String: String].self, forKey: .detail) ?? [:])
+    }
+
+    private enum CodingKeys: String, CodingKey { case ts, kind, subject, detail }
+
+    /// A device or volume name as plain text: C0 and DEL controls, bidi overrides and
+    /// isolates, zero-width characters and the byte-order mark are removed. A USB product
+    /// string is whatever the device says it is; U+202E can make a menu row read backwards
+    /// (security review 2026-10-18, finding 7). Letters of every script pass unchanged.
+    public static func plain(_ s: String) -> String {
+        String(s.unicodeScalars.filter { u in
+            switch u.value {
+            case 0x00...0x1F, 0x7F: return false                  // C0 controls, DEL
+            case 0x200B...0x200D, 0x2060, 0xFEFF: return false    // zero-width, word joiner, BOM
+            case 0x202A...0x202E, 0x2066...0x2069: return false   // bidi embeddings, overrides, isolates
+            default: return true
+            }
+        })
     }
 }
 
