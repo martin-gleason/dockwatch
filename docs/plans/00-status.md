@@ -44,12 +44,12 @@ Counted from the register itself. A register with no rows still gets a line.
 | Register | Rows | Open | Unknown | Closed |
 |---|---|---|---|---|
 | Decisions (`D`) | 31 | 19 | 0 | 12 |
-| Risks (`RR`) | 20 | 19 | 0 | 1 |
-| Owner items (`O`) | 20 | 9 | 0 | 11 |
+| Risks (`RR`) | 20 | 16 | 0 | 4 |
+| Owner items (`O`) | 20 | 7 | 0 | 13 |
 | Agent items (`A`) | 2 | 2 | 0 | 0 |
 | Hooks (`H`) | 6 | 2 | 0 | 4 |
 | Mutations (`M`) | 19 | 0 | 0 | 19 |
-| Chores (`C`) | 3 | 2 | 0 | 1 |
+| Chores (`C`) | 3 | 1 | 0 | 2 |
 | Gates (`G`) | 8 | 0 | 0 | 8 |
 
 ### By status
@@ -59,18 +59,18 @@ Counted from the register itself. A register with no rows still gets a line.
 | `D` | proposed | 19 |
 | `D` | ratified | 11 |
 | `D` | superseded | 1 |
-| `RR` | open | 17 |
-| `RR` | proposed | 2 |
+| `RR` | open | 16 |
 | `RR` | rejected | 1 |
-| `O` | closed | 11 |
-| `O` | open | 9 |
+| `RR` | resolved | 3 |
+| `O` | closed | 13 |
+| `O` | open | 7 |
 | `A` | open | 2 |
 | `H` | built | 4 |
 | `H` | not built | 1 |
 | `H` | open | 1 |
 | `M` | killed | 19 |
-| `C` | built | 1 |
-| `C` | open | 2 |
+| `C` | done | 2 |
+| `C` | open | 1 |
 | `G` | done | 8 |
 
 ## Hooks
@@ -92,7 +92,6 @@ Every open row in the register. Owner is the row's Owner column where the table 
 
 | Owner | ID | P | Status | Item |
 |---|---|---|---|---|
-| agent | C1 | P0 | open | Build the harness: run, count, floor, mutate, pre-commit; CI once pushed. |
 | agent | C2 | P2 | open | Stamps: every Created/Edited line comes from the clock or git, never typed; correct the files whose stamps run ahead of … |
 | agent | RR1 | — | open | An idle-sleep assertion does not stop lid-close sleep on battery without an external display, nor an explicit Sleep comm… |
 | agent | RR3 | — | open | A user-space app observes nothing while the Mac sleeps, so sleep-time charger drops never reach the app log. |
@@ -100,8 +99,6 @@ Every open row in the register. Owner is the row's Owner column where the table 
 | agent | RR6 | — | open | UNUserNotificationCenter crashes in a binary that is not an app bundle. |
 | agent | RR7 | — | open | The JMicron enclosure reports a 130 PB disk size; any capacity display would be absurd. |
 | agent | RR8 | — | open | IOKit and DiskArbitration callbacks run on the main run loop; a slow menu rebuild delays them. |
-| agent | RR9 | — | proposed | No CI yet: every check runs only where somebody remembers to run it. Found by detectrisks.py (ls .github/workflows → non… |
-| agent | RR10 | — | proposed | docs/plans/00-status.md is generated and nothing yet regenerates it, so it will go stale and be believed. Found by detec… |
 | agent | RR12 | — | open | App Sandbox and the app's calls. Answered by sandboxed probes (F5 review): IOKit USB notifications and registry reads, t… |
 | agent | RR13 | — | open | Time Machine holds Backups open during a backup, so "Eject All" is refused for it. A non-root app cannot name root proce… |
 | agent | RR14 | — | open | The identifying USB device 0x1532:0x122E sits on the dock's USB 2 chain, the chain the spec says drops unevenly. If it t… |
@@ -111,7 +108,6 @@ Every open row in the register. Owner is the row's Owner column where the table 
 | agent | RR19 | — | open | Running a pull-request branch locally runs its code: tests spawn processes, hooks live in the repo (core.hooksPath=.gith… |
 | agent | RR20 | — | open | Dock identity is vendor and product ID only and membership is the controller byte, never cleared; a programmable USB dev… |
 | human | RR2 | — | open | A docked Mac held awake around the clock: no overnight sleep, idle energy use. |
-| human | RR5 | — | open | Due end of day 2026-10-18. |
 | owner | D1 | — | proposed | The project is DockWatch, at /LocalDevProjects/dockwatch. It is distinct from the shell monitor at /dockwatch, which kee… |
 | owner | D2 | — | proposed | Layout mirrors HueBar: DockCore library (no AppKit, fully testable) + DockWatch AppKit executable + DockCoreTests. Swift… |
 | owner | D3 | — | proposed | "Keep dock awake" is an IOPMLib PreventUserIdleSystemSleep assertion owned by the app process. Not pmset, not root, not … |
@@ -137,8 +133,6 @@ Every open row in the register. Owner is the row's Owner column where the table 
 | owner | O14 | P1 | open | F6 live checks only the owner can do, with the dock plugged back in: eject one volume from the menu and reopen the menu … |
 | owner | O15 | P1 | open | F4 live checks only the owner can do, from the installed app with the dock attached: allow notifications when asked at f… |
 | owner | O16 | P1 | open | F7 live checks only the owner can do, from a rebuilt installed app (scripts/build-app.sh --install): the ring in the men… |
-| owner | O17 | P1 | open | Confirm in System Settings › General › Login Items whether DockWatch is listed under Open at Login. Background Task Mana… |
-| owner | O18 | P1 | open | Repository settings only the owner can change (security review 2026-10-18, findings 2–4): in the "Rebase-n-Merge" rulese… |
 | owner | O19 | P2 | open | Personal-data posture for a public repository (security review 2026-10-18, finding 9): the commit author email on every … |
 | owner | RR18 | — | open | The installed bundle is ad-hoc signed in a user-writable path; same-user code can replace the binary, re-sign, and pass … |
 | unassigned | A1 | P0 | open | Finish the dock half of RR12 once the dock is plugged back in: from the installed bundle, confirm the dock's USB devices… |
@@ -148,4 +142,4 @@ Every open row in the register. Owner is the row's Owner column where the table 
 
 ---
 
-53 open register rows.
+47 open register rows.
