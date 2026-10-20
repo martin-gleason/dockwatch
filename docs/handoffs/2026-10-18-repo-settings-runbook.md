@@ -1,6 +1,6 @@
 # Runbook — repository and login-item settings after the security review
 
-Created: 2026-10-18 19:12 -05:00 · Edited: 2026-10-18 19:12 -05:00
+Created: 2026-10-18 19:12 -05:00 · Edited: 2026-10-20 07:55 -05:00
 
 For the owner. Closes O17 and O18 from `docs/reviews/security-2026-10-18.md`. Every step is a setting only the repository owner or the Mac's user can change; the agent cannot make them and does not try. Each step has a browser path and, where GitHub offers one, a terminal command you can run with the `!` prefix in this session. Each step ends with how to see that it took.
 
@@ -113,3 +113,13 @@ An entry that is gone or reads `[disabled, …]` is what you want.
 ## 5. Tell the agent
 
 Reply with which steps you did. O17 and O18 close with the output of the "check it took" lines pasted into the register, not with "done".
+
+## When GitHub says one of the agent's branches has conflicts
+
+Do not press **Update branch** or **Resolve conflicts**. Both make a merge commit, and
+the ruleset above allows only rebase merges, which cannot carry a merge commit: GitHub
+then reports the branch as not rebaseable and the PR cannot be merged at all. This is
+what happened to #13 on 2026-10-19 (the web resolution was correct, and unusable), and
+what happened to #8 by hand, which dropped a register row. Instead, tell the agent; it
+rebases the branch locally, regenerates the status page at the conflict instead of
+merging it, and force-pushes. The content ends up the same.
