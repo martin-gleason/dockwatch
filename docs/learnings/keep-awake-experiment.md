@@ -1,6 +1,6 @@
 # Keep Dock Awake — the overnight experiment
 
-Created: 2026-10-19 08:48 -05:00 · Edited: 2026-10-19 15:43 -05:00
+Created: 2026-10-19 08:48 -05:00 · Edited: 2026-10-20 07:55 -05:00
 
 **What this is.** The record of every night the hold is tested, the protocol the nights
 follow (D35), and the rule that decides what the nights mean, written down before the
@@ -136,6 +136,35 @@ is not a control.
 ≥ 50 cycles and no drops, three times (the hold then prevents the loop but the loop was
 not the problem, and RR4 is the finding).
 
+## Night two, and the word "drop" split in two
+
+The off night produced the loop exactly as the earlier nights did, and the app, running
+this time, saw what the loop does to the dock: **the USB 3 SATA bridge (Down Under's
+enclosure) re-enumerated at nearly every cycle**, 198 times in 199 cycles, each time
+gone for 2 to 21 ms and back, and Down Under never unmounted. Nothing else on the dock
+moved. The held evening before it (15:09 → 22:40, hold on, 0 cycles) had no bridge event
+at all, and neither had night one.
+
+That is two different things the D35 definition had been calling a drop, so from here
+the counts are kept apart (D35 amended, still proposed):
+
+- **Flap** — a dock device detaches and re-attaches within 1 s with no volume change.
+  Counted per device. The bridge's flaps are the loop's fingerprint.
+- **Loss** — a dock device absent for 5 s or more, or a volume unmounted. The day run's
+  USB 3 side (d1) is the only loss on record.
+
+R2's λ applies to losses. Flaps get their own rule, **R4**: flaps per cycle, off nights
+against on nights. One off night already gives 0.99 flaps per cycle with the app
+watching; an on night by construction has no cycle, and night one and the held evening
+had no flap in 19 hours. The hold's effect on the fingerprint is not in doubt. What the
+remaining nights measure is whether the fingerprint and the loss share a cause: the
+loss rate per cycle so far is 1 in 259 (d1's 60 cycles and night two's 199).
+
+**Running score (D35):** on — 19.2 h held, 0 cycles, 0 flaps, 0 losses (night one
+unattributable, RR21; the evening of 2026-10-19 had DockWatch as the only holder). Off —
+15.0 h, 259 cycles, 198 flaps where the app watched, 1 loss. R1 needs one on night with
+no foreign holder: night three, 2026-10-20.
+
 ## The morning report
 
 Until the script lands (C4), these are the commands. The window starts at the last
@@ -172,3 +201,4 @@ Append-only. "Valid" is by the rules above.
 |---|---|---|---|---|---|---|---|---|---|---|---|---|
 | 1 | 2026-10-18 → 19 | on | yes as an on night; **unattributable** (RR21) | 0 | 0 | 0 | 0 | 0 | 0 | 4 of 4 | Siri AI (UIIntelligenceSupport, 23 h) | window from 20:55:15; T1000-E attached; TM ran |
 | d1 | 2026-10-19 day, 09:15 → 15:01 | off | **off-run valid for the power log; the app was not running** (A4) | 73 | 68 | 35 | 0 | **1** — the dock's whole USB 3 side at 14:53:54–14:54:13: SATA bridge, two-bay enclosure, LAN, USB 3 hubs; USB 2 side and the Thunderbolt link stayed up | 4 | 0 of 4 at 15:02 | none; Siri AI cleared by `killall` at 09:0x | the owner's dose day. Idle sleep 09:18:07. First disks removed 14:53:54 with the Mac awake and the display dark since 14:47:44, the rest at the 14:54:13 charger-drop dark wake, after 60 cycles and 29 charger drops. Dock lighting flashing purple. The owner found the **MacBook's built-in keyboard** dead on sitting down, the first time it has ever failed (not the Das Keyboard on the dock, which was enumerated throughout). The power log shows the 15:01:11 full wake came from the internal trackpad/keyboard and that the vanished disks' SCSI driver was still acknowledging sleep and wake slowly (763 ms) through the loop, so a Mac-side stall during that wake is the leading reading; it is a separate symptom from the dock's USB 3 side dropping and is recorded as one. Recovery: app relaunched, cable replugged 15:08, all four volumes back by 15:09:03 |
+| 2 | 2026-10-19 → 20 | off | **yes** (199 cycles, no foreign holder) | 199 | 197 | 135 | 47 | **0 lost; 198 flaps** of the USB3.0 SATA Bridge, each detach re-attached within 2–21 ms, 125 of them within 3 s of a dark wake and the rest after a full wake; no volume ever unmounted | 0 | 4 of 4 | none (backupd, transient) | window from `hold.off` 22:40:17; idle sleep 22:59:06; the T1000-E was back on the dock from 18:59 (owner); an iPhone on the Mac's own port came and went 19:39–23:12 and is not dock traffic |
