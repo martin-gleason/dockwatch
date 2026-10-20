@@ -1,6 +1,6 @@
 # Register — dockwatch
 
-Created: 2026-10-18 11:11 -05:00 · Edited: 2026-10-20 07:55 -05:00
+Created: 2026-10-18 11:11 -05:00 · Edited: 2026-10-20 10:29 -05:00
 
 Every register for this project, one `##` per register. This is the
 "where are we" read.
@@ -113,7 +113,7 @@ Outstanding items only the owner can close.
 | O18 | Repository settings only the owner can change (security review 2026-10-18, findings 2–4): in the "Rebase-n-Merge" ruleset require a pull request and the `ci / test` status check; set Actions fork-PR approval to all outside collaborators; enable secret scanning and push protection. `gh api -X PUT repos/martin-gleason/dockwatch/actions/permissions/workflow -f default_workflow_permissions=read` is already the state; the rest is in Settings › Rules, Settings › Actions, Settings › Code security. | P1 | closed 2026-10-18 — owner ran the runbook; `gh api …/rulesets/25349652` → `deletion`, `non_fast_forward`, `pull_request` (rebase only), `required_status_checks` (`test`); `…/fork-pr-contributor-approval` → `all_external_contributors`; non-provider patterns left off (optional) |
 | O19 | Personal-data posture for a public repository (security review 2026-10-18, finding 9): the commit author email on every commit, the machine model and versions, the owner's volume names and disk identifiers in `docs/plans/F2.md` and `F6.md`, and the product names in the recorded-pull fixture. Decide whether to switch to a noreply address for future commits and whether the agent should scrub the volume and product names; the fixture needs only its locationIDs. | P2 | open |
 | O20 | Gate C3, the security hardening chore (`docs/plans/C3.md`): six tasks, no feature change. | P1 | closed 2026-10-18 — owner: "begin c3 hardening" |
-| O21 | Run the series in D35 (`docs/learnings/keep-awake-experiment.md`): night two 2026-10-19 is **off**; toggle set before 21:00; `pmset -g assertions` saved at bedtime and, on an off night, a logout if any holder besides powerd is listed; the T1000-E unplugged; the morning report before anything is touched; answer the two questions in that document (the 20:49:38 return of the keyboard chain; whether the T1000-E can stay off). | P0 | open — night two done 2026-10-20 (off, valid, 198 flaps, 0 losses); night three 2026-10-20 is **on**, and settles R1 if DockWatch is the only holder |
+| O21 | Run the series in D35 (`docs/learnings/keep-awake-experiment.md`): night two 2026-10-19 is **off**; toggle set before 21:00; `pmset -g assertions` saved at bedtime and, on an off night, a logout if any holder besides powerd is listed; the T1000-E unplugged; the morning report before anything is touched; answer the two questions in that document (the 20:49:38 return of the keyboard chain; whether the T1000-E can stay off). | P0 | open — night two done 2026-10-20 (off, valid, 198 flaps, 0 losses); night three 2026-10-20 is **on**, and settles R1 if DockWatch is the only holder; day run d2 2026-10-20 (off, app watching) logged the second loss at 09:24:18 after 52 cycles, so off runs cost a replug each — the owner decides whether the series continues past night three |
 
 Questions for O1–O6 are laid out in `docs/handoffs/2026-10-18-planning-questions.md`.
 
