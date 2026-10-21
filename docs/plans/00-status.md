@@ -145,7 +145,7 @@ Every open row in the register. Owner is the row's Owner column where the table 
 | owner | O19 | P2 | open | Personal-data posture for a public repository (security review 2026-10-18, finding 9): the commit author email on every … |
 | owner | O21 | P0 | open | Run the series in D35 (docs/learnings/keep-awake-experiment.md): night two 2026-10-19 is off; toggle set before 21:00; p… |
 | owner | RR18 | — | open | The installed bundle is ad-hoc signed in a user-writable path; same-user code can replace the binary, re-sign, and pass … |
-| owner | RR21 | — | open | Another process holds an idle-sleep assertion across a night, so a sleepless night cannot be credited to the hold. Found… |
+| owner Second instance night three 2026-10-20→21: coreaudiod audio contexts held idle sleep all night with Music open and silent. | RR21 | — | open | Another process holds an idle-sleep assertion across a night, so a sleepless night cannot be credited to the hold. Found… |
 | unassigned | A3 | P2 | open | Priming order: devices enumerated before the dock's own device at launch are logged without dock=true (seven of twenty o… |
 | unassigned | A4 | P1 | open | Quitting the app writes no hold.off line: on 2026-10-19 08:57:57 powerd logged the assertion Released (the owner chose Q… |
 | unassigned | H5 | — | open | Every FR has a test or a named manual check with evidence |

@@ -1,6 +1,6 @@
 # Keep Dock Awake — the overnight experiment
 
-Created: 2026-10-19 08:48 -05:00 · Edited: 2026-10-20 10:29 -05:00
+Created: 2026-10-19 08:48 -05:00 · Edited: 2026-10-21 09:56 -05:00
 
 **What this is.** The record of every night the hold is tested, the protocol the nights
 follow (D35), and the rule that decides what the nights mean, written down before the
@@ -136,6 +136,20 @@ is not a control.
 ≥ 50 cycles and no drops, three times (the hold then prevents the loop but the loop was
 not the problem, and RR4 is the finding).
 
+**The KVM (learned 2026-10-21).** The chain at `0x02143xxx` (USB2.1 Hub, USB2.0 Hub, Das
+Keyboard, USB Receiver) sits behind the owner's KVM switch. Every detach of that chain on
+record is either a dock pull or the KVM switching to another machine, including the
+20:43:33 event on the evening of night one, which this document had called the only
+spontaneous drop; it is now read as a probable KVM switch. The chain is excluded from
+flap and loss counts. Also excluded: an iPhone on the Mac's own port (controller `0x01`),
+and the T1000-E while it is on the dock.
+
+**Foreign holders seen so far:** Siri AI `UIIntelligenceSupport` (night one, 23 h, cleared
+by `killall`), coreaudiod audio contexts with Music open but silent (night three, all
+night). An on night counts for R1 only when `pmset -g assertions` at bedtime shows no
+`PreventUserIdleSystemSleep` holder but DockWatch and powerd's display-on line, so Music
+and any call app are quit before bed and the snapshot is saved.
+
 ## Night two, and the word "drop" split in two
 
 The off night produced the loop exactly as the earlier nights did, and the app, running
@@ -214,3 +228,4 @@ Append-only. "Valid" is by the rules above.
 | d1 | 2026-10-19 day, 09:15 → 15:01 | off | **off-run valid for the power log; the app was not running** (A4) | 73 | 68 | 35 | 0 | **1** — the dock's whole USB 3 side at 14:53:54–14:54:13: SATA bridge, two-bay enclosure, LAN, USB 3 hubs; USB 2 side and the Thunderbolt link stayed up | 4 | 0 of 4 at 15:02 | none; Siri AI cleared by `killall` at 09:0x | the owner's dose day. Idle sleep 09:18:07. First disks removed 14:53:54 with the Mac awake and the display dark since 14:47:44, the rest at the 14:54:13 charger-drop dark wake, after 60 cycles and 29 charger drops. Dock lighting flashing purple. The owner found the **MacBook's built-in keyboard** dead on sitting down, the first time it has ever failed (not the Das Keyboard on the dock, which was enumerated throughout). The power log shows the 15:01:11 full wake came from the internal trackpad/keyboard and that the vanished disks' SCSI driver was still acknowledging sleep and wake slowly (763 ms) through the loop, so a Mac-side stall during that wake is the leading reading; it is a separate symptom from the dock's USB 3 side dropping and is recorded as one. Recovery: app relaunched, cable replugged 15:08, all four volumes back by 15:09:03 |
 | 2 | 2026-10-19 → 20 | off | **yes** (199 cycles, no foreign holder) | 199 | 197 | 135 | 47 | **0 lost; 198 flaps** of the USB3.0 SATA Bridge, each detach re-attached within 2–21 ms, 125 of them within 3 s of a dark wake and the rest after a full wake; no volume ever unmounted | 0 | 4 of 4 | none (backupd, transient) | window from `hold.off` 22:40:17; idle sleep 22:59:06; the T1000-E was back on the dock from 18:59 (owner); an iPhone on the Mac's own port came and went 19:39–23:12 and is not dock traffic |
 | d2 | 2026-10-20 day, 08:10 → 10:24 | off | yes (loop ran, app watching) | 107 | 106 | 54 | 28 | **1 loss** at 09:24:18, at a charger-drop dark wake after 52 cycles: the USB 3 root hub and everything under it, plus the dock identity, keyboard, receiver and Chroma; the USB 2 side returned by itself at 09:37:44, the USB 3 side never did. Flaps: 53 of the SATA bridge, and 77 seconds-long ones on the USB 2 root-hub branch (hub 0x02100000, hub 0x02110000, watch cable, T1000-E) from 08:19:24, each re-attach a `USBWakeup` dark wake | 4 | 0 of 4 | none | owner away 08:10–10:24; idle sleep 08:18:15; diskarbitrationd removed the four disks 1.5 s after the USB terminations and unmounted their dangling volumes, which Finder reports as "not ejected properly"; the Mac then cycled 55 more times with wake storms until the owner sat down |
+| 3 | 2026-10-20 → 21 | on | **invalid** | 0 | 0 | 0 | 0 | 0 on the dock; the keyboard chain detached 21:29:20 and returned 09:22:54, which is the owner's **KVM** switching (see below), excluded | 0 | 0 of 4 (none attached) | coreaudiod audio contexts for 19–23 h (Music open, nothing playing); Music playback 44 min in the morning | hold on from 16:03:08, but the dock's USB 3 side had never been replugged after d2's loss, so no drive was attached all night; no bedtime snapshot; a foreign holder all night (RR21 again). Replug 09:53:16–09:53:49 restored everything |
