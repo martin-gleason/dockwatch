@@ -1,6 +1,6 @@
 # Keep Dock Awake — the overnight experiment
 
-Created: 2026-10-19 08:48 -05:00 · Edited: 2026-10-21 09:56 -05:00
+Created: 2026-10-19 08:48 -05:00 · Edited: 2026-10-22 08:10 -05:00
 
 **What this is.** The record of every night the hold is tested, the protocol the nights
 follow (D35), and the rule that decides what the nights mean, written down before the
@@ -141,8 +141,10 @@ Keyboard, USB Receiver) sits behind the owner's KVM switch. Every detach of that
 record is either a dock pull or the KVM switching to another machine, including the
 20:43:33 event on the evening of night one, which this document had called the only
 spontaneous drop; it is now read as a probable KVM switch. The chain is excluded from
-flap and loss counts. Also excluded: an iPhone on the Mac's own port (controller `0x01`),
-and the T1000-E while it is on the dock.
+flap and loss counts. Night four showed that the two hubs at `0x02243000` and `0x02243200`
+(USB3.1 Hub, USB3.0 Hub) leave and return with the chain every time: they are the KVM
+hub's USB 3 personality, not dock hubs, and go with it. Also excluded: an iPhone on the
+Mac's own port (controller `0x01`), and the T1000-E while it is on the dock.
 
 **Foreign holders seen so far:** Siri AI `UIIntelligenceSupport` (night one, 23 h, cleared
 by `killall`), coreaudiod audio contexts with Music open but silent (night three, all
@@ -183,6 +185,19 @@ none at that rate is e^(−2.2) ≈ 0.11, so the loss claim is not yet at p < 0.
 valid on night with no foreign holder (night three) and no loss brings it to ≈ 0.03; that
 night also settles R1. **The owner pays one dock replug per loss**, so off days are the
 expensive arm: the loop runs by day exactly as by night, and both losses came by day.
+
+**Running score (D35), 2026-10-22 08:10.** Night four (on) is the first valid, attributable
+on night: 22.2 h held, 0 cycles, 0 flaps, 0 losses, four of four volumes in the morning,
+DockWatch the only idle-sleep holder from 22:06 to 08:06. **R1 is settled** by the pair
+night two / night four: with the hold off the Mac looped 199 times and the bridge flapped
+198 times; with the hold on it did neither. On — 41.4 h held, 0 cycles, 0 flaps, 0 losses.
+Off — 17.2 h, 366 cycles, 2 losses. At the off rate of 2 losses in 17.2 h, the chance that
+41.4 held hours show none is e^(−4.8) ≈ 0.008. The strict figure counts only hours in
+which DockWatch was the sole holder (the evening of 2026-10-19, 7.5 h, and night four's
+overnight, 10 h): 17.5 h, e^(−2.0) ≈ 0.13. A co-holder does not weaken the hold; it shares
+the credit, so the strict figure is the one to quote if challenged. One more on night with
+Music quit from the morning adds about 22 sole-holder hours and takes the strict figure
+below 0.02; an off night adds nothing to that figure and risks a replug.
 
 **What d2 adds.** A second branch flaps, and it flapped only today: the dock's USB 2 root
 hub (0x02100000) with its child hub, the watch cable and the T1000-E, 77 times from the
@@ -229,3 +244,4 @@ Append-only. "Valid" is by the rules above.
 | 2 | 2026-10-19 → 20 | off | **yes** (199 cycles, no foreign holder) | 199 | 197 | 135 | 47 | **0 lost; 198 flaps** of the USB3.0 SATA Bridge, each detach re-attached within 2–21 ms, 125 of them within 3 s of a dark wake and the rest after a full wake; no volume ever unmounted | 0 | 4 of 4 | none (backupd, transient) | window from `hold.off` 22:40:17; idle sleep 22:59:06; the T1000-E was back on the dock from 18:59 (owner); an iPhone on the Mac's own port came and went 19:39–23:12 and is not dock traffic |
 | d2 | 2026-10-20 day, 08:10 → 10:24 | off | yes (loop ran, app watching) | 107 | 106 | 54 | 28 | **1 loss** at 09:24:18, at a charger-drop dark wake after 52 cycles: the USB 3 root hub and everything under it, plus the dock identity, keyboard, receiver and Chroma; the USB 2 side returned by itself at 09:37:44, the USB 3 side never did. Flaps: 53 of the SATA bridge, and 77 seconds-long ones on the USB 2 root-hub branch (hub 0x02100000, hub 0x02110000, watch cable, T1000-E) from 08:19:24, each re-attach a `USBWakeup` dark wake | 4 | 0 of 4 | none | owner away 08:10–10:24; idle sleep 08:18:15; diskarbitrationd removed the four disks 1.5 s after the USB terminations and unmounted their dangling volumes, which Finder reports as "not ejected properly"; the Mac then cycled 55 more times with wake storms until the owner sat down |
 | 3 | 2026-10-20 → 21 | on | **invalid** | 0 | 0 | 0 | 0 | 0 on the dock; the keyboard chain detached 21:29:20 and returned 09:22:54, which is the owner's **KVM** switching (see below), excluded | 0 | 0 of 4 (none attached) | coreaudiod audio contexts for 19–23 h (Music open, nothing playing); Music playback 44 min in the morning | hold on from 16:03:08, but the dock's USB 3 side had never been replugged after d2's loss, so no drive was attached all night; no bedtime snapshot; a foreign holder all night (RR21 again). Replug 09:53:16–09:53:49 restored everything |
+| 4 | 2026-10-21 → 22 | on | **yes**, and attributable overnight | 0 | 0 | 0 | 0 | 0 on the dock. Excluded: the KVM chain switched six times (15:26, 17:58, 18:48, 22:05, 22:07, 08:06); the T1000-E re-enumerated from its bootloader 18:19–18:35 while the owner worked on it; an iPhone on the Mac's own port 18:26–20:21 | 0 | 4 of 4 | coreaudiod (Music open) beside DockWatch by day until the owner quit it at 22:06:41; from then to the morning read DockWatch alone, with backupd's hourly transient and one `caffeinate` of two minutes at 23:02 | window from `hold.on` 09:53:24 after the replug, 22.2 h, one assertion id 0x1000080d8 throughout; bedtime snapshot `night-2026-10-21.txt` at 22:06 clean; TM ran. **Deviation:** the T1000-E was put back on the dock at 14:34:48 and stayed all night (D35 says off); it did nothing overnight. The SATA bridge, which flapped 198 times on night two, did not flap once |
