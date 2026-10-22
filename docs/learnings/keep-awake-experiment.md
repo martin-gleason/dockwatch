@@ -1,6 +1,6 @@
 # Keep Dock Awake — the overnight experiment
 
-Created: 2026-10-19 08:48 -05:00 · Edited: 2026-10-22 08:10 -05:00
+Created: 2026-10-19 08:48 -05:00 · Edited: 2026-10-22 10:25 -05:00
 
 **What this is.** The record of every night the hold is tested, the protocol the nights
 follow (D35), and the rule that decides what the nights mean, written down before the
@@ -204,6 +204,31 @@ hub (0x02100000) with its child hub, the watch cable and the T1000-E, 77 times f
 first wake after the 08:18 idle sleep, each absence seconds long and each return a
 `USBWakeup` dark wake, so the dock was waking the Mac on its own schedule for an hour
 before the USB 3 side went. Night two had the same devices attached and no such flap.
+
+## The lid-shut arm (pre-registered 2026-10-22, before the night)
+
+The owner's habit is the lid shut. D35 kept it open so that an idle-sleep assertion
+would be the only thing between the Mac and sleep (RR1). The lid-shut arm asks whether
+the lid changes anything, in two nights that are not D35 nights and are scored apart:
+
+- **L1, lid shut, hold off**, app running. Prediction, written first: on the dock the Mac
+  is on AC with the Dell display, so a shut lid is clamshell mode, not sleep. Every
+  `Clamshell Sleep` in the power log (five, all 2026-10-18) says `Using Batt`: the Mac
+  was off the dock each time. L1 should therefore idle-sleep after `sleep 1` exactly as
+  night two did and run the loop: 50 or more cycles, the SATA bridge flapping about once
+  a cycle. If a loss comes it is the third in an off run and costs a replug; if the night
+  runs 150 cycles with none, the per-cycle loss rate is lower than d1 and d2 suggested.
+  Valid as an off control by D35's rule (50 or more cycles, no foreign holder). The KVM
+  stays on the Mac: switched away, the Mac has no display and a shut lid sleeps it at
+  once, which is a different sleep and a different night.
+- **L2, lid shut, hold on.** The product question, and the O13 lid check: RR1 says the
+  hold is absent on battery with no external display; on the dock in clamshell it should
+  hold, and nobody has watched it do so for a night. No replug risk. Prediction: 0 cycles.
+
+**Foreign holders, added.** The Claude desktop app takes `NoIdleSleepAssertion "Electron"`
+for minutes at a time while in use; coreaudiod takes aggregate-device and built-in
+speaker and microphone contexts during a call. Both are daytime transients; Zoom and
+Music quit at bedtime, and the snapshot decides.
 
 ## The morning report
 
