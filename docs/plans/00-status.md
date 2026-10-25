@@ -46,7 +46,7 @@ Counted from the register itself. A register with no rows still gets a line.
 |---|---|---|---|---|
 | Decisions (`D`) | 36 | 24 | 0 | 12 |
 | Risks (`RR`) | 21 | 17 | 0 | 4 |
-| Owner items (`O`) | 21 | 8 | 0 | 13 |
+| Owner items (`O`) | 21 | 7 | 0 | 14 |
 | Agent items (`A`) | 4 | 2 | 0 | 2 |
 | Hooks (`H`) | 6 | 2 | 0 | 4 |
 | Mutations (`M`) | 19 | 0 | 0 | 19 |
@@ -64,7 +64,8 @@ Counted from the register itself. A register with no rows still gets a line.
 | `RR` | rejected | 1 |
 | `RR` | resolved | 3 |
 | `O` | closed | 13 |
-| `O` | open | 8 |
+| `O` | done | 1 |
+| `O` | open | 7 |
 | `A` | closed | 2 |
 | `A` | open | 2 |
 | `H` | built | 4 |
@@ -138,7 +139,6 @@ Every open row in the register. Owner is the row's Owner column where the table 
 | owner | D36 | — | proposed | Keep Dock Awake is on by default whenever the dock is present. FR5 made the hold a toggle, off by default; the series (D… |
 | owner | O7 | P1 | open | Ratify the proposed decisions the build rests on: D1–D5, D7, D9, D10, D20, D21, D23, D24, D27, D28, D29. |
 | owner | O12 | P1 | open | F2 and F3 live checks only the owner can do, with the app running and Keep Dock Awake on: close the lid for a minute (ex… |
-| owner | O13 | P0 | open | The experiment. With the app running and the dock attached, turn on Keep Dock Awake in the menu (its ⌘K works only while… |
 | owner | O14 | P1 | open | F6 live checks only the owner can do, with the dock plugged back in: eject one volume from the menu and reopen the menu … |
 | owner | O15 | P1 | open | F4 live checks only the owner can do, from the installed app with the dock attached: allow notifications when asked at f… |
 | owner | O16 | P1 | open | F7 live checks only the owner can do, from a rebuilt installed app (scripts/build-app.sh --install): the ring in the men… |
@@ -153,4 +153,4 @@ Every open row in the register. Owner is the row's Owner column where the table 
 
 ---
 
-55 open register rows.
+54 open register rows.
