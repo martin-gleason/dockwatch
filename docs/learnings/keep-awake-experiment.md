@@ -1,6 +1,6 @@
 # Keep Dock Awake — the overnight experiment
 
-Created: 2026-10-19 08:48 -05:00 · Edited: 2026-10-25 13:05 -05:00
+Created: 2026-10-19 08:48 -05:00 · Edited: 2026-10-26 11:21 -05:00
 
 **What this is.** The record of every night the hold is tested, the protocol the nights
 follow (D35), and the rule that decides what the nights mean, written down before the
@@ -225,6 +225,19 @@ series stops here** under D35's stop rule. What it leaves for the register: D35 
 as run, D36 (the hold on by default while docked) now carries L1 and L2 as its evidence,
 and the hold should be read as the dock's protection, not a convenience.
 
+**L3 corrects the mechanism, 2026-10-26 11:30.** The owner ran one more lid-shut off night
+after the series had stopped, and it lost the dock after 44 cycles at a dark wake that was
+**not** a charger drop. The charger has not dropped once since the Saturday re-dock, the
+loop ran at a tenth of its old pace (a wake every ten to fifteen minutes from the RTC,
+Wi-Fi and Bluetooth), the SATA bridge still re-enumerated at nearly every wake, and the
+loss still came. So the charger drop was never the cause; it was the most frequent source
+of dark wakes, and RR4 is to be read as **every dark wake re-enumerates the dock's USB 3
+side, and about one in a hundred fails to bring it back**. The hold stops every dark wake
+by stopping sleep, which is why the on nights have no cycle, no flap and no loss. Cycles
+to loss across the off runs: 60, 52, 3, 44, and one run of 199 without. Off — 38.1 h,
+642 cycles, **4 losses**; on — 66.2 h, 0. e^(−0.105 × 66.2) ≈ 0.001; strict ≈ 0.06.
+The owner has paid a fourth replug. Nothing further is learned by an off run.
+
 **What d2 adds.** A second branch flaps, and it flapped only today: the dock's USB 2 root
 hub (0x02100000) with its child hub, the watch cable and the T1000-E, 77 times from the
 first wake after the 08:18 idle sleep, each absence seconds long and each return a
@@ -298,3 +311,4 @@ Append-only. "Valid" is by the rules above.
 | 4 | 2026-10-21 → 22 | on | **yes**, and attributable overnight | 0 | 0 | 0 | 0 | 0 on the dock. Excluded: the KVM chain switched six times (15:26, 17:58, 18:48, 22:05, 22:07, 08:06); the T1000-E re-enumerated from its bootloader 18:19–18:35 while the owner worked on it; an iPhone on the Mac's own port 18:26–20:21 | 0 | 4 of 4 | coreaudiod (Music open) beside DockWatch by day until the owner quit it at 22:06:41; from then to the morning read DockWatch alone, with backupd's hourly transient and one `caffeinate` of two minutes at 23:02 | window from `hold.on` 09:53:24 after the replug, 22.2 h, one assertion id 0x1000080d8 throughout; bedtime snapshot `night-2026-10-21.txt` at 22:06 clean; TM ran. **Deviation:** the T1000-E was put back on the dock at 14:34:48 and stayed all night (D35 says off); it did nothing overnight. The SATA bridge, which flapped 198 times on night two, did not flap once |
 | L1 | 2026-10-22 → 23, **lid shut** | off | **yes** as an off control (217 cycles, no foreign holder); not a D35 night | 217 | 217 | 138 | 58 | **1 loss** at 22:53:38, at the third cycle's charger-drop dark wake, 68 s after the first sleep: the whole USB tree of the dock (both root hubs, the dock identity, the Chroma, the LAN, the two-bay enclosure, the SATA bridge, the keyboard chain). The USB 2 root hub returned at 22:53:39 and flapped with its child hub and the watch cable until 22:55:19 (each return a `USBWakeup` dark wake, as on d2); the dock identity, Chroma and keyboard chain returned at 22:55:26; the USB 3 root hub never did. The dock re-identified itself once more at 07:40:49 at a wifibt dark wake, USB 3 side still absent. Bridge flaps before the loss: 2, one per cycle | 4 at 22:53:40 | 0 of 4 | none (powerd, backupd, runningboardd one summary each) | lid shut 22:34, hold off 22:34:02; the KVM switched at 22:34:14 (excluded); display off 22:45:06; idle sleep 22:52:30 (clamshell mode held the Mac awake 18 min, as predicted; no `Clamshell Sleep`); the Mac then cycled 214 more times with nothing left to lose; full wake 08:40:40. Finder reported four disks not ejected properly |
 | L2 | 2026-10-24 → 25, **lid shut** | on | **yes**, attributable from midnight | 0 | 0 | 0 | 0 | 0 on the dock. Excluded: an iPhone on the Mac's own port 11:19–11:40, a USB serial adapter on the Mac's own port 14:53 | 0 | 4 of 4 | caffeinate in five-minute wrappers 20:00–23:30 and backupd's hourly minute; from 00:00 to 09:00 DockWatch alone | the owner re-docked 09:28:26 on 2026-10-24 (the replug), hold re-took itself, one assertion id 0x10000a01d for 24.8 h; the lid was shut overnight (powerd's `lidopen` assertion fires at 10:15:35 on opening, none between); last display-off 00:34:24. No bedtime snapshot was saved, so the 15-minute Summary lines stand in. Prediction (0 cycles) correct: **in clamshell mode on the dock the hold works** |
+| L3 | 2026-10-25 → 26, **lid shut** | off | **yes** as an off control (44 cycles, no foreign holder); lid-shut arm | 59 | 58 | **0** | 36 | **1 loss** at 10:22:53, at a **wifibt** dark wake after 44 cycles, the first loss on record not at a charger drop: the whole dock USB tree again; USB 2 root hub back at 10:22:54 and flapping with its child hub and the watch cable until 10:56:40; dock identity, Chroma and keyboard chain back at 11:00:14; USB 3 root hub never. Bridge flaps before the loss: 43, one at nearly every dark wake | 4 at 10:22:55 | 0 of 4 | none (powerd, backupd, caffeinate wrappers, transients) | hold off 23:32:27, snapshot `night-2026-10-25.txt` clean at 23:33; display off 00:02:39; idle sleep 00:12:51. **No charger drop all night**, and none on record since 08:16:19 on 2026-10-23: since the Saturday re-dock the loop has been a quiet one, a dark wake every ten to fifteen minutes from the RTC, Wi-Fi or Bluetooth, sleeps of 100 to 950 s. The bridge flapped at those wakes all the same. A full wake at 09:22:19 (USB and HID activity, lid still shut), idle sleep again 10:08:43, then wifibt dark wakes every few minutes until the loss. Finder: four disks not ejected properly |
