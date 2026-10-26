@@ -18,7 +18,7 @@ Named, never numbered (`D2`). **No source read here marks a milestone as the cur
 | Milestone | Decisions landing here | Units |
 |---|---|---|
 | MVP | 27 | C1, C3, F1, F2, F3, F4, F4b, F6, F7 |
-| v1.5 | 10 | — |
+| v1.5 | 10 | F8 |
 | — | 0 | F5 |
 
 ## Features and chores
@@ -37,6 +37,7 @@ Status is what the unit's own plan header declares. What has landed in git is de
 | F5 | feature | built 2026-10-18; reviewed (`docs/reviews/F5.md`); the dock half of the sandbox proof done 2026-10-18 20:45 from the running bundle (A1, below); the login launch itself stays off until D30 (O17) | — | — | — | `docs/plans/F5.md` | 3 planned |
 | F6 | feature | in progress (gate crossed 2026-10-18, "you can begin f6") | MVP | — | agent | `docs/plans/F6.md` | 3 planned |
 | F7 | feature | built 2026-10-18; reviewed (`docs/reviews/F7.md`), fixes landed; the owner's eyes remain (O16) | MVP | — | agent | `docs/plans/F7.md` | 4 planned |
+| F8 | feature | planned, at the gate | v1.5 | — | agent | `docs/plans/F8.md` | 2 planned |
 
 ## Registers
 
