@@ -1,4 +1,4 @@
-// Created: 2026-10-18 12:40 -05:00 · Edited: 2026-10-18 12:40 -05:00
+// Created: 2026-10-18 12:40 -05:00 · Edited: 2026-10-26 17:12 -05:00
 import XCTest
 @testable import DockCore
 
@@ -36,15 +36,25 @@ final class HoldPolicyTests: XCTestCase {
         XCTAssertFalse(p.apply(.didWake).hold)
     }
 
-    /// FR5, D10: the default is off and undocked; turning the toggle on with no dock does nothing yet,
-    /// and the dock arriving then holds.
+    /// FR5: from off and undocked, turning the toggle on with no dock does nothing yet,
+    /// and the dock arriving then holds. (Started from an explicit off since F8 flipped the default.)
     func testToggleOnThenDockArrivalHolds() {
-        var p = HoldPolicy()
+        var p = HoldPolicy(toggle: false)
         XCTAssertFalse(p.shouldHold)
         XCTAssertFalse(p.apply(.toggleChanged(true)).hold)
         let d = p.apply(.dockChanged(true))
         XCTAssertTrue(d.hold)
         XCTAssertFalse(d.reapply)
+    }
+
+    /// FR5, D36, M20: a policy given no toggle starts on, so a fresh install holds the moment the
+    /// dock arrives and releases when it leaves. Nothing holds before the dock is present.
+    func testFreshPolicyHoldsWhenDocked() {
+        var p = HoldPolicy()
+        XCTAssertTrue(HoldPolicy.defaultToggle)
+        XCTAssertFalse(p.shouldHold, "no dock yet")
+        XCTAssertTrue(p.apply(.dockChanged(true)).hold)
+        XCTAssertFalse(p.apply(.dockChanged(false)).hold)
     }
 
     /// FR5: the RR14 policy — a flicker of the identifying device is followed exactly, no grace.

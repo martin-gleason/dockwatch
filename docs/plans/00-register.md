@@ -1,6 +1,6 @@
 # Register — dockwatch
 
-Created: 2026-10-18 11:11 -05:00 · Edited: 2026-10-26 11:57 -05:00
+Created: 2026-10-18 11:11 -05:00 · Edited: 2026-10-26 17:12 -05:00
 
 Every register for this project, one `##` per register. This is the
 "where are we" read.
@@ -34,7 +34,7 @@ number has not been decided, however clearly it was said aloud.
 | D7 | proposed | MVP | macOS 14 minimum, matching HueBar. Built with Xcode 27.1 on macOS 27. Apple silicon only is verified. |
 | D8 | superseded by D13 | MVP | The shell monitor at `~/dockwatch` (LaunchAgent `com.marty.dockwatch`) stays running as the control instrument. Agreement between its `events.log` and the app's log is F2's acceptance evidence. |
 | D9 | proposed | MVP | Build order for 2026-10-18: C1 → F1 → F2 → F3 → F5 → F4. F4 is cut first if the day runs out. |
-| D10 | proposed | MVP | The "Keep dock awake" toggle defaults **off**. First launch changes nothing until the owner turns it on. |
+| D10 | superseded by D36 | MVP | The "Keep dock awake" toggle defaults **off**. First launch changes nothing until the owner turns it on. |
 | D11 | ratified 2026-10-18 | MVP | **Supersedes the vision sentence in `SPEC.md`.** Owner's rewrite (handoff Q1): "DockWatch is a native Mac Menu Bar tool that logs the activity of the thunderbolt 4 dock, keeps it from falling asleep, and lets you eject or remove connected devices quickly and safely." Adds **FR9**: any volume on a disk attached through the dock can be ejected from the menu, singly or all at once, and the result is reported (done, or blocked and by what). No macOS API ejects a non-storage device; for those, "remove" means the log confirms the device is gone. Built as F6. |
 | D12 | ratified 2026-10-18 | v1.5 | A schedule window for the hold is parked to v1.5. Owner (Q3): "For MVP: No scheduling. We will add that in v1.5". |
 | D13 | ratified 2026-10-18 | MVP | **Supersedes D8.** Once F2's log is shown to agree with the shell monitor, the monitor's LaunchAgent is removed; replacing it is the test. Owner (Q5): "Replace. it's a real test." F2 gains a task for the removal. |
@@ -69,7 +69,7 @@ number has not been decided, however clearly it was said aloud.
 |---|---|---|---|---|---|---|
 
 | RR1 | An idle-sleep assertion does not stop lid-close sleep on battery without an external display, nor an explicit Sleep command. | open | Medium | The hold is silently absent in those states. | Menu wording says "idle sleep"; F3 evidence includes the lid test. | agent |
-| RR2 | A docked Mac held awake around the clock: no overnight sleep, idle energy use. | open | Certain when on | Owner may not want it. | Toggle defaults off (D10); schedule window is a v1.1 candidate (`O3`). | human |
+| RR2 | A docked Mac held awake around the clock: no overnight sleep, idle energy use. | open | Certain when on | Owner may not want it. | The toggle is the way out (on by default since D36, F8); the schedule window is parked to v1.5 (D12). | human |
 | RR3 | A user-space app observes nothing while the Mac sleeps, so sleep-time charger drops never reach the app log. | open | Certain | F4 counters undercount against `pmset -g log`. | The power log stays the ground truth for sleep-time events, dark wakes included (D18); the menu says so. | agent |
 | RR4 | The hypothesis is wrong: devices keep dropping with the Mac awake. | open | Low to medium | The hold is useless; the log is still the diagnostic. | F3's evidence row compares the charger-detach count after one night held against the prior nights. | agent L3 2026-10-26: a loss at a wifibt dark wake with no charger drop all night, so the trigger is the dark wake itself, not the charger. |
 | RR5 | Due end of day 2026-10-18. | resolved 2026-10-18 — MVP built by end of day: C1, F1–F7, F4b, C3 merged | High | F4 or F5 unbuilt tonight. | Order D9; F4 cut first. | human |
@@ -203,6 +203,7 @@ A test is not evidence until a mutation proves it can fail.
 | M17 | `Sources/DockCore/DockState.swift` | Never forget the dock's controller once nothing remains on it | `DockPullFixtureTests.testControllerIsForgottenOnceEmpty` | killed 2026-10-18: 2 failures / 1 test (`scripts/mutate.sh M17`) |
 | M18 | `Sources/DockCore/Event.swift` | Log and show a device name with its control and bidi characters intact | `EventStoreTests.testSubjectsAreMadePlainOnWriteAndOnRead` | killed 2026-10-18: 4 failures / 1 test (`scripts/mutate.sh M18`) |
 | M19 | `Sources/DockCore/EventStore.swift` | Block on a FIFO planted at the log path (drop `O_NONBLOCK`), so the first `tail` at launch never returns | `EventStoreTests.testFifoAtLogPathIsRefusedWithoutBlocking` | killed 2026-10-18: 4 failures / 1 test (`scripts/mutate.sh M19`) |
+| M20 | `Sources/DockCore/HoldPolicy.swift` | Default the toggle to off (a fresh install never holds) | `HoldPolicyTests.testFreshPolicyHoldsWhenDocked` | killed 2026-10-26: 2 failures / 1 test (`scripts/mutate.sh M20`) |
 
 -----
 
