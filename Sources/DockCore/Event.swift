@@ -1,4 +1,4 @@
-// Created: 2026-10-18 11:55 -05:00 · Edited: 2026-10-18 20:05 -05:00
+// Created: 2026-10-18 11:55 -05:00 · Edited: 2026-10-26 11:47 -05:00
 // F2-T1 — one dock event, and its one-line JSON form (FR3, NFR6).
 import Foundation
 
@@ -16,6 +16,8 @@ public struct Event: Codable, Equatable {
         case volumeEject = "volume.eject"   // FR9: an eject was asked for; detail.result says what happened
         case holdOn = "hold.on"      // D21: the sleep assertion was taken
         case holdOff = "hold.off"    // D21: and released
+        case appLaunch = "app.launch"  // D37: the app started watching; detail.pid, detail.toggle
+        case appQuit = "app.quit"      // D37: the owner quit it; written before the hold is released (A4)
     }
 
     public let ts: Date
