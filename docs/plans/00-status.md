@@ -17,7 +17,7 @@ Named, never numbered (`D2`). **No source read here marks a milestone as the cur
 
 | Milestone | Decisions landing here | Units |
 |---|---|---|
-| MVP | 26 | C1, C3, F1, F2, F3, F4, F4b, F6, F7 |
+| MVP | 27 | C1, C3, F1, F2, F3, F4, F4b, F6, F7 |
 | v1.5 | 10 | — |
 | — | 0 | F5 |
 
@@ -44,10 +44,10 @@ Counted from the register itself. A register with no rows still gets a line.
 
 | Register | Rows | Open | Unknown | Closed |
 |---|---|---|---|---|
-| Decisions (`D`) | 36 | 24 | 0 | 12 |
+| Decisions (`D`) | 37 | 25 | 0 | 12 |
 | Risks (`RR`) | 21 | 17 | 0 | 4 |
 | Owner items (`O`) | 21 | 7 | 0 | 14 |
-| Agent items (`A`) | 4 | 2 | 0 | 2 |
+| Agent items (`A`) | 4 | 1 | 0 | 3 |
 | Hooks (`H`) | 6 | 2 | 0 | 4 |
 | Mutations (`M`) | 19 | 0 | 0 | 19 |
 | Chores (`C`) | 4 | 2 | 0 | 2 |
@@ -57,7 +57,7 @@ Counted from the register itself. A register with no rows still gets a line.
 
 | Register | Status | Count |
 |---|---|---|
-| `D` | proposed | 24 |
+| `D` | proposed | 25 |
 | `D` | ratified | 11 |
 | `D` | superseded | 1 |
 | `RR` | open | 17 |
@@ -67,7 +67,8 @@ Counted from the register itself. A register with no rows still gets a line.
 | `O` | done | 1 |
 | `O` | open | 7 |
 | `A` | closed | 2 |
-| `A` | open | 2 |
+| `A` | done | 1 |
+| `A` | open | 1 |
 | `H` | built | 4 |
 | `H` | not built | 1 |
 | `H` | open | 1 |
@@ -137,6 +138,7 @@ Every open row in the register. Owner is the row's Owner column where the table 
 | owner | D34 | — | proposed | The held ring must visibly spin. The F7 review set the slow turn to one frame a second and one turn a minute to hold CPU… |
 | owner | D35 | — | proposed | The overnight experiment is a pre-registered alternating series, not one night: off, on, off, on, off, on, lid open, sam… |
 | owner | D36 | — | proposed | Keep Dock Awake is on by default whenever the dock is present. FR5 made the hold a toggle, off by default; the series (D… |
+| owner | D37 | — | proposed | The log gains app.launch and app.quit lines (detail: the pid, and the toggle at launch or whether the hold was held at q… |
 | owner | O7 | P1 | open | Ratify the proposed decisions the build rests on: D1–D5, D7, D9, D10, D20, D21, D23, D24, D27, D28, D29. |
 | owner | O12 | P1 | open | F2 and F3 live checks only the owner can do, with the app running and Keep Dock Awake on: close the lid for a minute (ex… |
 | owner | O14 | P1 | open | F6 live checks only the owner can do, with the dock plugged back in: eject one volume from the menu and reopen the menu … |
@@ -147,7 +149,6 @@ Every open row in the register. Owner is the row's Owner column where the table 
 | owner | RR18 | — | open | The installed bundle is ad-hoc signed in a user-writable path; same-user code can replace the binary, re-sign, and pass … |
 | owner Second instance night three 2026-10-20→21: coreaudiod audio contexts held idle sleep all night with Music open and silent. Night four: quitting Music at bedtime (coreaudiod released 22:06:41) left DockWatch alone for ten hours, the first clean on night. | RR21 | — | open | Another process holds an idle-sleep assertion across a night, so a sleepless night cannot be credited to the hold. Found… |
 | unassigned | A3 | P2 | open | Priming order: devices enumerated before the dock's own device at launch are logged without dock=true (seven of twenty o… |
-| unassigned | A4 | P1 | open | Quitting the app writes no hold.off line: on 2026-10-19 08:57:57 powerd logged the assertion Released (the owner chose Q… |
 | unassigned | H5 | — | open | Every FR has a test or a named manual check with evidence |
 | unassigned | H6 | — | not built | Status page regenerates clean |
 

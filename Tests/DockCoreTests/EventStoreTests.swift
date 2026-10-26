@@ -1,4 +1,4 @@
-// Created: 2026-10-18 11:55 -05:00 · Edited: 2026-10-18 20:05 -05:00
+// Created: 2026-10-18 11:55 -05:00 · Edited: 2026-10-26 11:47 -05:00
 import XCTest
 @testable import DockCore
 
@@ -97,7 +97,18 @@ final class EventStoreTests: XCTestCase {
             "power.connected", "power.disconnected",
             "volume.eject",   // FR9
             "hold.on", "hold.off",   // D21
+            "app.launch", "app.quit",   // D37, A4
         ])
+    }
+
+    /// A4, D37: the launch and quit lines carry the pid as a string fact and survive the codec,
+    /// so a morning read can bound an absence from the log alone.
+    func testLaunchAndQuitLinesRoundTrip() throws {
+        let quit = Event(kind: .appQuit, subject: "DockWatch", detail: ["pid": "4242", "held": "true"])
+        let back = try EventLine.decode(try EventLine.encode(quit))
+        XCTAssertEqual(back.kind, .appQuit)
+        XCTAssertEqual(back.detail["pid"], "4242")
+        XCTAssertEqual(try EventLine.decode(try EventLine.encode(Event(kind: .appLaunch, subject: "DockWatch"))).kind, .appLaunch)
     }
 
     /// C3-T1, M15: a symlink planted at the log path is refused on write and on read; the

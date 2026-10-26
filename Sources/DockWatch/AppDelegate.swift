@@ -1,4 +1,4 @@
-// Created: 2026-10-18 11:20 -05:00 · Edited: 2026-10-18 19:25 -05:00
+// Created: 2026-10-18 11:20 -05:00 · Edited: 2026-10-26 11:47 -05:00
 // F1-T4 / F2-T4 / F3-T3 / F6-T3 — wires the monitors to the tracker, the store, the hold, the ejector and the status item.
 import AppKit
 import DockCore
@@ -42,6 +42,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let toggle = UserDefaults.standard.bool(forKey: Self.keepAwakeKey)
         policy = HoldPolicy(toggle: toggle, docked: false)
         statusItem.setKeepAwake(on: toggle)
+        // D37: the log says when the app was watching, so an absence reads as one and not as a
+        // quiet day (A4). The pid matches `pmset -g log`'s assertion lines.
+        record(Event(kind: .appLaunch, subject: "DockWatch",
+                     detail: ["pid": String(ProcessInfo.processInfo.processIdentifier), "toggle": toggle ? "on" : "off"]))
         render()
 
         usb = USBMonitor { [weak self] in self?.handle($0) }
@@ -55,7 +59,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         start("ejector") { try ejector.start() }
     }
 
+    /// Quit: the `app.quit` line lands first, synchronously, then the hold is released and
+    /// `hold.off` follows it (A4). A bare `hold.off` cannot say whether the owner quit, turned
+    /// the toggle off, or pulled the dock; the line before it now does.
     func applicationWillTerminate(_ notification: Notification) {
+        record(Event(kind: .appQuit, subject: "DockWatch",
+                     detail: ["pid": String(ProcessInfo.processInfo.processIdentifier), "held": assertion.isHeld ? "true" : "false"]))
         apply(HoldPolicy.Decision(hold: false, reapply: false))
     }
 
