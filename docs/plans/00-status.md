@@ -44,7 +44,7 @@ Counted from the register itself. A register with no rows still gets a line.
 
 | Register | Rows | Open | Unknown | Closed |
 |---|---|---|---|---|
-| Decisions (`D`) | 37 | 24 | 0 | 13 |
+| Decisions (`D`) | 37 | 23 | 0 | 14 |
 | Risks (`RR`) | 21 | 17 | 0 | 4 |
 | Owner items (`O`) | 21 | 7 | 0 | 14 |
 | Agent items (`A`) | 4 | 1 | 0 | 3 |
@@ -57,8 +57,8 @@ Counted from the register itself. A register with no rows still gets a line.
 
 | Register | Status | Count |
 |---|---|---|
-| `D` | proposed | 24 |
-| `D` | ratified | 12 |
+| `D` | proposed | 23 |
+| `D` | ratified | 13 |
 | `D` | superseded | 1 |
 | `RR` | open | 17 |
 | `RR` | rejected | 1 |
@@ -137,7 +137,6 @@ Every open row in the register. Owner is the row's Owner column where the table 
 | owner | D33 | — | proposed | Notify when a device attaches to the dock, not only when one is lost: the owner's request 2026-10-18 after seeing the lo… |
 | owner | D34 | — | proposed | The held ring must visibly spin. The F7 review set the slow turn to one frame a second and one turn a minute to hold CPU… |
 | owner | D35 | — | proposed | The overnight experiment is a pre-registered alternating series, not one night: off, on, off, on, off, on, lid open, sam… |
-| owner | D37 | — | proposed | The log gains app.launch and app.quit lines (detail: the pid, and the toggle at launch or whether the hold was held at q… |
 | owner | O7 | P1 | open | Ratify the proposed decisions the build rests on: D1–D5, D7, D9, D10, D20, D21, D23, D24, D27, D28, D29. |
 | owner | O12 | P1 | open | F2 and F3 live checks only the owner can do, with the app running and Keep Dock Awake on: close the lid for a minute (ex… |
 | owner | O14 | P1 | open | F6 live checks only the owner can do, with the dock plugged back in: eject one volume from the menu and reopen the menu … |
@@ -153,4 +152,4 @@ Every open row in the register. Owner is the row's Owner column where the table 
 
 ---
 
-53 open register rows.
+52 open register rows.
