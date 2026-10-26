@@ -100,7 +100,6 @@ Every open row in the register. Owner is the row's Owner column where the table 
 | agent | C4 | P1 | proposed | scripts/nightreport.sh: the morning report for D35 as one command — window from the last hold.on or 21:00, sleep / dark-… |
 | agent | RR1 | — | open | An idle-sleep assertion does not stop lid-close sleep on battery without an external display, nor an explicit Sleep comm… |
 | agent | RR3 | — | open | A user-space app observes nothing while the Mac sleeps, so sleep-time charger drops never reach the app log. |
-| agent | RR4 | — | open | The hypothesis is wrong: devices keep dropping with the Mac awake. |
 | agent | RR6 | — | open | UNUserNotificationCenter crashes in a binary that is not an app bundle. |
 | agent | RR7 | — | open | The JMicron enclosure reports a 130 PB disk size; any capacity display would be absurd. |
 | agent | RR8 | — | open | IOKit and DiskArbitration callbacks run on the main run loop; a slow menu rebuild delays them. |
@@ -112,6 +111,7 @@ Every open row in the register. Owner is the row's Owner column where the table 
 | agent | RR17 | — | open | Two branches merged in parallel each appended a row to the same tables (scripts/mutate.sh, the mutation register); the h… |
 | agent | RR19 | — | open | Running a pull-request branch locally runs its code: tests spawn processes, hooks live in the repo (core.hooksPath=.gith… |
 | agent | RR20 | — | open | Dock identity is vendor and product ID only and membership is the controller byte, never cleared; a programmable USB dev… |
+| agent L3 2026-10-26: a loss at a wifibt dark wake with no charger drop all night, so the trigger is the dark wake itself, not the charger. | RR4 | — | open | The hypothesis is wrong: devices keep dropping with the Mac awake. |
 | human | RR2 | — | open | A docked Mac held awake around the clock: no overnight sleep, idle energy use. |
 | owner | D1 | — | proposed | The project is DockWatch, at /LocalDevProjects/dockwatch. It is distinct from the shell monitor at /dockwatch, which kee… |
 | owner | D2 | — | proposed | Layout mirrors HueBar: DockCore library (no AppKit, fully testable) + DockWatch AppKit executable + DockCoreTests. Swift… |
