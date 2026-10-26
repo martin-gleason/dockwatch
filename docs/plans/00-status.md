@@ -37,7 +37,7 @@ Status is what the unit's own plan header declares. What has landed in git is de
 | F5 | feature | built 2026-10-18; reviewed (`docs/reviews/F5.md`); the dock half of the sandbox proof done 2026-10-18 20:45 from the running bundle (A1, below); the login launch itself stays off until D30 (O17) | — | — | — | `docs/plans/F5.md` | 3 planned |
 | F6 | feature | in progress (gate crossed 2026-10-18, "you can begin f6") | MVP | — | agent | `docs/plans/F6.md` | 3 planned |
 | F7 | feature | built 2026-10-18; reviewed (`docs/reviews/F7.md`), fixes landed; the owner's eyes remain (O16) | MVP | — | agent | `docs/plans/F7.md` | 4 planned |
-| F8 | feature | planned, at the gate | v1.5 | — | agent | `docs/plans/F8.md` | 2 planned |
+| F8 | feature | in progress (gate crossed 2026-10-26, "STart t1"); T1 built | v1.5 | — | agent | `docs/plans/F8.md` | 2 planned |
 
 ## Registers
 
@@ -45,12 +45,12 @@ Counted from the register itself. A register with no rows still gets a line.
 
 | Register | Rows | Open | Unknown | Closed |
 |---|---|---|---|---|
-| Decisions (`D`) | 37 | 23 | 0 | 14 |
+| Decisions (`D`) | 37 | 22 | 0 | 15 |
 | Risks (`RR`) | 21 | 17 | 0 | 4 |
 | Owner items (`O`) | 21 | 7 | 0 | 14 |
 | Agent items (`A`) | 4 | 1 | 0 | 3 |
 | Hooks (`H`) | 6 | 2 | 0 | 4 |
-| Mutations (`M`) | 19 | 0 | 0 | 19 |
+| Mutations (`M`) | 20 | 0 | 0 | 20 |
 | Chores (`C`) | 4 | 2 | 0 | 2 |
 | Gates (`G`) | 8 | 0 | 0 | 8 |
 
@@ -58,9 +58,9 @@ Counted from the register itself. A register with no rows still gets a line.
 
 | Register | Status | Count |
 |---|---|---|
-| `D` | proposed | 23 |
+| `D` | proposed | 22 |
 | `D` | ratified | 13 |
-| `D` | superseded | 1 |
+| `D` | superseded | 2 |
 | `RR` | open | 17 |
 | `RR` | rejected | 1 |
 | `RR` | resolved | 3 |
@@ -73,7 +73,7 @@ Counted from the register itself. A register with no rows still gets a line.
 | `H` | built | 4 |
 | `H` | not built | 1 |
 | `H` | open | 1 |
-| `M` | killed | 19 |
+| `M` | killed | 20 |
 | `C` | done | 2 |
 | `C` | open | 1 |
 | `C` | proposed | 1 |
@@ -122,7 +122,6 @@ Every open row in the register. Owner is the row's Owner column where the table 
 | owner | D5 | — | proposed | The log is JSON Lines at /Library/Logs/DockWatch/events.jsonl, opened for append, rotated at 20 MB keeping one previous … |
 | owner | D7 | — | proposed | macOS 14 minimum, matching HueBar. Built with Xcode 27.1 on macOS 27. Apple silicon only is verified. |
 | owner | D9 | — | proposed | Build order for 2026-10-18: C1 → F1 → F2 → F3 → F5 → F4. F4 is cut first if the day runs out. |
-| owner | D10 | — | proposed | The "Keep dock awake" toggle defaults off. First launch changes nothing until the owner turns it on. |
 | owner | D14 | — | proposed | License MPL-2.0: file-level copyleft whose terms the Mac App Store permits; GPL's do not, and the owner asked for both (… |
 | owner | D15 | — | proposed | Mac App Store distribution is a v1.5 goal (Q6). MVP therefore adopts App Sandbox and hardened runtime from F5, ad-hoc si… |
 | owner | D20 | — | proposed | Icon motion policy for F7, as amended after the F7 review: the hue ring is still by default; while the hold is in force … |
@@ -153,4 +152,4 @@ Every open row in the register. Owner is the row's Owner column where the table 
 
 ---
 
-52 open register rows.
+51 open register rows.
