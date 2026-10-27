@@ -45,28 +45,30 @@ Counted from the register itself. A register with no rows still gets a line.
 
 | Register | Rows | Open | Unknown | Closed |
 |---|---|---|---|---|
-| Decisions (`D`) | 37 | 22 | 0 | 15 |
+| Decisions (`D`) | 37 | 0 | 0 | 37 |
 | Risks (`RR`) | 21 | 17 | 0 | 4 |
-| Owner items (`O`) | 21 | 7 | 0 | 14 |
+| Owner items (`O`) | 21 | 5 | 0 | 16 |
 | Agent items (`A`) | 4 | 1 | 0 | 3 |
 | Hooks (`H`) | 6 | 2 | 0 | 4 |
 | Mutations (`M`) | 20 | 0 | 0 | 20 |
-| Chores (`C`) | 4 | 2 | 0 | 2 |
+| Chores (`C`) | 5 | 2 | 1 | 2 |
 | Gates (`G`) | 8 | 0 | 0 | 8 |
+
+`Unknown` is not a third kind of open. It means the source document said nothing about status, so the page will not guess — the row is a question for the owner (`RR37`).
+
 
 ### By status
 
 | Register | Status | Count |
 |---|---|---|
-| `D` | proposed | 22 |
-| `D` | ratified | 13 |
+| `D` | ratified | 35 |
 | `D` | superseded | 2 |
 | `RR` | open | 17 |
 | `RR` | rejected | 1 |
 | `RR` | resolved | 3 |
-| `O` | closed | 13 |
-| `O` | done | 1 |
-| `O` | open | 7 |
+| `O` | closed | 14 |
+| `O` | done | 2 |
+| `O` | open | 5 |
 | `A` | closed | 2 |
 | `A` | done | 1 |
 | `A` | open | 1 |
@@ -77,6 +79,7 @@ Counted from the register itself. A register with no rows still gets a line.
 | `C` | done | 2 |
 | `C` | open | 1 |
 | `C` | proposed | 1 |
+| `C` | unknown | 1 |
 | `G` | done | 8 |
 
 ## Hooks
@@ -100,6 +103,7 @@ Every open row in the register. Owner is the row's Owner column where the table 
 |---|---|---|---|---|
 | agent | C2 | P2 | open | Stamps: every Created/Edited line comes from the clock or git, never typed; correct the files whose stamps run ahead of … |
 | agent | C4 | P1 | proposed | scripts/nightreport.sh: the morning report for D35 as one command — window from the last hold.on or 21:00, sleep / dark-… |
+| agent | C5 | P1 | unknown | MVP close: record the owner's ratification of every proposed decision (2026-10-26), close O7 and O21, bring the plan hea… |
 | agent | RR1 | — | open | An idle-sleep assertion does not stop lid-close sleep on battery without an external display, nor an explicit Sleep comm… |
 | agent | RR3 | — | open | A user-space app observes nothing while the Mac sleeps, so sleep-time charger drops never reach the app log. |
 | agent | RR6 | — | open | UNUserNotificationCenter crashes in a binary that is not an app bundle. |
@@ -115,35 +119,11 @@ Every open row in the register. Owner is the row's Owner column where the table 
 | agent | RR20 | — | open | Dock identity is vendor and product ID only and membership is the controller byte, never cleared; a programmable USB dev… |
 | agent L3 2026-10-26: a loss at a wifibt dark wake with no charger drop all night, so the trigger is the dark wake itself, not the charger. | RR4 | — | open | The hypothesis is wrong: devices keep dropping with the Mac awake. |
 | human | RR2 | — | open | A docked Mac held awake around the clock: no overnight sleep, idle energy use. |
-| owner | D1 | — | proposed | The project is DockWatch, at /LocalDevProjects/dockwatch. It is distinct from the shell monitor at /dockwatch, which kee… |
-| owner | D2 | — | proposed | Layout mirrors HueBar: DockCore library (no AppKit, fully testable) + DockWatch AppKit executable + DockCoreTests. Swift… |
-| owner | D3 | — | proposed | "Keep dock awake" is an IOPMLib PreventUserIdleSystemSleep assertion owned by the app process. Not pmset, not root, not … |
-| owner | D4 | — | proposed | The dock is identified by USB vendor:product 0x1532:0x122E (macOS name "Thunderbolt 4 Dock"). The Chroma controller 0x15… |
-| owner | D5 | — | proposed | The log is JSON Lines at /Library/Logs/DockWatch/events.jsonl, opened for append, rotated at 20 MB keeping one previous … |
-| owner | D7 | — | proposed | macOS 14 minimum, matching HueBar. Built with Xcode 27.1 on macOS 27. Apple silicon only is verified. |
-| owner | D9 | — | proposed | Build order for 2026-10-18: C1 → F1 → F2 → F3 → F5 → F4. F4 is cut first if the day runs out. |
-| owner | D14 | — | proposed | License MPL-2.0: file-level copyleft whose terms the Mac App Store permits; GPL's do not, and the owner asked for both (… |
-| owner | D15 | — | proposed | Mac App Store distribution is a v1.5 goal (Q6). MVP therefore adopts App Sandbox and hardened runtime from F5, ad-hoc si… |
-| owner | D20 | — | proposed | Icon motion policy for F7, as amended after the F7 review: the hue ring is still by default; while the hold is in force … |
-| owner | D21 | — | proposed | The log gains hold.on and hold.off lines when the sleep assertion is taken and released, so the overnight charger-drop c… |
-| owner | D23 | — | proposed | The menu's "Eject" is a DiskArbitration unmount of the volume, never a whole-disk DADiskEject: the disk stays attached, … |
-| owner | D24 | — | proposed | Under App Sandbox the log lives in the app's container: /Library/Containers/com.martingleason.dockwatch/Data/Library/Log… |
-| owner | D27 | — | proposed | Loss notifications are coalesced for two seconds after the first loss, so a whole-dock pull is one notification ("Dock d… |
-| owner | D28 | — | proposed | The menu's 24-hour counters: devices lost = usb.detached on dock devices; volumes lost = volume.disappeared (unclean) on… |
-| owner | D29 | — | proposed | NFR2 reading for F7: the ring's frame timer is an animation clock that exists only while the ring is moving and the stat… |
-| owner | D30 | — | proposed | Sign with a Developer ID and notarize before any distribution and before Launch at Login is offered as a default. The ad… |
-| owner | D31 | — | proposed | Identify the dock by its IORegistry Thunderbolt ancestry as well as its vendor and product IDs, and judge membership bel… |
-| owner | D32 | — | proposed | When notification authorization is denied, the menu shows a line saying notifications are off, and choosing it opens Sys… |
-| owner | D33 | — | proposed | Notify when a device attaches to the dock, not only when one is lost: the owner's request 2026-10-18 after seeing the lo… |
-| owner | D34 | — | proposed | The held ring must visibly spin. The F7 review set the slow turn to one frame a second and one turn a minute to hold CPU… |
-| owner | D35 | — | proposed | The overnight experiment is a pre-registered alternating series, not one night: off, on, off, on, off, on, lid open, sam… |
-| owner | O7 | P1 | open | Ratify the proposed decisions the build rests on: D1–D5, D7, D9, D20, D21, D23, D24, D27, D28, D29 (D10 dropped from the… |
 | owner | O12 | P1 | open | F2 and F3 live checks only the owner can do, with the app running and Keep Dock Awake on: close the lid for a minute (ex… |
 | owner | O14 | P1 | open | F6 live checks only the owner can do, with the dock plugged back in: eject one volume from the menu and reopen the menu … |
 | owner | O15 | P1 | open | F4 live checks only the owner can do, from the installed app with the dock attached: allow notifications when asked at f… |
 | owner | O16 | P1 | open | F7 live checks only the owner can do, from a rebuilt installed app (scripts/build-app.sh --install): the ring in the men… |
 | owner | O19 | P2 | open | Personal-data posture for a public repository (security review 2026-10-18, finding 9): the commit author email on every … |
-| owner | O21 | P0 | open | Run the series in D35 (docs/learnings/keep-awake-experiment.md): night two 2026-10-19 is off; toggle set before 21:00; p… |
 | owner | RR18 | — | open | The installed bundle is ad-hoc signed in a user-writable path; same-user code can replace the binary, re-sign, and pass … |
 | owner Second instance night three 2026-10-20→21: coreaudiod audio contexts held idle sleep all night with Music open and silent. Night four: quitting Music at bedtime (coreaudiod released 22:06:41) left DockWatch alone for ten hours, the first clean on night. | RR21 | — | open | Another process holds an idle-sleep assertion across a night, so a sleepless night cannot be credited to the hold. Found… |
 | unassigned | A3 | P2 | open | Priming order: devices enumerated before the dock's own device at launch are logged without dock=true (seven of twenty o… |
@@ -152,4 +132,4 @@ Every open row in the register. Owner is the row's Owner column where the table 
 
 ---
 
-51 open register rows.
+28 open register rows.
