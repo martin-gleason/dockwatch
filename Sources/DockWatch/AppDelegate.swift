@@ -1,4 +1,4 @@
-// Created: 2026-10-18 11:20 -05:00 · Edited: 2026-10-26 11:47 -05:00
+// Created: 2026-10-18 11:20 -05:00 · Edited: 2026-10-26 19:48 -05:00
 // F1-T4 / F2-T4 / F3-T3 / F6-T3 — wires the monitors to the tracker, the store, the hold, the ejector and the status item.
 import AppKit
 import DockCore
@@ -38,8 +38,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         notifier.requestPermissionOnce()
         statusItem.setLaunchAtLogin(on: LaunchAtLogin.isEnabled, available: LaunchAtLogin.isAvailable)
 
-        // D10: off until the owner turns it on; the choice then survives relaunch (FR5).
-        let toggle = UserDefaults.standard.bool(forKey: Self.keepAwakeKey)
+        // D36 (F8): on unless the owner turned it off; the choice survives relaunch (FR5).
+        // `bool(forKey:)` reads an absent key as false, which would lose the default, so
+        // only a stored value overrides it.
+        let toggle = UserDefaults.standard.object(forKey: Self.keepAwakeKey) as? Bool ?? HoldPolicy.defaultToggle
         policy = HoldPolicy(toggle: toggle, docked: false)
         statusItem.setKeepAwake(on: toggle)
         // D37: the log says when the app was watching, so an absence reads as one and not as a
