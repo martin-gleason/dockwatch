@@ -37,7 +37,7 @@ Status is what the unit's own plan header declares. What has landed in git is de
 | F5 | feature | built 2026-10-18; reviewed (`docs/reviews/F5.md`); the dock half of the sandbox proof done 2026-10-18 20:45 from the running bundle (A1, below); the login launch itself stays off until D30 (O17) | — | — | — | `docs/plans/F5.md` | 3 planned |
 | F6 | feature | in progress (gate crossed 2026-10-18, "you can begin f6") | MVP | — | agent | `docs/plans/F6.md` | 3 planned |
 | F7 | feature | built 2026-10-18; reviewed (`docs/reviews/F7.md`), fixes landed; the owner's eyes remain (O16) | MVP | — | agent | `docs/plans/F7.md` | 4 planned |
-| F8 | feature | built 2026-10-26; review pending | v1.5 | — | agent | `docs/plans/F8.md` | 2 planned |
+| F8 | feature | built and reviewed 2026-10-26 (`docs/reviews/F8.md`, may merge; all findings in) | v1.5 | — | agent | `docs/plans/F8.md` | 2 planned |
 
 ## Registers
 
@@ -137,7 +137,7 @@ Every open row in the register. Owner is the row's Owner column where the table 
 | owner | D33 | — | proposed | Notify when a device attaches to the dock, not only when one is lost: the owner's request 2026-10-18 after seeing the lo… |
 | owner | D34 | — | proposed | The held ring must visibly spin. The F7 review set the slow turn to one frame a second and one turn a minute to hold CPU… |
 | owner | D35 | — | proposed | The overnight experiment is a pre-registered alternating series, not one night: off, on, off, on, off, on, lid open, sam… |
-| owner | O7 | P1 | open | Ratify the proposed decisions the build rests on: D1–D5, D7, D9, D10, D20, D21, D23, D24, D27, D28, D29. |
+| owner | O7 | P1 | open | Ratify the proposed decisions the build rests on: D1–D5, D7, D9, D20, D21, D23, D24, D27, D28, D29 (D10 dropped from the… |
 | owner | O12 | P1 | open | F2 and F3 live checks only the owner can do, with the app running and Keep Dock Awake on: close the lid for a minute (ex… |
 | owner | O14 | P1 | open | F6 live checks only the owner can do, with the dock plugged back in: eject one volume from the menu and reopen the menu … |
 | owner | O15 | P1 | open | F4 live checks only the owner can do, from the installed app with the dock attached: allow notifications when asked at f… |
