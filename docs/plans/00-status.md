@@ -37,7 +37,7 @@ Status is what the unit's own plan header declares. What has landed in git is de
 | F5 | feature | built 2026-10-18; reviewed (`docs/reviews/F5.md`); the dock half of the sandbox proof done 2026-10-18 20:45 from the running bundle (A1, below); the login launch itself stays off until D30 (O17) | — | — | — | `docs/plans/F5.md` | 3 planned |
 | F6 | feature | in progress (gate crossed 2026-10-18, "you can begin f6") | MVP | — | agent | `docs/plans/F6.md` | 3 planned |
 | F7 | feature | built 2026-10-18; reviewed (`docs/reviews/F7.md`), fixes landed; the owner's eyes remain (O16) | MVP | — | agent | `docs/plans/F7.md` | 4 planned |
-| F8 | feature | in progress (gate crossed 2026-10-26, "STart t1"); T1 built | v1.5 | — | agent | `docs/plans/F8.md` | 2 planned |
+| F8 | feature | built 2026-10-26; review pending | v1.5 | — | agent | `docs/plans/F8.md` | 2 planned |
 
 ## Registers
 
