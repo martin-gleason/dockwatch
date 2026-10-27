@@ -1,4 +1,4 @@
-// Created: 2026-10-18 12:40 -05:00 · Edited: 2026-10-26 17:12 -05:00
+// Created: 2026-10-18 12:40 -05:00 · Edited: 2026-10-26 19:58 -05:00
 import XCTest
 @testable import DockCore
 
@@ -55,6 +55,13 @@ final class HoldPolicyTests: XCTestCase {
         XCTAssertFalse(p.shouldHold, "no dock yet")
         XCTAssertTrue(p.apply(.dockChanged(true)).hold)
         XCTAssertFalse(p.apply(.dockChanged(false)).hold)
+    }
+
+    /// FR5, D36, M20: a stored choice always wins; only an absent one falls back to the default.
+    func testStoredChoiceWinsAbsentFallsBack() {
+        XCTAssertFalse(HoldPolicy.resolve(stored: false), "the owner turned it off")
+        XCTAssertTrue(HoldPolicy.resolve(stored: true))
+        XCTAssertTrue(HoldPolicy.resolve(stored: nil), "a fresh install")
     }
 
     /// FR5: the RR14 policy — a flicker of the identifying device is followed exactly, no grace.

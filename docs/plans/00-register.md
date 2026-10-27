@@ -1,6 +1,6 @@
 # Register — dockwatch
 
-Created: 2026-10-18 11:11 -05:00 · Edited: 2026-10-26 17:12 -05:00
+Created: 2026-10-18 11:11 -05:00 · Edited: 2026-10-26 19:58 -05:00
 
 Every register for this project, one `##` per register. This is the
 "where are we" read.
@@ -101,7 +101,7 @@ Outstanding items only the owner can close.
 | O4 | Gate C1 and F1: the yes that opens today's build. | P0 | closed 2026-10-18 — owner: "begin c1 and f1" |
 | O5 | Decide whether the app replaces the shell monitor once F2's log agrees with it. Default if silent: both stay. | P2 | closed 2026-10-18 — "Replace. it's a real test." (D13) |
 | O6 | Create the GitHub repository and push. C1-T6 waits on it. | P2 | closed 2026-10-18 — public at github.com/martin-gleason/dockwatch, created by the owner |
-| O7 | Ratify the proposed decisions the build rests on: D1–D5, D7, D9, D10, D20, D21, D23, D24, D27, D28, D29. | P1 | open |
+| O7 | Ratify the proposed decisions the build rests on: D1–D5, D7, D9, D20, D21, D23, D24, D27, D28, D29 (D10 dropped from the list 2026-10-26: superseded by D36, F8). | P1 | open |
 | O8 | With the app running, pull the dock's Thunderbolt cable and plug it back; paste the stderr lines. Closes F1's live FR1/FR2 check. | P1 | closed 2026-10-18 — owner: "I did the test. it works beautifully." |
 | O9 | The vision sentence is now D11's and it adds FR9; the agent does not edit `SPEC.md`. Paste the sentence and FR9 into the spec, or tell the agent to. | P1 | closed 2026-10-18 — "paste the rewritten vision"; pasted by the agent on that instruction |
 | O10 | Gate F6 (eject dock volumes), proposed after F5 and before F4 in today's order. | P1 | closed 2026-10-18 — "you can begin f6" |
@@ -141,7 +141,7 @@ days on the owner's track.
 | ID | Chore | P | Status | Owner | Plan |
 |---|---|---|---|---|---|
 | C1 | Build the harness: run, count, floor, mutate, pre-commit; CI once pushed. | P0 | done 2026-10-18 — harness, hooks, CI all proven by breaking; closed late, the row was never updated | agent | `docs/plans/C1.md` |
-| C2 | Stamps: every Created/Edited line comes from the clock or git, never typed; correct the files whose stamps run ahead of their commits (F1 review, finding 4). | P2 | open | agent | — |
+| C2 | Stamps: every Created/Edited line comes from the clock or git, never typed; correct the files whose stamps run ahead of their commits (F1 review, finding 4; `docs/plans/F8.md` Created stamp, F8 review finding 1, corrected 2026-10-26). | P2 | open | agent | — |
 | C3 | Security hardening from the black-hat review of 2026-10-18: O_NOFOLLOW and a regular-file check on the log, tail trimming that cannot blank the seed, forget the dock controller when empty, a broader secret scan in the hook and CI, plain-text device names, pinned least-privilege CI. | P1 | done 2026-10-18 — PR #11 merged | agent | `docs/plans/C3.md` |
 | C4 | `scripts/night_report.sh`: the morning report for D35 as one command — window from the last `hold.on` or 21:00, sleep / dark-wake / charger / wifibt counts from timestamped `pmset -g log` lines only, idle-sleep holders, drops by the D35 definition (two-second groups, dock pull and charger loss excluded), volumes mounted. The scratch classifier that produced night one's table is the reference. | P1 | proposed | agent | — |
 

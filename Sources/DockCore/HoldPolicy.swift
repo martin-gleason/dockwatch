@@ -1,4 +1,4 @@
-// Created: 2026-10-18 12:40 -05:00 · Edited: 2026-10-26 17:12 -05:00
+// Created: 2026-10-18 12:40 -05:00 · Edited: 2026-10-26 19:58 -05:00
 // F3-T1 — when the Mac should be held out of idle sleep (FR5). Pure; no IOKit.
 // F8-T1 — the toggle defaults on (D36).
 
@@ -31,6 +31,10 @@ public struct HoldPolicy: Equatable {
     /// holds from its first launch while docked. The app falls back to this only when no
     /// preference is stored; a stored off stays off. M20 flips it.
     public static let defaultToggle = true
+
+    /// The toggle the app should start with: the stored preference when there is one,
+    /// the default when nothing was ever written. "Absent is not off" (F8 review, finding 4).
+    public static func resolve(stored: Bool?) -> Bool { stored ?? defaultToggle }
 
     public init(toggle: Bool = HoldPolicy.defaultToggle, docked: Bool = false) {
         self.toggle = toggle
